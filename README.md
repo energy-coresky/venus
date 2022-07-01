@@ -1,7 +1,7 @@
 
 # Venus
 
-This is Dev-ware for any SKY-applications. Goal: Visual HTML design using Tailwind CSS framework & Alpine.js
+This is DEV-MODE-plugin (Ware) for any SKY-applications. Goal: Visual HTML design using Tailwind CSS framework & Alpine.js
 
 Status: _under development_
 
