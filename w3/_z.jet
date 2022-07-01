@@ -1,7 +1,83 @@
 #.jet core template
 
+#.tail //////////////////////////////////////////////////////////////////////////////
+<div id="info">
+  <span class="relative" style="right:calc(-100% + 15px); width:75px; margin-left:-75px">cursor pos</span>
+  <span class="ml-3">-</span>
+  <span class="ml-3"></span>
+</div>
+<div id="mov-y"></div>
+<div id="tail">
+  <p id="code-head" class="header fixed pl-8" style="height:22px; align-items:center; display:inline-flex; overflow:hidden; white-space:nowrap;">
+    Filename &nbsp;<b></b>
+    <!-- &nbsp; &nbsp;<button class="btn mx-3" onclick="az.swap()">Delete file</button> -->
+    &nbsp; &nbsp;Project files &nbsp;
+    <a class="az-mono az-ic" style="font-size:16px" @href(az.m_clk('#popup',1))>▼</a>
+    &nbsp; &nbsp; &nbsp; &nbsp;<label><input type="checkbox" checked> &nbsp;Tidy</label>
+    &nbsp; &nbsp;<label><input type="checkbox" checked> &nbsp;Comments</label>
+    &nbsp; &nbsp;<label><input type="checkbox" checked> &nbsp;Scripts</label>
+    &nbsp; &nbsp;<label><input type="checkbox" checked> &nbsp;CSS</label>
+    &nbsp; &nbsp;<label><input type="checkbox"> &nbsp;Re-format &lt;PRE&gt;</label>
+    &nbsp; &nbsp;<label><input type="checkbox"> &nbsp;Limit length of the lines</label>
+  </p><div id="project-list"></div>
+  <div id="code-body" class="flex" style="margin-top:22px;">
+    <pre style="padding:0 1px; text-align:right; background-color:#f1f3f4; color:#9d174d;" class=""></pre>
+    <pre style="padding-left:1px; margin-left:0px; border-left:0px solid #ccc; min-width:calc(100% - 24px)"
+      contenteditable="true"></pre>
+  </div>
+</div>
+#.tail
 
-#.screen
+#.layout //////////////////////////////////////////////////////////////////////////////
+<!DOCTYPE html><html>
+<head>@head<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+
+</script>
+</head>
+<body class="h-screen" style="overflow:hidden">{- justify-center items-center  -}
+<div id="mov-x"></div>
+<div id="main">
+  <div id="v-head">
+    <a href="{{LINK}}" class="az-ic mr-3">@svg(home)</a>
+    <a @href($(this).find('svg').toggle()) class="az-ic">@inc(.moonsun)</a>
+    <a @href($(this).find('svg').show()) class="az-ic ml-3">@svg(fileplus)</a>
+    <button class="btn mx-3 f2" onclick="az.save()">Save - F2</button>
+    <button class="btn mx-3 f4" onclick="az.test()">Load - F4</button>
+    <button class="btn mx-3 f6" onclick="alert()">??? - F6</button>
+    <span class="m1-2" >Frame&nbsp;</span>
+    <select id="fsize" onchange="az.switch(this)">{! $fsize !}<option cust>*</option></select>
+    <button class="btn ml-1 f8" onclick="az.switch()">Switch - F8</button>
+    <button class="btn ml-1" onclick="az.mm(-1)">Min</button>
+    <button class="btn ml-1" onclick="az.mm(1)">Max</button>
+    <a @href($(this).find('svg').toggle()) class="">@inc(.mobile)</a>
+    <button class="btn ml-3 mr-5 f10" onclick="az.swap()">Next - F10</button>
+    <a @href($(this).find('svg').toggle(); az.bg()) class="">@inc(.screen)</a>
+    <!-- from right -->
+    <span class="absolute right-20">@pdaxt</span>
+    <a @href(ajax('settings', box)) class="az-ic absolute right-8">@svg(settings)</a>
+  </div>
+  <div id="v-menu">
+    <div class="fixed bg-white pt-2" style="width:125px;">
+      <select style="padding:0 5px; width:100%" onchange="az.menu(this.value)">
+        <option value="t">Tailwind</option>
+        <option value="h">HTML</option>
+        <option value="i">Icons</option>
+      </select>
+    </div>
+    <ul class="mt-10"></ul>
+  </div>
+  <div id="v-main" style=""> <!-- resize:both; overflow:auto; -->
+    <div id="sw-icon"><a @href(az.swap()) title="Swap panels - F9">@svg(arrows)</a></div>
+    <div style="display:none" id="err-top"></div>{! $frame !}
+  </div>
+  <div id="v-right"></div>
+  <div id="v-tail">@inc(.tail)</div>
+</div>
+@tail</body></html>
+#.layout
+
+#.screen ////////////////////////// IMAGES ////////////////////////////////////////////
 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" hidden>
   <path d="M0 0h16v16H0V0zm1 1v6.5h6.5V1H1zm7.5 0v6.5H15V1H8.5zM15 8.5H8.5V15H15V8.5zM7.5 15V8.5H1V15h6.5z"></path>
 </svg>
@@ -33,9 +109,3 @@
   <path d="M14 7.5a1 1 0 1 0-2 0 1 1 0 0 0 2 0z"></path>
 </svg>
 #.mobile
-
-<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 16 16">
-  <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
-  <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.115l.094-.319z"/>
-</svg>
-

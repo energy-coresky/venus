@@ -35,7 +35,7 @@ foreach ($z as $i=>$v)
         global $sky;
         $this->layout = true;
         MVC::$layout = '';
-        MVC::body('venus.layout');
+        MVC::body('z.layout');
         $sky->k_title = 'Visual SKY';
         $sky->k_static = [[], ["~/venus.js"], ["~/tailwind.css", "~/venus.css"]];
 
