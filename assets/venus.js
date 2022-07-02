@@ -289,7 +289,7 @@ var az = {
     test: function(fn) {
         if (fn)
             az.fn = fn;
-        az.$f.attr('src', 'http://des.loc/acrm/web/_venus?fn=' + az.fn).on('load', function (e) {
+        az.$f.attr('src', sky.home + '_venus?fn=' + az.fn).on('load', function (e) {
             ajax('code&fn=' + az.fn, az.code);
             az.doc().mouseup(az.m_up).mousemove(az.m_move).find('body *').mouseenter(az.m_enter);
         });

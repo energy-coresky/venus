@@ -8,8 +8,6 @@ class c_venus extends Controller
     function head_y($action) {
         global $sky, $user;
         $user = new USER;
-        $link = PROTO . '://' . DOMAIN;
-        define('LINK', $link . PATH);
         Plan::_r('conf.php');
         $sky->memory(3, 'w', $this->dd = SQL::open('_w'));
 /*
@@ -30,12 +28,16 @@ foreach ($z as $i=>$v)
         global $sky;
     }
 
+    function a_ware() {
+        return $this->empty_a();
+    }
+
     function empty_a() {
         //return Venus::layout();
         global $sky;
         $this->layout = true;
         MVC::$layout = '';
-        MVC::body('z.layout');
+        MVC::body('y.layout');
         $sky->k_title = 'Visual SKY';
         $sky->k_static = [[], ["~/venus.js"], ["~/tailwind.css", "~/venus.css"]];
 
@@ -49,10 +51,8 @@ foreach ($z as $i=>$v)
 
     function a_fn() {
         MVC::$layout = '';
-       // $sky->k_static = [[], [], ["~/tailwind.css"]];
         $this->layout = true;
         echo $this->file(end($_GET));
-// return $this->empty_a();
     }
 
     function j_save() {
@@ -62,7 +62,6 @@ foreach ($z as $i=>$v)
     }
 
     function components() {
-        //$list = $this->dd->sqlf('@select name, id from preset');
         return $this->dd->sqlf('@select name, $cc("az.test(\':",id,"\')") from preset');
     }
 
@@ -188,7 +187,7 @@ foreach ($z as $i=>$v)
         } elseif (strpos($fn, '/')) {
             preg_match('/^https?:/', $fn) or $fn = "https://$fn";
         } else {
-            $fn = WWW . 'tw/' . basename($fn);
+            $fn = WWW . 'venus/' . basename($fn);
         }
         /*require_once 'main/w3/simple_html_dom.php';
         $node = str_get_html(unl($html));
@@ -200,14 +199,13 @@ foreach ($z as $i=>$v)
             file_put_contents($fn, $save);
             return true;
         }
-
         return file_get_contents($fn);
     }
 
     function files() {
         $list = array_map(function($v) {
             return basename($v);
-        }, glob(WWW . 'tw/*.html'));
+        }, glob(WWW . 'venus/*.html'));
         $list[] = 'https://ukrposhta.ua/ru';
         return array_combine($list, array_map(function($v) {
             return "az.test('$v')";
@@ -215,22 +213,4 @@ foreach ($z as $i=>$v)
     }
 
 
-
-
-
-
-
-
-
-
-
-///////////////////////////////
-    function a_isual() { /* ====================================== */
-        $this->_y = [];
-        return Venus::layout();
-    }
-    function j_isual() {
-        MVC::body('_ven.' . substr($this->_c, 2));
-        return call_user_func([new Venus, $this->_c], $this->_a);
-    }
 }
