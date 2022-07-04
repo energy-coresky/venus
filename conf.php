@@ -3,7 +3,10 @@
 $plans = [
     'view' => ['path' => __DIR__ . '/w3'],
     'glob' => ['path' => __DIR__ . '/w3'],
-    'app' => ['type' => 'dev'],
+    'app' => [
+        'type' => 'dev',
+        'require' => 'Parsedown SQLite3',
+    ],
 ];
 
 SKY::$databases += [

@@ -1,6 +1,6 @@
 <?php
 
-class c_venus extends Controller
+class venus_c extends Controller
 {
     private $layout = false;
     private $dd;
