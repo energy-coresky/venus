@@ -32,7 +32,7 @@
 <!DOCTYPE html><html>
 <head>@head<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>
-
+az.cur_page = '{{$current}}';
 </script>
 </head>
 <body class="h-screen" style="overflow:hidden">{- justify-center items-center  -}

@@ -35,17 +35,19 @@ foreach ($z as $i=>$v)
     function empty_a() {
         //return Venus::layout();
         global $sky;
+        $sky->d_last_page = '_venus';
         $this->layout = true;
         MVC::$layout = '';
         MVC::body('y.layout');
         $sky->k_title = 'Visual SKY';
-        $sky->k_static = [[], ["~/venus.js"], ["~/tailwind.css", "~/venus.css"]];
+        $sky->k_static = [[], ["~/m/venus.js"], ["~/m/tailwind.css", "~/m/venus.css"]];
 
         $fsize = ['320 x 480', '640 x 480', '768 x 768', '1024 x 555', '1366 x 768', /* notebook */ '1536 x 555'];
         return [
             'fsize' => option(3, array_combine($fsize, $fsize)),
             'frame' => '<iframe src="" class="w-full h-full"></iframe>',
             'reg' => '/^<?\w[^>]*[^\/]$/',
+            'current' => $_GET ? $_GET['ware'] : '',
         ];
     }
 
@@ -182,7 +184,7 @@ foreach ($z as $i=>$v)
                 $this->dd->sqlf('update preset set tmemo=%s where id=%d', $save, substr($fn, 1));
                 return true;
             }
-            $css = $this->layout ? css(['~/tailwind.css']) : '';
+            $css = $this->layout ? css(['~/m/tailwind.css']) : '';
             return $css . $this->dd->sqlf('+select tmemo from preset where id=%d', substr($fn, 1));
         } elseif (strpos($fn, '/')) {
             preg_match('/^https?:/', $fn) or $fn = "https://$fn";
@@ -206,7 +208,8 @@ foreach ($z as $i=>$v)
         $list = array_map(function($v) {
             return basename($v);
         }, glob(WWW . 'venus/*.html'));
-        $list[] = 'https://ukrposhta.ua/ru';
+        //$list[] = 'https://ukrposhta.ua/ru';
+        $list[] = '== current page ==';
         return array_combine($list, array_map(function($v) {
             return "az.test('$v')";
         }, $list));

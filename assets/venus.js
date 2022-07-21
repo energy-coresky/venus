@@ -286,6 +286,7 @@ var az = {
         $('#code-body pre:eq(0)').html(lines).next().html(html);
     },
     fn: 'index.html',
+    cur_page: '',
     test: function(fn) {
         if (fn)
             az.fn = fn;
