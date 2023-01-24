@@ -285,7 +285,7 @@ var az = {
         for (var i = 1, lines = '  1'; i <= br; lines += '\n' + ++i);
         $('#code-body pre:eq(0)').html(lines).next().html(html);
     },
-    fn: 'index.html',
+    fn: sky.home,
     cur_page: '',
     test: function(fn) {
         if (fn)

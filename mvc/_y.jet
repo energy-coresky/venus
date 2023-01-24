@@ -32,7 +32,7 @@
 <!DOCTYPE html><html>
 <head>@head<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>
-az.cur_page = '{{$current}}';
+az.fn = '{{$page}}'; //cur_page
 </script>
 </head>
 <body class="h-screen" style="overflow:hidden">{- justify-center items-center  -}
@@ -69,7 +69,7 @@ az.cur_page = '{{$current}}';
   </div>
   <div id="v-main" style=""> <!-- resize:both; overflow:auto; -->
     <div id="sw-icon"><a @href(az.swap()) title="Swap panels - F9">@svg(arrows)</a></div>
-    <div style="display:none" id="err-top"></div>{! $frame !}
+    <div style="display:none" id="err-top"></div><iframe src="" class="w-full h-full"></iframe>
   </div>
   <div id="v-right"></div>
   <div id="v-tail">@inc(.tail)</div>

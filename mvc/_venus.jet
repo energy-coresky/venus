@@ -16,13 +16,10 @@
 #.menu ///////////// ??????????????? ////////////////////////////////////////////////
 <br><div class="other-task">Venus design</div>
 <a href="_venus?ware" class="inner-menu"@active(33 == ($sky->_6 ?: 0))>Venus</a>
-#.ware.menu ------------------------------------------------------------------------------
-#use(`Venus app` as header)
-#use(.menu)
-222
-<div style="padding:10px 0 0 10px">
-333
-</div>
+#.ware.menu ------------------------------------------------------------------------------ #use(`Venus app` as header)#use(.menu)
+<script>
+$(function() { sky.d.close_box('_venus?page=' + encodeURIComponent(window.parent.location.href)) });
+</script>
 #.ware
 
 #.popup //////////////////////////////////////////////////////////////////////////////

@@ -26,13 +26,19 @@ foreach ($z as $i=>$v)
 
     function tail_y() {
         global $sky;
+        if ('ware' == $this->_1)
+            return parent::tail_y();
     }
 
     function a_ware() {
-        return $this->empty_a();
+        return [];
     }
 
-    function empty_a() {
+    function a_page() {
+        return $this->empty_a($this->_2);
+    }
+
+    function empty_a($page = '') {
         //return Venus::layout();
         global $sky;
         $sky->d_last_page = '_venus';
@@ -45,9 +51,8 @@ foreach ($z as $i=>$v)
         $fsize = ['320 x 480', '640 x 480', '768 x 768', '1024 x 555', '1366 x 768', /* notebook */ '1536 x 555'];
         return [
             'fsize' => option(3, array_combine($fsize, $fsize)),
-            'frame' => '<iframe src="" class="w-full h-full"></iframe>',
             'reg' => '/^<?\w[^>]*[^\/]$/',
-            'current' => $_GET ? $_GET['ware'] : '',
+            'page' => $page,
         ];
     }
 
@@ -209,7 +214,7 @@ foreach ($z as $i=>$v)
             return basename($v);
         }, glob(WWW . 'venus/*.html'));
         //$list[] = 'https://ukrposhta.ua/ru';
-        $list[] = '== current page ==';
+        $list[] = LINK;
         return array_combine($list, array_map(function($v) {
             return "az.test('$v')";
         }, $list));
