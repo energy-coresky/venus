@@ -45,8 +45,8 @@ foreach ($z as $i=>$v)
         $this->layout = true;
         MVC::$layout = '';
         MVC::body('y.layout');
-        $sky->k_title = 'Visual SKY';
-        $sky->k_static = [[], ["~/m/venus.js"], ["~/m/tailwind.css", "~/m/venus.css"]];
+        $sky->_title = 'Visual SKY';
+        $sky->_static = [[], ["~/m/venus.js"], ["~/m/tailwind.css", "~/m/venus.css"]];
 
         $fsize = ['320 x 480', '640 x 480', '768 x 768', '1024 x 555', '1366 x 768', /* notebook */ '1536 x 555'];
         return [
