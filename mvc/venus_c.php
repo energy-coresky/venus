@@ -8,8 +8,11 @@ class venus_c extends Controller
     function head_y($action) {
         global $sky, $user;
         $user = new USER;
-        Plan::_r('conf.php');
+        $conf = Plan::_r('conf.php');
+        SKY::$databases += $conf['app']['databases'];
         $sky->memory(3, 'w', $this->dd = SQL::open('_w'));
+//$sky->w_test = 111; OK
+
 /*
 $xx = SQL::open('xx');
 $z= $xx->sqlf('@select * from $_azure');
