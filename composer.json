@@ -1,0 +1,20 @@
+{
+  "name": "coresky/venus",
+  "license": "MIT",
+  "description": "Dev-ware for Coresky framework",
+  "keywords": [
+    "coresky",
+    "coresky framework",
+    "sky",
+    "venus"
+  ],
+  "require": {
+    "php": ">7.0"
+  },
+  "authors": [
+    {
+      "name": "Energy",
+      "homepage": "https://coresky.net/"
+    }
+  ]
+}
