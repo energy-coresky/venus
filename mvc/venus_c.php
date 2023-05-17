@@ -23,7 +23,6 @@ class venus_c extends Controller
     }
 
     function empty_a($page = '') {
-        MVC::body('y.layout');
         $this->_title = 'VENUS.SKY';
         $this->_static = [[], ["~/m/venus.js", "~/w/venus/ishtar.js"], ["~/m/venus.css"]];
         $this->d_last_page = '_venus';

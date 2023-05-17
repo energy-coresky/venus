@@ -1,6 +1,6 @@
 #.jet core template
 
-#.layout //////////////////////////////////////////////////////////////////////////////
+#.main //////////////////////////////////////////////////////////////////////////////
 <!DOCTYPE html><html>
 <head>{!Tailwind::css()!}@head
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -48,7 +48,7 @@
   <div id="v-tail">@inc(.tail)</div>
 </div>
 @tail</body></html>
-#.layout.tail ------------------------------------------------------------------------------
+#.main.tail ------------------------------------------------------------------------------
 <div id="info">
   <span class="relative" style="right:calc(-100% + 15px); width:75px; margin-left:-75px">cursor pos</span>
   <span class="ml-3">-</span>

@@ -4,6 +4,10 @@
 @inc(tool.)
 #._
 
+#.empty.page
+@inc(layout.main)
+#.empty.page
+
 #.ware //////////////////////////////////////////////////////////////////////////////
 <script>
 $(function() {
