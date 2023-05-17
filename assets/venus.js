@@ -1,9 +1,9 @@
 
-String.prototype.az = function(search, start) {
+String.prototype.$$ = function(search, start) {
     
 };
 
-var V = function(name, val) {
+var Vls = function(name, val) {
     if ('undefined' === typeof val) {
         var v = localStorage.getItem(name),
             defs = {
@@ -16,7 +16,7 @@ var V = function(name, val) {
 };
 
 
-var az = {
+var $$ = {
     $f: null,
     $el: null,
     $tk: null,
@@ -24,42 +24,43 @@ var az = {
     prev: {W:640, H:480}, // frame size previouse
     S: {},                // screen (window)
     doc: function(selector) {
-        var doc = $(az.$f[0].contentWindow.document);
+        var doc = $($$.$f[0].contentWindow.document);
         return selector ? doc.find(selector) : doc;
     },
     root: function($var, $val) {
         document.documentElement.style.setProperty('--' + $var, $val);
     },
     mm: function(sign) {
-        az.switch(az.F.W + sign * 10, az.F.H + sign * 10)
-            || setTimeout('az.mm(' + sign + ')', 20);
+        $$.switch($$.F.W + sign * 10, $$.F.H + sign * 10)
+            || setTimeout('$$.mm(' + sign + ')', 20);
     },
     resize: function() {
-        az.S = {W: $(document.body).width(), H: $(document.body).height()};
-        az.switch(az.F.W, az.F.H, 1);
+        $$.S = {W: $(document.body).width(), H: $(document.body).height()};
+        $$.switch($$.F.W, $$.F.H, 1);
     },
     _mx: 't',
     menu: function(x) {
-        ajax(['_venus', 'menu&m=' + (az._mx = x)], {}, $('#v-menu ul'));
+        ajax(['_venus', 'menu&m=' + ($$._mx = x)], {}, $('#v-menu ul'));
         $('#v-menu select:eq(0)').val(x);
     },
+    //$$.fn
     switch: function(W, H, force, x, fn, tools) {
         if (fn) {
             if (force)
-                az.swap();
-            az.fn = fn;
-            az.test();
-            az.menu(x);
+                $$.swap();
+            $$.fn = fn;
+            $$.test();
+            $$.menu(x);
             if (tools) {
                 tools = tools.split(' ');
                 for (var id; id = tools.pop(); )
-                    eval(`ajax('${id}', az.${id})`);
+                    eval(`ajax('${id}', $$.${id})`);
             }
         }
         if (!W) { // F8 key
-            W = az.prev.W;
-            H = az.prev.H;
-            az.prev = az.F;
+            W = $$.prev.W;
+            H = $$.prev.H;
+            $$.prev = $$.F;
         } else if (!H) { // select dropdown
             var ary = $(W).find('option:selected').val().split(' x ');
             W = parseInt(ary[0]);
@@ -67,16 +68,16 @@ var az = {
         }
         // else direct W, H values
         var W_ = 0, H_ = 0, wh;
-        if (W >= az.S.W - 250)
-            W_ = W = az.S.W - 250;
+        if (W >= $$.S.W - 250)
+            W_ = W = $$.S.W - 250;
         if (W <= 250)
             W_ = W = 250;
-        if (H >= az.S.H - 127)
-            H_ = H = az.S.H - 127;
+        if (H >= $$.S.H - 127)
+            H_ = H = $$.S.H - 127;
         if (H <= 250)
             H_ = H = 250;
 
-        if (W != az.F.W || H != az.F.H || force) {
+        if (W != $$.F.W || H != $$.F.H || force) {
             var op = $('#fsize option[value="' + (wh = W + ' x ' + H) + '"]');
             if (op[0]) {
                 op.prop('selected', true);
@@ -84,60 +85,60 @@ var az = {
                 $('#fsize option:last').prop('selected', true).val(wh).html(wh + '<sup>*</sup>');
             }
             $('#main').css({
-                gridTemplateColumns: '150px ' + W + 'px ' + (az.S.W - 150 - W) + 'px',
-                gridTemplateRows:    '27px '  + H + 'px ' + (az.S.H - 27  - H) + 'px'
+                gridTemplateColumns: '150px ' + W + 'px ' + ($$.S.W - 150 - W) + 'px',
+                gridTemplateRows:    '27px '  + H + 'px ' + ($$.S.H - 27  - H) + 'px'
             });
-            az.F = {W:W, H:H};
-            az.root('frame-w', W + 'px');
-            az.root('frame-h', H + 'px');
+            $$.F = {W:W, H:H};
+            $$.root('frame-w', W + 'px');
+            $$.root('frame-h', H + 'px');
         }
 
         return H_ && W_;
     },
     Vmain: function() {
-        var s = az.F.W + ',' + az.F.H + ',' + az.div + ",'" + az._mx + "','" + az.fn + "'";
-        V('main', s + az.tools());
+        var s = $$.F.W + ',' + $$.F.H + ',' + $$.div + ",'" + $$._mx + "','" + $$.fn + "'";
+        Vls('main', s + $$.tools());
     },
     save: function() {
-        az.Vmain();
+        $$.Vmain();
         ajax('save', {
             html: $('#code-body pre:eq(1)').html(),
-            fn: az.fn
+            fn: $$.fn
         }, function(r) {
             
         });
     },
     m_move: function(e) {
         var w = this == document;
-        az.info(w ? `X:${e.clientX} Y:${e.clientY}` : `x:${e.clientX} y:${e.clientY}`, 0);
-        if (az.mouse)
-            az.mouse(w ? {X:e.clientX, Y:e.clientY} : {X:150 + e.clientX, Y:27 + e.clientY});
+        $$.info(w ? `X:${e.clientX} Y:${e.clientY}` : `x:${e.clientX} y:${e.clientY}`, 0);
+        if ($$.mouse)
+            $$.mouse(w ? {X:e.clientX, Y:e.clientY} : {X:150 + e.clientX, Y:27 + e.clientY});
     },
     mouse: null,
     m_up: function() {
         $(document.body).css('userSelect', 'initial');
-        az.doc('body').css('userSelect', 'initial');
-        if (az.mouse)
-            az.Vmain();
-        az.mouse = null;
+        $$.doc('body').css('userSelect', 'initial');
+        if ($$.mouse)
+            $$.Vmain();
+        $$.mouse = null;
     },
     m_enter: function(e) {
-        az.$el = $(this);
-        az.info($(this).prop('tagName'), 1);
+        $$.$el = $(this);
+        $$.info($(this).prop('tagName'), 1);
     },
     _catch: function() {//alert()
-        az.$tk = az.$el;
-        var s = az.$el.prop('tagName') + ' e=' + az.$el.attr('e');
-        az.info(s, 2);
+        $$.$tk = $$.$el;
+        var s = $$.$el.prop('tagName') + ' e=' + $$.$el.attr('e');
+        $$.info(s, 2);
     },
     _bg: 0,
     bg: function() {
-        if (az._bg = 1 - az._bg) {
+        if ($$._bg = 1 - $$._bg) {
             $('#v-menu').css('background', 'var(--bg)');
-            az.root('border', 'none');
+            $$.root('border', 'none');
         } else {
             $('#v-menu').css('background', '#fff');
-            az.root('border', '1px solid #ccc');
+            $$.root('border', '1px solid #ccc');
         }
     },
     get: function(el, pref) {
@@ -177,44 +178,44 @@ var az = {
                 if ($(this).hasClass('font-mono'))
                     return;
                 $(this).css('textDecoration', 'underline');
-                var bg = az.get(this, 'bg-'), el = $(id).find('td:eq(3)')[0];
-                az.set(el, bg, 3);
-                var hex = az.rgb2hex(az.style(this, 'background-color'));
-                $(el).html(hex + ' ' + bg).css('color', az.style(this, 'color'));
+                var bg = $$.get(this, 'bg-'), el = $(id).find('td:eq(3)')[0];
+                $$.set(el, bg, 3);
+                var hex = $$.rgb2hex($$.style(this, 'background-color'));
+                $(el).html(hex + ' ' + bg).css('color', $$.style(this, 'color'));
 
-   if(az.$tk) az.set(az.$tk[0], bg, 3);
+   if($$.$tk) $$.set($$.$tk[0], bg, 3);
 
             }).on('mouseenter', function() {
                 if ($(this).hasClass('font-mono'))
                     return;
-                var bg = az.get(this, 'bg-'), el = $(id).find('td:eq(2)')[0];
-                az.set(el, bg, 3);
-                bg = az.rgb2hex(az.style(this, 'background-color'));
-                $(el).html(bg).css('color', az.style(this, 'color'));
+                var bg = $$.get(this, 'bg-'), el = $(id).find('td:eq(2)')[0];
+                $$.set(el, bg, 3);
+                bg = $$.rgb2hex($$.style(this, 'background-color'));
+                $(el).html(bg).css('color', $$.style(this, 'color'));
             })
         });
     },
     html: function(str, cls) {
         str = str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
         if (cls)
-            str = `<span class="az-${cls}">` + str + '</span>';
+            str = `<span class="vs-${cls}">` + str + '</span>';
         return str;
     },
     attr: function(el) {
         var ary = [], nn = el.nodeName.toLowerCase();
         $.each(el.attributes, function() {//if (this.specified)
             if ('id' == this.name) {
-                ary.push('id="' + az.html(this.value, 'id') + '"');
+                ary.push('id="' + $$.html(this.value, 'id') + '"');
             } else if ('class' == this.name) {
-                ary.push('class="' + az.html(this.value, 'class') + '"');
+                ary.push('class="' + $$.html(this.value, 'class') + '"');
             } else if ('href' == this.name || 'src' == this.name) {
-                ary.push(this.name + '="' + az.html(this.value, 'link') + '"');
+                ary.push(this.name + '="' + $$.html(this.value, 'link') + '"');
             } else {
-                ary.push(this.name + '="' + az.html(this.value) + '"');
+                ary.push(this.name + '="' + $$.html(this.value) + '"');
             }
         });
         ary = ary.join(' ');
-        return '&lt;' + '<span class="az-tag">' + nn + '</span>' + (ary ? ' ' + ary : '') + '&gt;';
+        return '&lt;' + '<span class="vs-tag">' + nn + '</span>' + (ary ? ' ' + ary : '') + '&gt;';
     },
     self_ct: [
         'br', 'input', 'img', 'meta', 'area', 'col', 'link', 'hr', 'source',
@@ -231,24 +232,24 @@ var az = {
             var tt = 0, nn = el.nodeName.toLowerCase();
             if (nn == '#text') { // #cdata-section #document #document-fragment
                 if (tt = $(el).text().trim())
-                    out += indent + az.html(tt) + '\n';
+                    out += indent + $$.html(tt) + '\n';
             } else if (nn == '#comment') {
-                out += indent + az.html('<!-- ' + el.data.trim().replace(/\n+/g, "\n") + ' -->\n', 'com');
+                out += indent + $$.html('<!-- ' + el.data.trim().replace(/\n+/g, "\n") + ' -->\n', 'com');
             } else {
                 var curr = $(el).html().trim();
                 var depth = el.children[0] && nn != 'pre';
                 if (depth) {
-                    curr = az.tidy(curr, indent + '  ', el);
+                    curr = $$.tidy(curr, indent + '  ', el);
                     curr = curr.simple ? curr.out : '\n' + curr.out + indent;
                 }
              $(el).html(curr);//??
                 if (curr && ('script' == nn || 'style' == nn || 'pre' == nn))
                     curr = '\n' + curr + '\n' + indent;
-                curr = az.attr(el) + curr; // el.outerHTML.trim()
-                if (!el.hasChildNodes() && az.self_ct2.includes(nn)) {
+                curr = $$.attr(el) + curr; // el.outerHTML.trim()
+                if (!el.hasChildNodes() && $$.self_ct2.includes(nn)) {
                     curr = curr.replace(/&gt;$/, '/&gt;');
-                } else if (!az.self_ct.includes(nn)) {
-                    curr += '&lt;/' + '<span class="az-tag">' + nn + '</span>&gt;';
+                } else if (!$$.self_ct.includes(nn)) {
+                    curr += '&lt;/' + '<span class="vs-tag">' + nn + '</span>&gt;';
                 }
                 if (nn == 'br') {
                     out = (child ? '' : indent) + out.replace(/\s+$/gm, '') + curr + '\n';
@@ -273,14 +274,14 @@ var az = {
                + '(<body[^>]*>)([\\s\\S]+)</body>\\s*'
                + '</html>', m = s.match(new RegExp(re, 'i'));
         if (!m)
-            return az.tidy(s);
-        return az.html(m[1]) + az.html('\n' + m[2] + '\n' + m[3] + '\n') + az.tidy(m[4], '  ')
-            + az.html('\n</head>\n') + az.html(m[5]) + '\n' + az.tidy(m[6]) + az.html('\n</body>\n</html>');
+            return $$.tidy(s);
+        return $$.html(m[1]) + $$.html('\n' + m[2] + '\n' + m[3] + '\n') + $$.tidy(m[4], '  ')
+            + $$.html('\n</head>\n') + $$.html(m[5]) + '\n' + $$.tidy(m[6]) + $$.html('\n</body>\n</html>');
     },
     code: function(r) {
         $('#project-list').html(r.list);
-        $('#code-head b').html(az.fn);
-        html = az.parse(r.html.replaceAll('\r\n', '\n').replaceAll('\r', '\n'));
+        $('#code-head b').html($$.fn);
+        html = $$.parse(r.html.replaceAll('\r\n', '\n').replaceAll('\r', '\n'));
         var br = html.replace(/[^\n]/g, '').length;
         for (var i = 1, lines = '  1'; i <= br; lines += '\n' + ++i);
         $('#code-body pre:eq(0)').html(lines).next().html(html);
@@ -289,10 +290,10 @@ var az = {
     cur_page: '',
     test: function(fn) {
         if (fn)
-            az.fn = fn;
-        az.$f.attr('src', sky.home + '_venus?fn=' + az.fn).on('load', function (e) {
-            ajax('code&fn=' + az.fn, az.code);
-            az.doc().mouseup(az.m_up).mousemove(az.m_move).find('body *').mouseenter(az.m_enter);
+            $$.fn = fn;
+        $$.$f.attr('src', sky.home + '_venus?fn=' + $$.fn).on('load', function (e) {
+            ajax('code&fn=' + $$.fn, $$.code);
+            $$.doc().mouseup($$.m_up).mousemove($$.m_move).find('body *').mouseenter($$.m_enter);
         });
     },
     div: 0,
@@ -300,7 +301,7 @@ var az = {
         var r = $('#v-right').html();
         $('#v-right').html($('#tail').html());
         $('#tail').html(r)
-        az.div = 1 - az.div;
+        $$.div = 1 - $$.div;
     },
     m_clk: function(e, show) {
         var id = 'string' == typeof e ? e : '#popup',
@@ -315,7 +316,7 @@ var az = {
         $(el).show().attr('running', 1).removeClass(hide ? 'hide-a1' : 'show-a1').addClass(hide ? 'show-a1' : 'hide-a1');
     },
     tools: function(id, html) {
-        var t = $(az.div ? '#tail' : '#v-right');
+        var t = $($$.div ? '#tail' : '#v-right');
         if (!id) {
             var ary = [];
             t.find('.tool').each(function () {
@@ -336,25 +337,25 @@ var az = {
             out += '</tr>';
         }
         out += '</table></div>';
-        az.tools('#t-utf8', out)
+        $$.tools('#t-utf8', out)
     },
     colors: function(r) {
-        az.tools('#t-colors', r.right)
+        $$.tools('#t-colors', r.right)
     },
     htmlcolors: function(r) {
-        az.tools('#t-htmlcolors', r)
+        $$.tools('#t-htmlcolors', r)
     },
     text: function(r) {
-        az.tools('#t-text', r)
+        $$.tools('#t-text', r)
     },
     icons: function(r) {
-        az.tools('#t-icons', r)
+        $$.tools('#t-icons', r)
     },
     css: function(el) {
         var i = 0, s = '', list = getComputedStyle(el);
         for (; i < list.length; i++)
             s += (1 + i) + ' ' + list[i] + ' = ' + list.getPropertyValue(list[i]) + '<br>';
-        az.tools('#t-css').prepend(s)
+        $$.tools('#t-css').prepend(s)
     }
 };
 
@@ -386,10 +387,10 @@ body{
     
     */
 
-    az.$f = $('iframe:first');
+    $$.$f = $('iframe:first');
 
-    $(window).resize(az.resize);
-    az.resize();
+    $(window).resize($$.resize);
+    $$.resize();
 
     sky.key[27] = function() { // Escape
         var esc = $('.escape:last');
@@ -408,30 +409,30 @@ body{
         $('.f8:first').click();
     };
     sky.key[120] = function() { // F9
-        az.swap();
+        $$.swap();
     };
-    sky.key[121] = az._catch; // F10
+    sky.key[121] = $$._catch; // F10
 
-    $(document).click(az.m_clk).mouseup(az.m_up).mousemove(az.m_move).mouseenter(function () {
-        az.info('-', 1);
+    $(document).click($$.m_clk).mouseup($$.m_up).mousemove($$.m_move).mouseenter(function () {
+        $$.info('-', 1);
     });
-    az.doc().mouseup(az.m_up).mousemove(az.m_move);
+    $$.doc().mouseup($$.m_up).mousemove($$.m_move);
 
     $('#mov-y, #mov-x').mousedown(function (e) {
-        az.doc('body').css('userSelect', 'none');
+        $$.doc('body').css('userSelect', 'none');
         $(document.body).css('userSelect', 'none');
         var is_x = $(this).attr('id') == 'mov-x';
-        az.mouse = function (pos) {
-            az.switch(
-                is_x ? pos.X - 150 : az.F.W,
-                is_x ? az.F.H : pos.Y - 27
+        $$.mouse = function (pos) {
+            $$.switch(
+                is_x ? pos.X - 150 : $$.F.W,
+                is_x ? $$.F.H : pos.Y - 27
             );
         };
     });
-    var v = V('main');
+    var v = Vls('main');
     if (v) {
-        eval('az.switch(' + v + ')');
+        eval('$$.switch(' + v + ')');
     } else {
-        az.menu('t')
+        $$.menu('t')
     }
 });

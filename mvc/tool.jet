@@ -1,0 +1,95 @@
+
+#.colors //////////////////////////////////////////////////////////////////////////////
+<div class="tool" id="t-colors" style="min-width:450px">
+<p class="t-head inline-flex" style="align-items:center;">
+  <a @href($(this).parents('.tool').remove()) class="x">@svg(x)</a>
+  Colors: &nbsp;
+  <label><input type="radio" name="t" value="0" checked> Background</label>
+  <label><input type="radio" name="t" value="1"> Font</label>
+  <label><input type="radio" name="t" value="2"> Border</label>
+</p>
+<div class="pt-7 px-3">
+<table class="my-1" style="width:368px" id="colors">
+@loop($_ < 10)
+@if(!$_)
+<tr>
+  @loop($list as $col)<th class="text-xs">{{$col}}</th>~loop
+</tr><tr>
+  <td class="bg-black py-1 text-center text-white">black</td>
+  <td class="bg-white py-1 px-2 border">white</td>
+  <td colspan="2" class="py-1 pl-2 border font-mono"></td>
+  <td colspan="{{count($list) - 4}}" class="py-1 pl-2 border font-mono"></td>
+</tr>
+~if
+<tr>
+  @loop($list as $col)
+    <td class="bg-{{$col}}-{{$_ ? $_*100 : 50}} w-12 h-12 text-center {{$_ > 4 ? 'text-white' : 'text-black'}}">{{$_ ? $_*100 : 50}}</td>
+  ~loop
+</tr>
+~loop
+</table><script>$$.init('#colors');</script>
+<button class="btn mx-3 f2" onclick="$$.switch()">Current Color</button>
+<button class="btn mx-3 f2" onclick="$$.switch()">Transparent Color</button>
+<button class="btn mx-3 f2" onclick="$$.switch()">Delete Class</button>
+</div>
+</div>
+#.colors
+
+#.htmlcolors.sortcolors //////////////////////////////////////////////////////////////////////////////
+<div class="tool" id="t-htmlcolors" style="min-width:450px">
+<p class="t-head inline-flex" style="align-items:center;">
+  <a @href($(this).parents('.tool').remove()) class="x">@svg(x)</a>
+  HTML Colors: &nbsp;
+  <button class="btn mx-3 f2" onclick="ajax('sortcolors',$$.htmlcolors)">Sort by name</button>
+  <button class="btn mx-3 f2" onclick="ajax('htmlcolors',$$.htmlcolors)">Sort by color</button>
+</p>
+<div class="pt-7 px-3">
+<table class="my-1" style="width:500px; table-layout:fixed" id="htmlcolors">
+@loop($_ < 28)
+  <tr>
+  @loop($_2 < 5)@php $c = $list[$i = $_ * 5 + $_2]; ~php
+    <td bgcolor={{$c}} style="background-color:{{$c}}; color: {{$i < 56 || 99 == $i ? 'white' : 'black'}}">{{$c}}</td>
+  ~loop
+  </tr>
+~loop
+</table>
+</div>
+</div>
+#.htmlcolors.sortcolors
+
+#.icons //////////////////////////////////////////////////////////////////////////////
+<div class="tool" id="t-icons" style="min-width:45px; margin-bottom:12px">
+<p class="t-head inline-flex" style="align-items: center;">
+  <a @href($(this).parents('.tool').remove()) class="x">@svg(x)</a>
+  Icons
+</p>
+<div style="padding:0 0 0 5px; ">
+@loop($list as $fn => $icon)
+  <div class="w-32 h-12 fl" style="border-right:1px solid #ccc; border-bottom:1px solid #ccc;">
+    <div style="margin:2px 5px">{! $icon !}</div>
+    <p class="text-xs">{{$fn}}</p>
+  </div>
+~loop
+</div>
+<div style="clear:both"></div>
+</div>
+#.icons
+
+#.text //////////////////////////////////////////////////////////////////////////////
+<div class="tool" id="t-text" style="min-width:450px">
+<p class="t-head inline-flex" style="align-items: center;">
+  <a @href($(this).parents('.tool').remove()) class="x">@svg(x)</a>
+  Font: &nbsp;
+  <label><input type="radio" name="f" value="0"> Family</label>
+  <label><input type="radio" name="f" value="1" checked> Size</label>
+  <label><input type="radio" name="f" value="2"> Weight</label>
+  <label><input type="radio" name="f" value="3"> Letter Spacing</label>
+  <label><input type="radio" name="f" value="4"> Line Height</label>
+</p>
+<div class="pt-7 px-3">
+  @loop($sizes as $size)
+  <p class="text-{{$size}}"><u>{{$size}}:</u> The quick@if($_ < 10) brown fox~if@if($_ < 7) jumped over the lazy dog~if.</p>
+  ~loop
+</div>
+</div>
+#.text

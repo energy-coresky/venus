@@ -7,7 +7,7 @@ return [
         'type' => 'dev',
         'require' => 'Parsedown SQLite3',
         'databases' => [
-            '_w' => ['driver' => 'sqlite3', 'dsn' => __DIR__ . '/venus.base'],
+            'w' => ['driver' => 'sqlite3', 'dsn' => __DIR__ . '/venus.base'],
         ],
     ],
 ];

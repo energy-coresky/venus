@@ -2,8 +2,16 @@
 
 class Tailwind
 {
+    static function css($is_lnk = true) {
+        $css = SKY::w('tailwind') ?: __DIR__ . '/../assets/tailwind.css';
+        if ($is_lnk)
+            return css(['_venus?tailwind=' . SKY::s('statp')]);
+        MVC::mime('text/css');
+        readfile($css);
+    }
+
     public $tools = [
-        'Colors' => "ajax('colors',az.colors)",
+        'Colors' => "ajax('colors',$$.colors)",
         'Dimension' => [
             'Width' => '',
             'Height' => '',
@@ -16,7 +24,7 @@ class Tailwind
             'Max Height' => '',
         ],
         'Text' => [
-            'Font Size' => "ajax('text',az.text)",
+            'Font Size' => "ajax('text',$$.text)",
             'Font Weight' => '',
             'Letter Spacing' => '',
             'Line Height' => '',
@@ -31,6 +39,36 @@ class Tailwind
             'Opacity' => '',
             'Transitions' => '',
         ],
+    ];
+
+    static $colors = [
+        'gray' => '', // 50, 100, 200 .. 900
+        'red' => '',
+        'yellow' => '',
+        'green' => '',
+        'blue' => '',
+        'indigo' => '',
+        'purple' => '',
+        'pink' => '',
+        #'' => '',
+  #      'black' => '', //
+     #   'white' => '',
+    ];
+
+    static $size = [
+        'xs',
+        'sm',
+        'base',
+        'lg',
+        'xl',
+        '2xl',
+        '3xl',
+        '4xl',
+        '5xl',
+        '6xl',
+        '7xl',
+        '8xl',
+        '9xl',
     ];
 
     private $pad = [

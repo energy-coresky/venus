@@ -22,10 +22,10 @@ a:hover {
   color: #005ddd;
   text-decoration: underline;
 }
-a.az-ic {
+a.vs-ic {
   color: #6e6e6e;
 }
-a.az-ic:hover {
+a.vs-ic:hover {
   color: #000;
   text-decoration:none;
 }
@@ -76,22 +76,22 @@ pre:focus {
   outline: none;
   background: url(../?_svg=line);
 }
-.az-mono, #code-body pre * {
+.vs-mono, #code-body pre * {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
-.az-tag {
+.vs-tag {
   color: #f77;
 }
-.az-com {
+.vs-com {
   color: #b88;
 }
-.az-class {
+.vs-class {
   color: #93c;
 }
-.az-id {
+.vs-id {
   color: #0A0;
 }
-.az-link {
+.vs-link {
   color: #00F;
 }
 

@@ -1,6 +1,54 @@
 #.jet core template
 
-#.tail //////////////////////////////////////////////////////////////////////////////
+#.layout //////////////////////////////////////////////////////////////////////////////
+<!DOCTYPE html><html>
+<head>{!Tailwind::css()!}@head
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  $$.fn = '{{$page}}'; //cur_page
+</script>
+</head>
+<body class="h-screen" style="overflow:hidden">{- justify-center items-center  -}
+<div id="mov-x"></div>
+<div id="main">
+  <div id="v-head">
+    <a href="{{LINK}}" class="vs-ic mr-3">@svg(home)</a>
+    <a @href($(this).find('svg').toggle()) class="vs-ic">@inc(.moonsun)</a>
+    <a @href($(this).find('svg').show()) class="vs-ic ml-3">@svg(fileplus)</a>
+    <button class="btn mx-3 f2" onclick="$$.save()">Save - F2</button>
+    <button class="btn mx-3 f4" onclick="$$.test()">Load - F4</button>
+    <button class="btn mx-3 f6" onclick="alert()">??? - F6</button>
+    <span class="m1-2" >Frame&nbsp;</span>
+    <select id="fsize" onchange="$$.switch(this)">{! $fsize !}<option cust>*</option></select>
+    <button class="btn ml-1 f8" onclick="$$.switch()">Switch - F8</button>
+    <button class="btn ml-1" onclick="$$.mm(-1)">Min</button>
+    <button class="btn ml-1" onclick="$$.mm(1)">Max</button>
+    <a @href($(this).find('svg').toggle()) class="">@inc(.mobile)</a>
+    <button class="btn ml-3 mr-5 f10" onclick="$$.swap()">Next - F10</button>
+    <a @href($(this).find('svg').toggle(); $$.bg()) class="">@inc(.screen)</a>
+    <!-- from right -->
+    <span class="absolute right-20">@inc(.pdaxt)</span>
+    <a @href(ajax('settings', box)) class="vs-ic absolute right-8">@svg(settings)</a>
+  </div>
+  <div id="v-menu">
+    <div class="fixed bg-white pt-2" style="width:125px;">
+      <select style="padding:0 5px; width:100%" onchange="$$.menu(this.value)">
+        <option value="t">Tailwind</option>
+        <option value="h">HTML</option>
+        <option value="i">Icons</option>
+      </select>
+    </div>
+    <ul class="mt-10"></ul>
+  </div>
+  <div id="v-main" style=""> <!-- resize:both; overflow:auto; -->
+    <div id="sw-icon"><a @href($$.swap()) title="Swap panels - F9">@svg(arrows)</a></div>
+    <div style="display:none" id="err-top"></div><iframe src="" class="w-full h-full"></iframe>
+  </div>
+  <div id="v-right"></div>
+  <div id="v-tail">@inc(.tail)</div>
+</div>
+@tail</body></html>
+#.layout.tail ------------------------------------------------------------------------------
 <div id="info">
   <span class="relative" style="right:calc(-100% + 15px); width:75px; margin-left:-75px">cursor pos</span>
   <span class="ml-3">-</span>
@@ -10,9 +58,9 @@
 <div id="tail">
   <p id="code-head" class="header fixed pl-8" style="height:22px; align-items:center; display:inline-flex; overflow:hidden; white-space:nowrap;">
     Filename &nbsp;<b></b>
-    <!-- &nbsp; &nbsp;<button class="btn mx-3" onclick="az.swap()">Delete file</button> -->
+    <!-- &nbsp; &nbsp;<button class="btn mx-3" onclick="$$.swap()">Delete file</button> -->
     &nbsp; &nbsp;Project files &nbsp;
-    <a class="az-mono az-ic" style="font-size:16px" @href(az.m_clk('#popup',1))>▼</a>
+    <a class="vs-mono vs-ic" style="font-size:16px" @href($$.m_clk('#popup',1))>▼</a>
     &nbsp; &nbsp; &nbsp; &nbsp;<label><input type="checkbox" checked> &nbsp;Tidy</label>
     &nbsp; &nbsp;<label><input type="checkbox" checked> &nbsp;Comments</label>
     &nbsp; &nbsp;<label><input type="checkbox" checked> &nbsp;Scripts</label>
@@ -26,56 +74,15 @@
       contenteditable="true"></pre>
   </div>
 </div>
-#.tail
-
-#.layout //////////////////////////////////////////////////////////////////////////////
-<!DOCTYPE html><html>
-<head>@head<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script>
-az.fn = '{{$page}}'; //cur_page
-</script>
-</head>
-<body class="h-screen" style="overflow:hidden">{- justify-center items-center  -}
-<div id="mov-x"></div>
-<div id="main">
-  <div id="v-head">
-    <a href="{{LINK}}" class="az-ic mr-3">@svg(home)</a>
-    <a @href($(this).find('svg').toggle()) class="az-ic">@inc(.moonsun)</a>
-    <a @href($(this).find('svg').show()) class="az-ic ml-3">@svg(fileplus)</a>
-    <button class="btn mx-3 f2" onclick="az.save()">Save - F2</button>
-    <button class="btn mx-3 f4" onclick="az.test()">Load - F4</button>
-    <button class="btn mx-3 f6" onclick="alert()">??? - F6</button>
-    <span class="m1-2" >Frame&nbsp;</span>
-    <select id="fsize" onchange="az.switch(this)">{! $fsize !}<option cust>*</option></select>
-    <button class="btn ml-1 f8" onclick="az.switch()">Switch - F8</button>
-    <button class="btn ml-1" onclick="az.mm(-1)">Min</button>
-    <button class="btn ml-1" onclick="az.mm(1)">Max</button>
-    <a @href($(this).find('svg').toggle()) class="">@inc(.mobile)</a>
-    <button class="btn ml-3 mr-5 f10" onclick="az.swap()">Next - F10</button>
-    <a @href($(this).find('svg').toggle(); az.bg()) class="">@inc(.screen)</a>
-    <!-- from right -->
-    <span class="absolute right-20">@pdaxt</span>
-    <a @href(ajax('settings', box)) class="az-ic absolute right-8">@svg(settings)</a>
-  </div>
-  <div id="v-menu">
-    <div class="fixed bg-white pt-2" style="width:125px;">
-      <select style="padding:0 5px; width:100%" onchange="az.menu(this.value)">
-        <option value="t">Tailwind</option>
-        <option value="h">HTML</option>
-        <option value="i">Icons</option>
-      </select>
-    </div>
-    <ul class="mt-10"></ul>
-  </div>
-  <div id="v-main" style=""> <!-- resize:both; overflow:auto; -->
-    <div id="sw-icon"><a @href(az.swap()) title="Swap panels - F9">@svg(arrows)</a></div>
-    <div style="display:none" id="err-top"></div><iframe src="" class="w-full h-full"></iframe>
-  </div>
-  <div id="v-right"></div>
-  <div id="v-tail">@inc(.tail)</div>
-</div>
-@tail</body></html>
-#.layout
+#.tail.pdaxt ------------------------------------------------------------------------------
+<span class="pdaxt">
+  <a href="{{$page ?: LINK}}">S</a>
+  <a @href(dev('_dev'))>D</a>
+  <a href="/">?</a>
+  <a @href(sky.trace(1))>X</a>
+  <a @href(sky.trace(0))>T</a>
+</span>
+#.pdaxt
 
 #.screen ////////////////////////// IMAGES ////////////////////////////////////////////
 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" hidden>
