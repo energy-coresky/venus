@@ -35,13 +35,13 @@
 </div>
 #.colors
 
-#.htmlcolors.sortcolors //////////////////////////////////////////////////////////////////////////////
+#.hcolors //////////////////////////////////////////////////////////////////////////////
 <div class="tool" id="t-htmlcolors" style="min-width:450px">
 <p class="t-head inline-flex" style="align-items:center;">
   <a @href($(this).parents('.tool').remove()) class="x">@svg(x)</a>
   HTML Colors: &nbsp;
-  <button class="btn mx-3 f2" onclick="ajax('sortcolors',$$.htmlcolors)">Sort by name</button>
-  <button class="btn mx-3 f2" onclick="ajax('htmlcolors',$$.htmlcolors)">Sort by color</button>
+  <button class="btn mx-3 f2" onclick="ajax('hcolors&sort',$$.hcolors)">Sort by name</button>
+  <button class="btn mx-3 f2" onclick="ajax('hcolors',$$.hcolors)">Sort by color</button>
 </p>
 <div class="pt-7 px-3">
 <table class="my-1" style="width:500px; table-layout:fixed" id="htmlcolors">
@@ -55,7 +55,7 @@
 </table>
 </div>
 </div>
-#.htmlcolors.sortcolors
+#.hcolors
 
 #.icons //////////////////////////////////////////////////////////////////////////////
 <div class="tool" id="t-icons" style="min-width:45px; margin-bottom:12px">

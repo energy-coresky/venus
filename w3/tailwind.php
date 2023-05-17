@@ -10,7 +10,7 @@ class Tailwind
         readfile($css);
     }
 
-    public $tools = [
+    static $tools = [
         'Colors' => "ajax('colors',$$.colors)",
         'Dimension' => [
             'Width' => '',

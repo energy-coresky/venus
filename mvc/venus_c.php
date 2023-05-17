@@ -3,12 +3,12 @@
 class venus_c extends Controller
 {
     function head_y($action) {
+        'a_ware' == $action or MVC::$layout = '';
         Venus::load('w');
     }
 
     function tail_y() {
-        if ('ware' == $this->_1)
-            return parent::tail_y();
+        return MVC::$layout ? parent::tail_y() : null;
     }
 
     function a_ware() {
@@ -67,13 +67,9 @@ class venus_c extends Controller
         ]);
     }
 
-    function j_sortcolors() {
-        return $this->j_htmlcolors(1);
-    }
-
-    function j_htmlcolors($sort = 0) {
+    function j_hcolors() {
         $list = HTML::colors();
-        if ($sort)
+        if ($this->_2)
             sort($list);
         return [
             'list' => $list,

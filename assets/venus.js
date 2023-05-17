@@ -342,7 +342,7 @@ var $$ = {
     colors: function(r) {
         $$.tools('#t-colors', r.right)
     },
-    htmlcolors: function(r) {
+    hcolors: function(r) {
         $$.tools('#t-htmlcolors', r)
     },
     text: function(r) {
@@ -361,8 +361,8 @@ var $$ = {
 
 (function() {
     sky.a.error(function(r) {
-        if (!r.soft)
-            location.href = '_exception?' + r.err_no;
+   //     if (!r.soft)
+     //       location.href = '_crash?' + r.err_no;
         $('#tail').html(r.catch_error);
     });
     sky.err = function(s) {

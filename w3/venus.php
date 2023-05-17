@@ -6,8 +6,6 @@ class Venus extends Wares
 
     static function load($char = false) {
         static $dd;
-        global $sky;
-        'ware' == $sky->_1 or MVC::$layout = '';
         return $dd ?? ($dd = parent::load('w'));
     }
 
@@ -24,9 +22,9 @@ class Venus extends Wares
 
     static function menu() {
         return [ // https://rogden.github.io/tailwind-config-viewer/
-            't' => (new Tailwind)->tools,
+            't' => Tailwind::$tools,
             'h' => [
-                'HTML Colors' => "ajax('htmlcolors',$$.htmlcolors)",
+                'HTML Colors' => "ajax('hcolors',$$.hcolors)",
                 'CSS Styles' => "$$.css(document.body)",
                 'UTF-8 Table' => "$$.utf8()",
             ],
