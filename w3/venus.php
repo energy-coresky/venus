@@ -24,12 +24,12 @@ class Venus extends Wares
         return [ // https://rogden.github.io/tailwind-config-viewer/
             't' => Tailwind::$tools,
             'h' => [
-                'HTML Colors' => "ajax('hcolors',$$.hcolors)",
-                'CSS Styles' => "$$.css(document.body)",
-                'UTF-8 Table' => "$$.utf8()",
+                'HTML Colors' => "i$.load('hcolors')",
+                'CSS Styles' => "i$.load('css')",
+                'Unicode' => "i$.load('unicode')",
             ],
             'i' => [
-                'Bootstrap' => "ajax('icons',$$.icons)",
+                'Bootstrap' => "i$.load('icons')",
             ],
         ];
     }

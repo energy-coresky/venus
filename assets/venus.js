@@ -53,8 +53,7 @@ var $$ = {
             $$.menu(x);
             if (tools) {
                 tools = tools.split(' ');
-                for (var id; id = tools.pop(); )
-                    eval(`ajax('${id}', $$.${id})`);
+                for (var id; id = tools.pop(); i$.load(id));
             }
         }
         if (!W) { // F8 key
@@ -96,8 +95,12 @@ var $$ = {
         return H_ && W_;
     },
     Vmain: function() {
-        var s = $$.F.W + ',' + $$.F.H + ',' + $$.div + ",'" + $$._mx + "','" + $$.fn + "'";
-        Vls('main', s + $$.tools());
+        var s = $$.F.W + ',' + $$.F.H + ',' + $$.div + ",'" + $$._mx + "','" + $$.fn + "'",
+            t = $($$.div ? '#tail' : '#v-right'), ary = [];
+        t.find('.tool').each(function () {
+            ary.push(this.id.substr(2));
+        });
+        Vls('main', s + ",'" + ary.join(" ") + "'");
     },
     save: function() {
         $$.Vmain();
@@ -128,7 +131,7 @@ var $$ = {
     },
     _catch: function() {//alert()
         $$.$tk = $$.$el;
-        var s = $$.$el.prop('tagName') + ' e=' + $$.$el.attr('e');
+        var s = $$.$el.prop('tagName') + ' e= catched' //+ $$.$el.attr('e');
         $$.info(s, 2);
     },
     _bg: 0,
@@ -314,48 +317,6 @@ var $$ = {
             this.removeAttribute('running');
         };
         $(el).show().attr('running', 1).removeClass(hide ? 'hide-a1' : 'show-a1').addClass(hide ? 'show-a1' : 'hide-a1');
-    },
-    tools: function(id, html) {
-        var t = $($$.div ? '#tail' : '#v-right');
-        if (!id) {
-            var ary = [];
-            t.find('.tool').each(function () {
-                ary.push(this.id.substr(2));
-            });
-            return ",'" + ary.join(" ") + "'";
-        }
-        t.find(id).remove();
-        t.prepend(html);
-    },
-    utf8: function() {
-        var rule = ['0', '110 10', '1110 10 10', '11110 10 10 10'], out = '<div id="t-utf8"><table>';
-        for (var i = 0; i < 16; i++) {
-            out += '<tr>';
-            for (var k = 0; k < 16; k++) {
-                out += '<td>&#9763;' + String.fromCodePoint(0x2220 + 16*i + k); + '</td>';
-            }
-            out += '</tr>';
-        }
-        out += '</table></div>';
-        $$.tools('#t-utf8', out)
-    },
-    colors: function(r) {
-        $$.tools('#t-colors', r.right)
-    },
-    hcolors: function(r) {
-        $$.tools('#t-htmlcolors', r)
-    },
-    text: function(r) {
-        $$.tools('#t-text', r)
-    },
-    icons: function(r) {
-        $$.tools('#t-icons', r)
-    },
-    css: function(el) {
-        var i = 0, s = '', list = getComputedStyle(el);
-        for (; i < list.length; i++)
-            s += (1 + i) + ' ' + list[i] + ' = ' + list.getPropertyValue(list[i]) + '<br>';
-        $$.tools('#t-css').prepend(s)
     }
 };
 

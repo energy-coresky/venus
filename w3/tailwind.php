@@ -11,7 +11,8 @@ class Tailwind
     }
 
     static $tools = [
-        'Colors' => "ajax('colors',$$.colors)",
+        //'Colors' => "ajax('colors',$$.colors)",
+        'Colors' => "i$.load('tcolors')",
         'Dimension' => [
             'Width' => '',
             'Height' => '',
@@ -24,7 +25,7 @@ class Tailwind
             'Max Height' => '',
         ],
         'Text' => [
-            'Font Size' => "ajax('text',$$.text)",
+            'Font Size' => "i$.load('text')",
             'Font Weight' => '',
             'Letter Spacing' => '',
             'Line Height' => '',

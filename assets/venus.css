@@ -191,7 +191,7 @@ pre:focus {
 .tool {
   margin-bottom: 24px;
 }
-#t-utf8 td {
+#t-unicode td {
   border: 1px solid #777;
   width: 30px;
   height: 30px;
@@ -214,7 +214,13 @@ pre:focus {
   padding: 3px 22px 3px 5px;
 }
 
-#htmlcolors td {
+#hcolors td {
     width: 100px !important;
     overflow: hidden;
 }
+#css {
+  max-height:220px;
+  overflow: auto;
+}
+
+

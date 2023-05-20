@@ -59,45 +59,6 @@ class venus_c extends Controller
         return ['menu' => $menu[$this->_3] ?? $menu['t']];
     }
 
-    function j_colors() {
-        json([
-            'right' => view('venus.colors', [
-                'list' => array_keys(Tailwind::$colors)
-            ])
-        ]);
-    }
-
-    function j_hcolors() {
-        $list = HTML::colors();
-        if ($this->_2)
-            sort($list);
-        return [
-            'list' => $list,
-        ];
-    }
-
-    function j_dim() {
-    }
-
-    function j_text() {
-        return [
-            'sizes' => Tailwind::$size,
-        ];
-    }
-
-    function j_icons() {
-        $src = 'node_modules/bootstrap-icons/icons/*.svg';
-        $list = [];
-        foreach (glob($src) as $fn) {
-            $list[basename($fn, '.svg')] = file_get_contents($fn);
-            if (count($list) > 49)
-                break;
-        }
-        return [
-            'list' => $list
-        ];
-    }
-
     function j_settings() {
         $m = new t_venus('memory');
         if ($_POST) {
@@ -107,5 +68,37 @@ class venus_c extends Controller
         return [
             'ta' => $m->cell(99, 'tmemo'),
         ];
+    }
+
+    function j_tool() {
+        MVC::body("tool.$this->_2");
+        switch ($this->_2) {
+            case 'tcolors':
+                return ['list' => array_keys(Tailwind::$colors)];
+            case 'hcolors':
+                $list = HTML::$colors;
+                if ($_POST['p'])
+                    sort($list);
+                return ['list' => $list];
+            case 'text':
+                return ['sizes' => Tailwind::$size];
+            case 'unicode':
+                $fonts = ['arial', 'verdana', 'serif', 'cursive'];
+                return [
+                    'opt' => option(0, unserialize(view('tool.lang', []))),
+                    'fonts' => option(0, array_combine($fonts, $fonts)),
+                ];
+            case 'icons':
+                $src = 'C:/web/tw/node_modules/bootstrap-icons/icons/*.svg';
+                $list = [];
+                foreach (glob($src) as $i => $fn) {
+                    if ($i < $_POST['p'])
+                        continue;
+                    $list[basename($fn, '.svg')] = file_get_contents($fn);
+                    if (count($list) > 149)
+                        break;
+                }
+                return ['list' => $list];
+        }
     }
 }

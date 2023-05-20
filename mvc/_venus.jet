@@ -1,7 +1,7 @@
 #.jet core template
 
-#._
-@inc(tool.)
+#._ @inc(tool.)
+qq
 #._
 
 #.empty.page
