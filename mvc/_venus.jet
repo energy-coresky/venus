@@ -1,9 +1,5 @@
 #.jet core template
 
-#._ @inc(tool.)
-qq
-#._
-
 #.empty.page
 @inc(layout.main)
 #.empty.page

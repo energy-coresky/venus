@@ -22,15 +22,25 @@ class Venus extends Wares
 
     static function menu() {
         return [ // https://rogden.github.io/tailwind-config-viewer/
-            't' => Tailwind::$tools,
             'h' => [
+                'Ruler' => "i$.load('ruler')",
                 'HTML Colors' => "i$.load('hcolors')",
                 'CSS Styles' => "i$.load('css')",
                 'Unicode' => "i$.load('unicode')",
+                'Tailwind' => [
+                    'Colors' => "i$.load('tcolors')",
+                    'Text' => "i$.load('text')",
+                    'Box' => "i$.load('box')",
+                ],
+                'Icons' => [
+                    'Bootstrap' => "i$.load('icons')",
+                ],
+                'Alpine.js' => [
+                    '2do' => "i$.load('tcolors')",
+                ],
             ],
-            'i' => [
-                'Bootstrap' => "i$.load('icons')",
-            ],
+            't' => [],
+            'i' => [],
         ];
     }
 }

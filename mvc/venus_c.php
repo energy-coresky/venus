@@ -80,6 +80,10 @@ class venus_c extends Controller
                 if ($_POST['p'])
                     sort($list);
                 return ['list' => $list];
+            case 'ruler':
+                return ['list' => ''];
+            case 'box':
+                return ['list' => ''];
             case 'text':
                 return ['sizes' => Tailwind::$size];
             case 'unicode':

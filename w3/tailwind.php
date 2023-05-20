@@ -10,14 +10,14 @@ class Tailwind
         readfile($css);
     }
 
-    static $tools = [
-        //'Colors' => "ajax('colors',$$.colors)",
-        'Colors' => "i$.load('tcolors')",
-        'Dimension' => [
-            'Width' => '',
-            'Height' => '',
-            'Padding' => '', // all top-right-botton-left horizontal-vertical
-            'Margin' => '',
+   static $tools = [
+       //'Colors' => "ajax('colors',$$.colors)",
+       'Colors' => "i$.load('tcolors')",
+       'Dimension' => [
+           'Width' => '',
+           'Height' => '',
+           'Padding' => '', // all top-right-botton-left horizontal-vertical
+           'Margin' => '',
             'Negative Margin' => '',
             'Min Width' => '',
             'Max Width' => '',

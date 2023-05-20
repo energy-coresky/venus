@@ -33,9 +33,9 @@
   <div id="v-menu">
     <div class="fixed bg-white pt-2" style="width:125px;">
       <select style="padding:0 5px; width:100%" onchange="$$.menu(this.value)">
-        <option value="t">Tailwind</option>
-        <option value="h">HTML</option>
-        <option value="i">Icons</option>
+        <option value="h">Tools</option>
+        <option value="t">--1</option>
+        <option value="i">--2</option>
       </select>
     </div>
     <ul class="mt-10"></ul>
