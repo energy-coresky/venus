@@ -2,20 +2,28 @@
 
 class venus_c extends Controller
 {
+    function a_ware() {
+    }
+
     function head_y($action) {
         'a_ware' == $action or MVC::$layout = '';
-        Venus::load('w');
     }
 
     function tail_y() {
         return MVC::$layout ? parent::tail_y() : null;
     }
 
-    function a_ware() {
-    }
-
     function a_tailwind() {
         Tailwind::css(false);
+    }
+
+    function jet_c() {
+        Jet::directive('qb', function($arg) {
+            return "<?php ob_start() ?>";
+        });
+        Jet::directive('qe', function($arg) {
+            return "<?php echo str_replace('\"', '&quot;', ob_get_clean()) ?>";
+        });
     }
 
     function a_page() {

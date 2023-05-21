@@ -5,7 +5,7 @@ class t_venus extends Model_t
     protected $table = 'preset';
 
     function head_y() {
-        return Venus::load('w');
+        return Venus::open('w', 'w');
     }
 
     function components() {

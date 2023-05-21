@@ -42,7 +42,7 @@
   </div>
   <div id="v-main" style=""> <!-- resize:both; overflow:auto; -->
     <div id="sw-icon"><a @href($$.swap()) title="Swap panels - F9">@svg(arrows)</a></div>
-    <div style="display:none" id="err-top"></div><iframe src="" class="w-full h-full"></iframe>
+    <iframe src="" class="w-full h-full"></iframe>
   </div>
   <div id="v-right"></div>
   <div id="v-tail">@inc(.tail)</div>

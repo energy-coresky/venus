@@ -4,11 +4,6 @@ class Venus extends Wares
 {
     static $fsize = ['320 x 480', '640 x 480', '768 x 768', '1024 x 555', '1366 x 768', /* notebook */ '1536 x 555'];
 
-    static function load($char = false) {
-        static $dd;
-        return $dd ?? ($dd = parent::load('w'));
-    }
-
     static function files() {
         $list = array_map(function($v) {
             return basename($v);

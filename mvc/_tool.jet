@@ -122,7 +122,7 @@ a:61:{i:0;s:33:"Основная латиница";i:128;s:46:"Дополнен�
 #.tcolors
 
 #.text //////////////////////////////////////////////////////////////////////////////
-<div class="tool" id="t-text" style="min-width:450px">
+<div class="tool h-1/2" id="t-text" style="min-width:450px">
 <p class="t-head inline-flex" style="align-items:center;">
   <a @href($(this).parents('.tool').remove()) class="x">@svg(x)</a>
   Font: &nbsp;
@@ -132,13 +132,20 @@ a:61:{i:0;s:33:"Основная латиница";i:128;s:46:"Дополнен�
   <label><input type="radio" name="f" value="3"> Letter Spacing</label>
   <label><input type="radio" name="f" value="4"> Line Height</label>
 </p>
-<div class="pt-7 px-3">
+<div class="h-full">
+  <iframe srcdoc="@qb@inc(._text)@qe" class="w-full h-full"></iframe>
+</div>
+</div>
+#.text._text pt-7 px-3
+<html>
+<head>{!Tailwind::css()!}</head>
+<body>
   @loop($sizes as $size)
-  <p class="text-{{$size}}"><u>{{$size}}:</u> The quick@if($_ < 10) brown fox~if@if($_ < 7) jumped over the lazy dog~if.</p>
+  <p class="text-{{$size}}"><u class="text-base">{{$size}}:</u> The quick@if($_ < 10) brown fox~if@if($_ < 7) jumped over the lazy dog~if.</p>
   ~loop
-</div>
-</div>
-#.text
+</body>
+</html>
+#._text
 
 
 Colors
