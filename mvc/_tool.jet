@@ -1,12 +1,14 @@
+#.jet core template
 
 #.ruler
 @inc(ruler)
-#.ruler
+#.ruler.close
+<a @href($(this).parents('.tool').remove()) class="x">@svg(x)</a>
+#.close
 
 #.unicode //////////////////////////////////////////////////////////////////////////////
 <div class="tool" id="t-unicode" style="min-width:450px">
-<p class="t-head inline-flex" style="align-items:center;">
-  <a @href($(this).parents('.tool').remove()) class="x">@svg(x)</a>
+<p class="t-head inline-flex" style="align-items:center;">@inc(.close)
   UniCode: &nbsp;
   <button class="btn mx-3 f2" onclick="i$.unicode(-1)">&lt;</button>
   <button class="btn mx-3 f2" onclick="i$.unicode(1)">&gt;</button>
@@ -23,8 +25,7 @@ a:61:{i:0;s:33:"Основная латиница";i:128;s:46:"Дополнен�
 
 #.box //////////////////////////////////////////////////////////////////////////////
 <div class="tool" id="t-box" style="min-width:450px">
-<p class="t-head inline-flex" style="align-items:center;">
-  <a @href($(this).parents('.tool').remove()) class="x">@svg(x)</a>
+<p class="t-head inline-flex" style="align-items:center;">@inc(.close)
   BOX:
 </p>
 <div class="pt-7 px-3" id="x-box">
@@ -35,8 +36,7 @@ a:61:{i:0;s:33:"Основная латиница";i:128;s:46:"Дополнен�
 
 #.css //////////////////////////////////////////////////////////////////////////////
 <div class="tool" id="t-css" style="min-width:450px">
-<p class="t-head inline-flex" style="align-items:center;">
-  <a @href($(this).parents('.tool').remove()) class="x">@svg(x)</a>
+<p class="t-head inline-flex" style="align-items:center;">@inc(.close)
   CSS:
 </p>
 <div class="pt-7 px-3" id="css"></div>
@@ -45,8 +45,7 @@ a:61:{i:0;s:33:"Основная латиница";i:128;s:46:"Дополнен�
 
 #.icons //////////////////////////////////////////////////////////////////////////////
 <div class="tool" id="t-icons" style="min-width:45px; margin-bottom:12px">
-<p class="t-head inline-flex" style="align-items:center;">
-  <a @href($(this).parents('.tool').remove()) class="x">@svg(x)</a>
+<p class="t-head inline-flex" style="align-items:center;">@inc(.close)
   Icons &nbsp;
   <button class="btn mx-3 f2" onclick="i$.ip-=150; i$.load('icons', i$.ip)">&lt;</button>
   <button class="btn mx-3 f2" onclick="i$.ip+=150; i$.load('icons', i$.ip)">&gt;</button>
@@ -65,8 +64,7 @@ a:61:{i:0;s:33:"Основная латиница";i:128;s:46:"Дополнен�
 
 #.hcolors //////////////////////////////////////////////////////////////////////////////
 <div class="tool" id="t-hcolors" style="min-width:450px">
-<p class="t-head inline-flex" style="align-items:center;">
-  <a @href($(this).parents('.tool').remove()) class="x">@svg(x)</a>
+<p class="t-head inline-flex" style="align-items:center;">@inc(.close)
   HTML Colors: &nbsp;
   <button class="btn mx-3 f2" onclick="i$.load('hcolors',1)">Sort by name</button>
   <button class="btn mx-3 f2" onclick="i$.load('hcolors',0)">Sort by color</button>
@@ -85,16 +83,19 @@ a:61:{i:0;s:33:"Основная латиница";i:128;s:46:"Дополнен�
 </div>
 #.hcolors
 
-#.tcolors //////////////////////////////////////////////////////////////////////////////
-<div class="tool" id="t-tcolors" style="min-width:450px">
-<p class="t-head inline-flex" style="align-items:center;">
-  <a @href($(this).parents('.tool').remove()) class="x">@svg(x)</a>
+#.tcolors ////////////////////////////////////////////////////////////////////////////// <div class="pt-7 px-3">
+<div class="tool" id="t-tcolors" style="min-width:450px; height:350px;">
+<p class="t-head inline-flex" style="align-items:center;">@inc(.close)
   Colors: &nbsp;
   <label><input type="radio" name="t" value="0" checked> Background</label>
   <label><input type="radio" name="t" value="1"> Font</label>
   <label><input type="radio" name="t" value="2"> Border</label>
 </p>
-<div class="pt-7 px-3">
+<iframe srcdoc="@ob@inc(._tc)@quot" id="color-frame" class="w-full h-full"></iframe>
+</div>
+#.tcolors._tc
+<html><head>{!Tailwind::css() . js(['~/m/jquery.min.js', '~/w/venus/ishtar.js']) !}</head>
+<body>
 <table class="my-1" style="width:368px" id="tcolors">
 @loop($_ < 10)
 @if(!$_)
@@ -103,79 +104,60 @@ a:61:{i:0;s:33:"Основная латиница";i:128;s:46:"Дополнен�
 </tr><tr>
   <td class="bg-black py-1 text-center text-white">black</td>
   <td class="bg-white py-1 px-2 border">white</td>
-  <td colspan="2" class="py-1 pl-2 border font-mono"></td>
-  <td colspan="{{count($list) - 4}}" class="py-1 pl-2 border font-mono"></td>
+  <td colspan="2" class="text-sm py-1 pl-2 border font-mono"></td>
+  <td colspan="{{count($list) - 4}}" class="text-sm py-1 pl-2 border font-mono"></td>
 </tr>
 ~if
 <tr>
   @loop($list as $col)
-    <td class="bg-{{$col}}-{{$_ ? $_*100 : 50}} w-12 h-12 text-center {{$_ > 4 ? 'text-white' : 'text-black'}}">{{$_ ? $_*100 : 50}}</td>
+    <td class="text-sm bg-{{$col}}-{{$_ ? $_*100 : 50}} w-12 h-6 text-center {{$_ > 4 ? 'text-white' : 'text-black'}}">{{$_ ? $_*100 : 50}}</td>
   ~loop
 </tr>
 ~loop
-</table><script>$$.init('#tcolors');</script>
+</table>
 <button class="btn mx-3 f2" onclick="$$.switch()">Current Color</button>
 <button class="btn mx-3 f2" onclick="$$.switch()">Transparent Color</button>
 <button class="btn mx-3 f2" onclick="$$.switch()">Delete Class</button>
-</div>
-</div>
-#.tcolors
+<script>i$.tcolors()</script></body>
+</html>
+#._tc
 
 #.text //////////////////////////////////////////////////////////////////////////////
-<div class="tool h-1/2" id="t-text" style="min-width:450px">
-<p class="t-head inline-flex" style="align-items:center;">
-  <a @href($(this).parents('.tool').remove()) class="x">@svg(x)</a>
-  Font: &nbsp;
+<div class="tool" id="t-text" style="min-width:450px; height:300px;">
+<p class="t-head inline-flex" style="align-items:center;">@inc(.close)
+  Font: &nbsp; <label>XXL <input type="checkbox" onchange="i$.t.toggle()"></label>
   <label><input type="radio" name="f" value="0"> Family</label>
   <label><input type="radio" name="f" value="1" checked> Size</label>
   <label><input type="radio" name="f" value="2"> Weight</label>
   <label><input type="radio" name="f" value="3"> Letter Spacing</label>
   <label><input type="radio" name="f" value="4"> Line Height</label>
 </p>
-<div class="h-full">
-  <iframe srcdoc="@qb@inc(._text)@qe" class="w-full h-full"></iframe>
-</div>
-</div>
-#.text._text pt-7 px-3
-<html>
-<head>{!Tailwind::css()!}</head>
+<iframe srcdoc="@ob@inc(._text)@quot" id="text-frame" class="w-full h-full"></iframe>
+<p class="t-head inline-flex" style="align-items:center;">
+  Selected: &nbsp; 
+</p>
+</div><script>
+i$.t.toggle = function () {
+  let div = $$.doc('div:first', $('#text-frame'));
+  div.toggle().next().toggle();
+};
+</script>
+#.text._text
+<html><head>{!Tailwind::css()!}</head>
 <body>
+  <div>
   @loop($sizes as $size)
-  <p class="text-{{$size}}"><u class="text-base">{{$size}}:</u> The quick@if($_ < 10) brown fox~if@if($_ < 7) jumped over the lazy dog~if.</p>
+    <p class="text-{{$size}}">
+      <u class="text-base">{{$size}}:</u> The quick@if($_ < 10) brown fox~if@if($_ < 7) jumped over the lazy dog~if.
+    </p>
+    @if(8 == $_)</div><div style="display:none">~if
   ~loop
+  </div>
 </body>
 </html>
 #._text
 
+(function() {
 
-Colors
-
-Dimension
-  Width
-  Height
-  Padding
-  Margin
-  Negative Margin
-  Min Width
-  Max Width
-  Min Height
-  Max Height
-Text
-  Font Size
-  Font Weight
-  Letter Spacing
-  Line Height
-Border
-  Radius
-  Width
-Other
-  Screens
-  Shadows
-  Opacity
-  Transitions
-
-HTML Colors
-CSS Styles
-Unicode
-
+})();
 

@@ -18,10 +18,10 @@ class venus_c extends Controller
     }
 
     function jet_c() {
-        Jet::directive('qb', function($arg) {
+        Jet::directive('ob', function($arg) {
             return "<?php ob_start() ?>";
         });
-        Jet::directive('qe', function($arg) {
+        Jet::directive('quot', function($arg) {
             return "<?php echo str_replace('\"', '&quot;', ob_get_clean()) ?>";
         });
     }

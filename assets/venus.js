@@ -23,8 +23,10 @@ var $$ = {
     F: {W:640, H:480},    // frame size current
     prev: {W:640, H:480}, // frame size previouse
     S: {},                // screen (window)
-    doc: function(selector) {
-        var doc = $($$.$f[0].contentWindow.document);
+    doc: function(selector, fr) {
+        if (!fr)
+            fr = $$.$f;
+        var doc = $(fr[0].contentWindow.document);
         return selector ? doc.find(selector) : doc;
     },
     root: function($var, $val) {
@@ -144,59 +146,11 @@ var $$ = {
             $$.root('border', '1px solid #ccc');
         }
     },
-    get: function(el, pref) {
-        var i, ary = el.className.split(' '), len = pref.length;
-        for (i in ary)
-            if (pref == ary[i].substr(0, len))
-                return ary[i];
-        return '';
-    },
-    set: function(el, name, len) {
-        var ary = [], pref = name.substr(0, len);
-        if (el.className)
-            ary = el.className.split(' ');
-        for (i in ary)
-            if (pref == ary[i].substr(0, len))
-                $(el).removeClass(ary[i])
-        $(el).addClass(name)
-    },
     info: function(html, pos) {
         $('#info span:eq(' + pos + ')').html(html);
     },
-    style: function(el, name) {
-        return getComputedStyle(el, null).getPropertyValue(name)
-    },
-    rgb2hex: function(r, g, b) {
-        if (!g) {
-            var ary = /(\d+),\s?(\d+),\s?(\d+)/.exec(r);
-            r = parseInt(ary[1]), g = parseInt(ary[2]), b = parseInt(ary[3]);
-        }
-        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-    },
     init: function(id) {
-        $(id).find('td').each(function() {
-            $(this).css({
-                cursor:'default'
-            }).on('click', function() {
-                if ($(this).hasClass('font-mono'))
-                    return;
-                $(this).css('textDecoration', 'underline');
-                var bg = $$.get(this, 'bg-'), el = $(id).find('td:eq(3)')[0];
-                $$.set(el, bg, 3);
-                var hex = $$.rgb2hex($$.style(this, 'background-color'));
-                $(el).html(hex + ' ' + bg).css('color', $$.style(this, 'color'));
 
-   if($$.$tk) $$.set($$.$tk[0], bg, 3);
-
-            }).on('mouseenter', function() {
-                if ($(this).hasClass('font-mono'))
-                    return;
-                var bg = $$.get(this, 'bg-'), el = $(id).find('td:eq(2)')[0];
-                $$.set(el, bg, 3);
-                bg = $$.rgb2hex($$.style(this, 'background-color'));
-                $(el).html(bg).css('color', $$.style(this, 'color'));
-            })
-        });
     },
     html: function(str, cls) {
         str = str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

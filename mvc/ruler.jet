@@ -1,3 +1,5 @@
+#.jet core template
+
 <div class="tool" id="t-ruler" style="min-width:450px">
 <p class="t-head inline-flex" style="align-items:center;">
   <a @href($(this).parents('.tool').remove()) class="x">@svg(x)</a>
