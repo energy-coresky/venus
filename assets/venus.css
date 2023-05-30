@@ -177,7 +177,7 @@ pre:focus {
   bottom: calc(-100% - 24px);
 }
 
-.header, .t-head {
+.header, .t-head, .mbg {
   background-color: var(--bg);
 }
 .t-head {

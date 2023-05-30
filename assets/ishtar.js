@@ -41,7 +41,10 @@ var i$ = {
                 if ($(this).hasClass('font-mono'))
                     return;
                 $(this).css('textDecoration', 'underline');
-                var bg = i$.get(this, 'bg-'), el = $('#tcolors').find('td:eq(3)')[0];
+                var bg = i$.get(this, 'bg-'), el = $('#tcolors').find('td:eq(1)')[0], el0 = $(el).prev()[0];
+                el0.className = el.className;
+                el0.innerHTML = el.innerHTML;
+                $(el0).css('color', $(el).css('color'));
                 i$.set(el, bg, 3);
                 var hex = i$.rgb2hex(i$.style(this, 'background-color'));
                 $(el).html(hex + ' ' + bg).css('color', i$.style(this, 'color'));
@@ -51,7 +54,7 @@ var i$ = {
             }).on('mouseenter', function() {
                 if ($(this).hasClass('font-mono'))
                     return;
-                var bg = i$.get(this, 'bg-'), el = $('#tcolors').find('td:eq(2)')[0];
+                var bg = i$.get(this, 'bg-'), el = $('#color-run')[0];
                 i$.set(el, bg, 3);
                 bg = i$.rgb2hex(i$.style(this, 'background-color'));
                 $(el).html(bg).css('color', i$.style(this, 'color'));

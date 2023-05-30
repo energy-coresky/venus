@@ -84,55 +84,73 @@ a:61:{i:0;s:33:"Основная латиница";i:128;s:46:"Дополнен�
 #.hcolors
 
 #.tcolors ////////////////////////////////////////////////////////////////////////////// <div class="pt-7 px-3">
-<div class="tool" id="t-tcolors" style="min-width:450px; height:350px;">
+<div class="tool" id="t-tcolors" style="min-width:450px;">
 <p class="t-head inline-flex" style="align-items:center;">@inc(.close)
-  Colors: &nbsp;
+  <b>Colors:</b> &nbsp;
   <label><input type="radio" name="t" value="0" checked> Background</label>
-  <label><input type="radio" name="t" value="1"> Font</label>
+  <label><input type="radio" name="t" value="1"> Text</label>
   <label><input type="radio" name="t" value="2"> Border</label>
 </p>
-<iframe srcdoc="@ob@inc(._tc)@quot" id="color-frame" class="w-full h-full"></iframe>
+<div class="flex" style="height:307px;">
+  <div class="mbg" style="width:55px; padding:5px 3px;">
+    <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> hover</label>
+    <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> focus</label><hr>
+    <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> from</label>
+    <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> via</label><br>
+    <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> to</label><hr>
+  </div>
+  <iframe srcdoc="@ob@inc(._tc)@quot" id="color-frame" style="padding:" class="w-full h-full"></iframe>
+</div>
+<p class="t-head inline-flex" style="align-items:center;">
+  Selected: &nbsp; 
+</p>
 </div>
 #.tcolors._tc
 <html><head>{!Tailwind::css() . js(['~/m/jquery.min.js', '~/w/venus/ishtar.js']) !}</head>
 <body>
-<table class="my-1" style="width:368px" id="tcolors">
-@loop($_ < 10)
-@if(!$_)
+<table class="" style="" id="tcolors">
 <tr>
-  @loop($list as $col)<th class="text-xs">{{$col}}</th>~loop
+  <td colspan="{{$c[1]}}" class="text-sm py-1 pl-2 border font-mono">&nbsp;</td>
+  <td colspan="{{$c[0] - $c[1]}}" class="text-sm py-1 pl-2 border font-mono">&nbsp;</td><td></td>
 </tr><tr>
-  <td class="bg-black py-1 text-center text-white">black</td>
-  <td class="bg-white py-1 px-2 border">white</td>
-  <td colspan="2" class="text-sm py-1 pl-2 border font-mono"></td>
-  <td colspan="{{count($list) - 4}}" class="text-sm py-1 pl-2 border font-mono"></td>
+  @loop($list as $col)<th class="text-xs">{{$col}}</th>~loop
+  <th class="text-xs">other</th>
 </tr>
-~if
+@loop($_ < 10)
 <tr>
   @loop($list as $col)
     <td class="text-sm bg-{{$col}}-{{$_ ? $_*100 : 50}} w-12 h-6 text-center {{$_ > 4 ? 'text-white' : 'text-black'}}">{{$_ ? $_*100 : 50}}</td>
   ~loop
+  @if(0 == $_)<td class="border font-mono text-center" id="color-run">&nbsp;</td>
+  @elseif(1 == $_)<td class="border bg-white text-center">white</td>
+  @elseif(2 == $_)<td class="border bg-black text-white text-center">black</td>
+  @elseif(3 == $_)<td class="border font-mono"><button class="btn mx-3 f2" onclick="$$.switch()">Current</button></td>
+  @elseif(4 == $_)<td class="border font-mono"><button class="btn mx-3 f2" onclick="$$.switch()">Transparent</button></td>
+  @elseif(5 == $_)<td class="border font-mono"><button class="btn mx-3 f2" onclick="$$.switch()">Delete</button></td></td>
+  @else<td class="font-mono"></td>~if
 </tr>
 ~loop
-</table>
-<button class="btn mx-3 f2" onclick="$$.switch()">Current Color</button>
-<button class="btn mx-3 f2" onclick="$$.switch()">Transparent Color</button>
-<button class="btn mx-3 f2" onclick="$$.switch()">Delete Class</button>
-<script>i$.tcolors()</script></body>
+</table><script>i$.tcolors()</script></body>
 </html>
 #._tc
 
 #.text //////////////////////////////////////////////////////////////////////////////
-<div class="tool" id="t-text" style="min-width:450px; height:300px;">
+<div class="tool" id="t-text" style="min-width:450px;">
 <p class="t-head inline-flex" style="align-items:center;">@inc(.close)
-  Font: &nbsp; <label>XXL <input type="checkbox" onchange="i$.t.toggle()"></label>
+  <b>Text:</b> &nbsp;
   <label><input type="radio" name="f" value="0"> Family</label>
   <label><input type="radio" name="f" value="1" checked> Size</label>
   <label><input type="radio" name="f" value="2"> Weight</label>
   <label><input type="radio" name="f" value="3"> Letter Spacing</label>
   <label><input type="radio" name="f" value="4"> Line Height</label>
+  <label><input type="radio" name="f" value="5"> Opacity</label>
 </p>
-<iframe srcdoc="@ob@inc(._text)@quot" id="text-frame" class="w-full h-full"></iframe>
+<div class="flex" style="height:300px;">
+  <div class="mbg" style="width:55px; padding:5px 3px;">
+    <label><input type="checkbox" onchange="i$.t.toggle()"> XXL</label><hr>
+  </div>
+  <iframe srcdoc="@ob@inc(._text)@quot" id="text-frame" style="padding:1px 5px;" class="w-full h-full"></iframe>
+</div>
 <p class="t-head inline-flex" style="align-items:center;">
   Selected: &nbsp; 
 </p>

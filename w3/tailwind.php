@@ -2,22 +2,21 @@
 
 class Tailwind
 {
-    static function css($is_lnk = true) {
-        $css = SKY::w('tailwind') ?: __DIR__ . '/../assets/tailwind.css';
+    static function css($is_app = true, $is_lnk = true) {
         if ($is_lnk)
-            return css(['_venus?tailwind=' . SKY::s('statp')]);
+            return css(['_venus?tailwind=' . ($is_app ? SKY::s('statp') : 'venus')]);
         MVC::mime('text/css');
-        readfile($css);
+        readfile($is_app && SKY::w('tailwind') ? SKY::w('tailwind') : __DIR__ . '/../assets/tailwind.css');
     }
 
-   static $tools = [
+    static $tools = [
        //'Colors' => "ajax('colors',$$.colors)",
-       'Colors' => "i$.load('tcolors')",
-       'Dimension' => [
-           'Width' => '',
-           'Height' => '',
-           'Padding' => '', // all top-right-botton-left horizontal-vertical
-           'Margin' => '',
+        'Colors' => "i$.load('tcolors')",
+        'Dimension' => [
+            'Width' => '',
+            'Height' => '',
+            'Padding' => '', // all top-right-botton-left horizontal-vertical
+            'Margin' => '',
             'Negative Margin' => '',
             'Min Width' => '',
             'Max Width' => '',

@@ -14,7 +14,7 @@ class venus_c extends Controller
     }
 
     function a_tailwind() {
-        Tailwind::css(false);
+        Tailwind::css('venus' != $this->_2, false);
     }
 
     function jet_c() {
@@ -35,7 +35,7 @@ class venus_c extends Controller
         $this->_static = [[], ["~/m/venus.js", "~/w/venus/ishtar.js"], ["~/m/venus.css"]];
         $this->d_last_page = '_venus';
         return [
-            'fsize' => option(3, array_combine(Venus::$fsize, Venus::$fsize)),
+            'fsize' => option(3, array_combine(m_venus::$fsize, m_venus::$fsize)),
             'reg' => '/^<?\w[^>]*[^\/]$/',
             'page' => $page,
         ];
@@ -50,7 +50,7 @@ class venus_c extends Controller
         json([
             'html' => preg_replace("/&(\w+);/", '&amp;$1;', $html),
             'list' => view('venus.popup', [
-                'files' => Venus::files(),
+                'files' => m_venus::files(),
                 'components' => $this->t_venus->components(),
             ]),
         ]);
@@ -63,7 +63,7 @@ class venus_c extends Controller
     }
 
     function j_menu() {
-        $menu = Venus::menu();
+        $menu = m_venus::menu();
         return ['menu' => $menu[$this->_3] ?? $menu['t']];
     }
 
@@ -82,7 +82,10 @@ class venus_c extends Controller
         MVC::body("tool.$this->_2");
         switch ($this->_2) {
             case 'tcolors':
-                return ['list' => array_keys(Tailwind::$colors)];
+                return [
+                    'list' => $list = array_keys(Tailwind::$colors),
+                    'c' => [$c = count($list), floor($c / 2)],
+                ];
             case 'hcolors':
                 $list = HTML::$colors;
                 if ($_POST['p'])

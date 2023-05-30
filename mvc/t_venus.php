@@ -5,7 +5,13 @@ class t_venus extends Model_t
     protected $table = 'preset';
 
     function head_y() {
-        return Venus::open('w', 'w');
+        static $dd;
+        if ($dd)
+            return $dd;
+        SKY::$databases += Plan::app_r('conf.php')['app']['databases'];
+        global $sky;
+        $sky->memory(8, 'w', $dd = SQL::open('w'));
+        return $dd;
     }
 
     function components() {
