@@ -2,13 +2,14 @@
 
 class Venus extends Console
 {
-    /** This is just test */
-    function a_test() {
-        var_dump(SKY::$dd); echo '-test';
+    function __construct($argv = [], $found = []) {
+        Plan::$ware = 'venus';
+        parent::__construct($argv, $found);
+        Plan::$ware = 'main';
     }
 
-    /** Test without DB */
-    function a__qq() {
-        var_dump(SKY::$dd);
+    /** Parse css */
+    function a_parse() {
+        new Maat;
     }
 }
