@@ -11,8 +11,10 @@ class Maat
         //$str = '<?php ' . Plan::_g("assets/t.css");
         $i = 0;
         $ary = [];
+        $n0 = '';
+        $n1 = $n2 = false;
         foreach (token_get_all(unl($str)) as $token) {
-            $id = $token;
+            $id = $str = $token;
             if (is_array($token)) {
                 list($id, $str) = $token;
                 if (in_array($id, [T_OPEN_TAG, T_COMMENT, T_DOC_COMMENT, T_WHITESPACE]))
@@ -24,21 +26,33 @@ class Maat
                     case T_STRING:
                         ;
                         break;
-                    case T_PRINT: //
-                        //echo "$str\n===========\n";
-                        break;
                 }
             } else {
-                @$ary[$id]++;
+                //@$ary[$id]++;
             }
             switch ($id) {
                 case '{':
-                    $i++;
+                    if (1 == ++$i) {
+                        //$ary[] = $n0;
+                        $n0 = false;
+                        $n1 = $str = '';
+                    } elseif (2 == $i) {
+                        $ary[] = $n1;
+                        $n1 = false;
+                    }
                     break;
                 case '}':
-                    $i--;
+                    if (0 == --$i) {
+                        $n0 = $str = '';
+                    } elseif (1 == $i) {
+                        $n1 = $str = '';
+                    }
                     break;
             }
+            if (false !== $n0)
+                $n0 .= $str;
+            if (false !== $n1)
+                $n1 .= $str;
             
         }
         echo '-parse'.$i;

@@ -80,26 +80,30 @@ class venus_c extends Controller
 
     function j_tool() {
         MVC::body("tool.$this->_2");
+        $ary = ['t' => (object)[
+            'p' => $p = $_POST['p'] ?? 0,
+            'name' => $this->_2,
+        ]];
         switch ($this->_2) {
             case 'tcolors':
-                return [
+                return $ary + [
+                    'v3' => Tailwind::$color3,
                     'list' => $list = array_keys(Tailwind::$colors),
                     'c' => [$c = count($list), floor($c / 2)],
                 ];
             case 'hcolors':
                 $list = HTML::$colors;
-                if ($_POST['p'])
-                    sort($list);
-                return ['list' => $list];
+                $p AND sort($list);
+                return $ary + ['list' => $list];
             case 'ruler':
-                return ['list' => ''];
+                return $ary + ['list' => ''];
             case 'box':
-                return ['list' => ''];
+                return $ary + ['list' => ''];
             case 'text':
-                return ['sizes' => Tailwind::$size];
+                return $ary + ['sizes' => Tailwind::$size];
             case 'unicode':
                 $fonts = ['arial', 'verdana', 'serif', 'cursive'];
-                return [
+                return $ary + [
                     'opt' => option(0, unserialize(view('tool.lang', []))),
                     'fonts' => option(0, array_combine($fonts, $fonts)),
                 ];
@@ -107,13 +111,13 @@ class venus_c extends Controller
                 $src = 'C:/web/tw/node_modules/bootstrap-icons/icons/*.svg';
                 $list = [];
                 foreach (glob($src) as $i => $fn) {
-                    if ($i < $_POST['p'])
+                    if ($i < $p)
                         continue;
                     $list[basename($fn, '.svg')] = file_get_contents($fn);
                     if (count($list) > 149)
                         break;
                 }
-                return ['list' => $list];
+                return $ary + ['list' => $list];
         }
     }
 }

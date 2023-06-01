@@ -1,0 +1,83 @@
+
+#._tw.b ////////////////////////////////////////////////////////////////////////////// <div class="pt-7 px-3">
+<html><head>{!Tailwind::css() . js(['~/m/jquery.min.js', '~/w/venus/ishtar.js']) !}</head>
+<body>
+<table class="" style="" id="tcolors">
+#.b
+<tr>
+  <td colspan="{{$c[1]}}" class="text-sm py-1 pl-2 border font-mono">&nbsp;</td>
+  <td colspan="{{$c[0] - $c[1]}}" class="text-sm py-1 pl-2 border font-mono">&nbsp;</td><td></td>
+</tr><tr>
+  @loop($list as $col)<th class="text-xs">{{$col}}</th>~loop
+  <th class="text-xs">other</th>
+</tr>
+@loop($_ < 10)
+<tr>
+  @loop($list as $col)
+    <td class="text-sm bg-{{$col}}-{{$_ ? $_*100 : 50}} w-12 h-6 text-center {{$_ > 4 ? 'text-white' : 'text-black'}}">{{$_ ? $_*100 : 50}}</td>
+  ~loop
+  @if(0 == $_)<td class="border font-mono text-center" id="color-run">&nbsp;</td>
+  @elseif(1 == $_)<td class="border bg-white text-center">white</td>
+  @elseif(2 == $_)<td class="border bg-black text-white text-center">black</td>
+  @elseif(3 == $_)<td class="border font-mono" onclick="$$.sXX()">Current</td>
+  @elseif(4 == $_)<td class="border font-mono" onclick="$$.sXX()">Transparent</td>
+  @elseif(5 == $_)<td class="border font-mono" onclick="$$.sXX()">Inherit</td></td>
+  @elseif(6 == $_)<td class="border font-mono" onclick="$$.sXX()">Delete</td></td>
+  @else<td class="font-mono"></td>~if
+</tr>
+~loop
+</table><script>i$.tcolors()</script>
+</body></html>
+#._tw._tw3
+@inc(.b)
+@loop($v3 as $k => $v)
+#.red
+  <tr>
+    <th class="text-right text-xs px-1">{{$k}}</th>
+    <td class="bg-black text-green-300">o{{$_ < 9 ? 'o' . ($_ + 1) : ($_ + 1)}}</td>
+    @loop($v as $c)
+      <td style="text-align:center;background:{{$c}};width:41px;
+        color:#{{$_2 > 5 ? 999 : 000}}">{{$_2 > 10 ? ($_ ? (10 == $_ ? 950 : 100 * $_) : 50) : ($_2 ? (10 == $_2 ? 950 : 100 * $_2) : 50)}}</td>
+    ~loop
+  </tr>
+#.red
+~loop
+@php $v = $v3[$k = 'red']; $_ = 5; ~php@inc(.red)
+</table>
+<script>//i$.tcolors()</script>
+</body></html>
+#._tw3.tw
+<script>
+i$.t.twv = function (chk) {
+  //let div = $$.doc('div:first', $('#text-frame'));
+  //div.toggle().next().toggle();
+
+  i$.load('tcolors', chk ? 1:0);
+};
+</script>
+<div class="tool" id="t-tcolors" style="min-width:450px;">
+<p class="t-head inline-flex" style="align-items:center;">@inc(_tool.close)
+  <b>T-Colors:</b> &nbsp;
+  <label><input type="radio" name="t" value="0" checked> Background</label>
+  <label><input type="radio" name="t" value="1"> Text</label>
+  <label><input type="radio" name="t" value="2"> Border</label>
+</p>
+<div class="flex" style="height:307px;">
+  <div class="mbg" style="width:55px; padding:5px 3px;">
+    <label class="m-0"><input type="checkbox" onchange="i$.t.twv(this.checked)"@checked($t->p)> V3</label><hr class="my-1">
+    <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> hover</label>
+    <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> focus</label><hr class="my-1">
+    <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> from</label>
+    <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> via</label><br>
+    <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> to</label><hr class="my-1">
+  </div>
+  @if($t->p)<iframe srcdoc="@ob@inc(._tw3)@quot" id="color-frame" style="padding:" class="w-full h-full"></iframe>
+  @else<iframe srcdoc="@ob@inc(._tw)@quot" id="color-frame" style="padding:" class="w-full h-full"></iframe>
+  ~if
+</div>
+<p class="t-head inline-flex" style="align-items:center;">
+  Selected: &nbsp; 
+</p>
+</div>
+#.tw
+
