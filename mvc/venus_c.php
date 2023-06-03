@@ -46,13 +46,17 @@ class venus_c extends Controller
     }
 
     function j_code() {
-        $html = $this->t_venus->get($this->_3);
         json([
-            'html' => preg_replace("/&(\w+);/", '&amp;$1;', $html),
-            'list' => view('venus.popup', [
-                'files' => m_venus::files(),
-                'components' => $this->t_venus->components(),
-            ]),
+            'html' => preg_replace("/&(\w+);/", '&amp;$1;', $this->t_venus->get($this->_3)),
+            'list' => view('venus.popup_menu', ['menu' => ['project-files',
+                ['Add new file', '', 'Alt + N'],
+                ['Add new component', '', 'Alt + C'],
+                ['Components', $this->t_venus->components(), '<span style="font-family:Verdana;">►</span>'],
+                '',
+                ['Delete current file/component', ''],
+                '',
+                ['Files', m_venus::files(), '<span style="font-family:Verdana;">►</span>'],
+            ]]),
         ]);
     }
 
@@ -86,10 +90,19 @@ class venus_c extends Controller
         ]];
         switch ($this->_2) {
             case 'tcolors':
+                $qq=['123' => '1', '234' => '2', '345' => '3'];
                 return $ary + [
                     'v3' => Tailwind::$color3,
                     'list' => $list = array_keys(Tailwind::$colors),
                     'c' => [$c = count($list), floor($c / 2)],
+                    'history' => view('venus.popup_menu', ['menu' => ['v-history',
+                        ['Gray', $qq, '<span style="font-family:Verdana;">►</span>'],
+                        '',
+                        ['Red', $qq, '<span style="font-family:Verdana;">►</span>'],
+                        ['Green', $qq, '<span style="font-family:Verdana;">►</span>'],
+                        ['Blue', $qq, '<span style="font-family:Verdana;">►</span>'],
+                        '',
+                    ]]),
                 ];
             case 'hcolors':
                 $list = HTML::$colors;

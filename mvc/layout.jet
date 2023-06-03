@@ -60,7 +60,7 @@
     Filename &nbsp;<b></b>
     <!-- &nbsp; &nbsp;<button class="btn mx-3" onclick="$$.swap()">Delete file</button> -->
     &nbsp; &nbsp;Project files &nbsp;
-    <a class="vs-mono vs-ic" style="font-size:16px" @href($$.m_clk('#popup',1))>▼</a>
+    <a class="vs-mono vs-ic" style="font-size:16px" @href($$.ddm('show', '#project-files', 1))>▼</a>
     &nbsp; &nbsp; &nbsp; &nbsp;<label><input type="checkbox" checked> &nbsp;Tidy</label>
     &nbsp; &nbsp;<label><input type="checkbox" checked> &nbsp;Comments</label>
     &nbsp; &nbsp;<label><input type="checkbox" checked> &nbsp;Scripts</label>

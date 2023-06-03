@@ -260,17 +260,28 @@ var $$ = {
         $('#tail').html(r)
         $$.div = 1 - $$.div;
     },
-    m_clk: function(e, show) {
-        var id = 'string' == typeof e ? e : '#popup',
-            el = $(id)[0], hide = 'none' == el.style.display;
-        if (el.hasAttribute('running') || hide && !show) // 'string' != typeof e
-            return;
-        if (!el.onanimationend) el.onanimationend = function () {
-            if ($(this).hasClass('hide-a1'))
-                $(this).hide();
-            this.removeAttribute('running');
-        };
-        $(el).show().attr('running', 1).removeClass(hide ? 'hide-a1' : 'show-a1').addClass(hide ? 'show-a1' : 'hide-a1');
+    doc_clk: function() {
+        $('.popup-menu, .popup-sub').each($$.ddm)
+    },
+    ddm: function(mode, el, show) {
+        switch (mode) {
+            case 'init': return el.find('.popup-menu, .popup-sub').each(function() {
+                this.onanimationend = function () {
+                    if ($(this).hasClass('hide-a1'))
+                        $(this).hide();
+                    this.removeAttribute('running');
+                };
+            });
+            case 'hover': var fire = show ? el.next().find('.popup-sub:first')[0] : false;
+                return el.parents('.popup-menu').find('.popup-sub').each(function() {
+                    $$.ddm(0, this, fire === this)
+                });
+            case 'show': el = $(el).find('.popup-menu')[0];
+            default: el = $(el); var hidden = 'none' === el.css('display');
+                if (el.is('[running]') || hidden && !show || !hidden && show)
+                    return;
+                el.show().attr('running', 1).removeClass(show ? 'hide-a1' : 'show-a1').addClass(show ? 'show-a1' : 'hide-a1');
+        }
     }
 };
 
@@ -328,7 +339,7 @@ body{
     };
     sky.key[121] = $$._catch; // F10
 
-    $(document).click($$.m_clk).mouseup($$.m_up).mousemove($$.m_move).mouseenter(function () {
+    $(document).click($$.doc_clk).mouseup($$.m_up).mousemove($$.m_move).mouseenter(function () {
         $$.info('-', 1);
     });
     $$.doc().mouseup($$.m_up).mousemove($$.m_move);

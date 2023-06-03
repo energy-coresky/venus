@@ -1,11 +1,11 @@
 #.jet core template
 
 #.ruler
-@inc(ruler)
+  @inc(ruler)
 #.ruler.close
-<a @href($(this).parents('.tool').remove()) class="x">@svg(x)</a>
+  <a @href($(this).parents('.tool').remove()) class="x">@svg(x)</a>
 #.close.tcolors
-@inc(color.tw)
+  @inc(color.tw)
 #.tcolors.tool
 <div class="tool" id="t-{{$t->name}}" style="min-width:450px">
 <p class="t-head inline-flex" style="align-items:center;">@inc(.close)

@@ -49,18 +49,16 @@
 #._tw3.tw
 <script>
 i$.t.twv = function (chk) {
-  //let div = $$.doc('div:first', $('#text-frame'));
-  //div.toggle().next().toggle();
-
   i$.load('tcolors', chk ? 1:0);
 };
 </script>
-<div class="tool" id="t-tcolors" style="min-width:450px;">
+<div class="tool" id="t-tcolors" style="min-width:450px;">{!$history!}
 <p class="t-head inline-flex" style="align-items:center;">@inc(_tool.close)
   <b>T-Colors:</b> &nbsp;
   <label><input type="radio" name="t" value="0" checked> Background</label>
   <label><input type="radio" name="t" value="1"> Text</label>
   <label><input type="radio" name="t" value="2"> Border</label>
+  <a class="vs-mono vs-ic" style="font-size:16px" @href($$.ddm('show', '#v-history', 1))>History &nbsp;▼</a>
 </p>
 <div class="flex" style="height:307px;">
   <div class="mbg" style="width:55px; padding:5px 3px;">
@@ -80,4 +78,3 @@ i$.t.twv = function (chk) {
 </p>
 </div>
 #.tw
-

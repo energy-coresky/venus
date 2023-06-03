@@ -27,42 +27,34 @@ $(function() {
   ~loop
 #.menu
 
-#.popup //////////////////////////////////////////////////////////////////////////////
-<div class="absolute inline-block">
-  <div id="popup" style="display:none; width:225px; left:30px;top:22px;"
-       class="absolute w-56 rounded-sm shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none">
+#.popup_menu //////////////////////////////////////////////////////////////////////////////
+<div class="absolute inline-block" id="{{$id = array_shift($menu)}}">
+  <div style="width:225px; left:30px;top:22px;" hidden
+       class="popup-menu absolute w-56 rounded-sm shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none">
     <div class="py-1" role="none">
-      <a href="#" class="menu" onmouseenter="$$.m_clk('#sub',0)">
-        Add new file <span class="float-right">Alt + N</span>
-      </a>
-      <a href="#" class="menu" onmouseenter="$$.m_clk('#sub',0)">
-        Add new component <span class="float-right">Alt + C</span>
-      </a>
-      <a href="#" class="menu" onmouseenter="$$.m_clk('#sub',1)">
-        Components <span class="float-right font-mono">▶</span>
-      </a>
-      <div class="absolute inline-block">
-        <div id="sub" style="display:none; width:225px; left:160px;top:-5px;"
-          class="absolute w-56 rounded-sm shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none">
-          <div class="py-1" role="none">
-            @loop($components as $name => $val)
-              <a @href({!$val!}) class="menu">{{$name}}</a>
-            ~loop
+    @loop($menu as $a)
+      @if($a)
+        <a href="javascript:;"@if(!$sub = is_array($a[1])) onclick="{{$a[1]}}"~if class="menu" onmouseenter="$$.ddm('hover', $(this), {{(int)$sub}})">{{$a[0]}}
+          @if($a[2] ?? false)<span class="float-right">{!$a[2]!}</span>~if
+        </a>
+        @if($sub)
+          <div class="absolute inline-block">
+          <div style="width:225px; left:160px;top:-5px;" hidden
+              class="popup-sub absolute w-56 rounded-sm shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none">
+            <div class="py-1" role="none">
+              @loop($a[1] as $name => $val)<a @href({!$val!}) class="menu">{{$name}}</a>~loop
+            </div>
           </div>
-        </div>
-      </div>
-    </div>
-    <div class="py-1" role="none">
-      <a href="#" class="menu" onmouseenter="$$.m_clk('#sub',0)">Delete current file/component</a>
-    </div>
-    <div class="py-1" role="none">
-      @loop($files as $name => $val)
-        <a @href({!$val!}) class="menu" onmouseenter="$$.m_clk('#sub',0)">{{$name}}</a>
-      ~loop
+          </div>
+        ~if
+      @else
+        </div><div class="py-1" role="none">
+      ~if
+    ~loop
     </div>
   </div>
-</div>
-#.popup
+</div><script>$$.ddm('init', $('#{{$id}}'))</script>
+#.popup_menu
 
 #.settings //////////////////////////////////////////////////////////////////////////////
 <form class="m-3" method="post">
