@@ -36,9 +36,9 @@ a.menu {
   display: block;
   color: #374151;
 }
-a.menu:hover {
+a.menu:hover, [hover] {
   background-color: #2563eb;
-  color: #fff;
+  color: #fff !important;
 }
 .show-a1 {
           animation: menu-show 100ms ease-out;

@@ -265,22 +265,31 @@ var $$ = {
     },
     ddm: function(mode, el, show) {
         switch (mode) {
-            case 'init': return el.find('.popup-menu, .popup-sub').each(function() {
-                this.onanimationend = function () {
-                    if ($(this).hasClass('hide-a1'))
-                        $(this).hide();
-                    this.removeAttribute('running');
-                };
-            });
-            case 'hover': var fire = show ? el.next().find('.popup-sub:first')[0] : false;
-                return el.parents('.popup-menu').find('.popup-sub').each(function() {
+            case 'init':
+                return el.find('.popup-menu, .popup-sub').each(function() {
+                    this.onanimationend = function () {
+                        if ($(this).hasClass('hide-a1'))
+                            $(this).hide();
+                        this.removeAttribute('running');
+                    };
+                });
+            case 'hover':
+                var fire = show ? el.next().find('.popup-sub:first')[0] : false,
+                    top = el.parent().parent();
+                top.find('.popup-sub').each(function() {
                     $$.ddm(0, this, fire === this)
                 });
-            case 'show': el = $(el).find('.popup-menu')[0];
-            default: el = $(el); var hidden = 'none' === el.css('display');
-                if (el.is('[running]') || hidden && !show || !hidden && show)
+                return top.find('.menu').each(function() {
+                    fire && this === el[0] ? el.attr('hover', 1) : this.removeAttribute('hover');
+                });
+            case 'show':
+                el = $(el).find('.popup-menu')[0];
+                $(el).find('[hover]').removeAttr('hover');
+            default:
+                var hidden = 'none' === $(el).css('display');
+                if (el.hasAttribute('running') || hidden && !show || !hidden && show)
                     return;
-                el.show().attr('running', 1).removeClass(show ? 'hide-a1' : 'show-a1').addClass(show ? 'show-a1' : 'hide-a1');
+                $(el).show().attr('running', 1).removeClass(show ? 'hide-a1' : 'show-a1').addClass(show ? 'show-a1' : 'hide-a1');
         }
     }
 };
