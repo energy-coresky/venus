@@ -26,6 +26,7 @@
     <a @href($(this).find('svg').toggle()) class="">@inc(.mobile)</a>
     <button class="btn ml-3 mr-5 f10" onclick="$$.swap()">Catch - F10</button>
     <a @href($(this).find('svg').toggle(); $$.bg()) class="">@inc(.screen)</a>
+<span style="font-size:22px"> 𝅘𝅥𝅲𝅘𝅥𝅱𝅘𝅥𝅰𝅘𝅥𝅯 𝅘𝅥𝅮</span>
     <!-- from right -->
     <span class="absolute right-20">@inc(.pdaxt)</span>
     <a @href(ajax('settings', box)) class="vs-ic absolute right-8">@svg(settings)</a>

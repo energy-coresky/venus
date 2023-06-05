@@ -14,7 +14,7 @@
 @loop($_ < 10)
 <tr>
   @loop($list as $col)
-    <td class="text-sm bg-{{$col}}-{{$_ ? $_*100 : 50}} w-12 h-6 text-center {{$_ > 4 ? 'text-white' : 'text-black'}}">{{$_ ? $_*100 : 50}}</td>
+    <td class="text-sm bg-{{$col}}-{{$_ ? $_*100 : 50}} w-12 h-7 text-center {{$_ > 4 ? 'text-white' : 'text-black'}}">{{$_ ? $_*100 : 50}}</td>
   ~loop
   @if(0 == $_)<td class="border font-mono text-center" id="color-run">&nbsp;</td>
   @elseif(1 == $_)<td class="border bg-white text-center">white</td>
@@ -47,34 +47,39 @@
 <script>//i$.tcolors()</script>
 </body></html>
 #._tw3.tw
-<script>
-i$.t.twv = function (chk) {
-  i$.load('tcolors', chk ? 1:0);
-};
-</script>
-<div class="tool" id="t-tcolors" style="min-width:450px;">{!$history!}
-<p class="t-head inline-flex" style="align-items:center;">@inc(_tool.close)
+@inc(_tool.tool)
+#use(.tw_head as t_head)
+#use(.tw_left as t_left)
+#use(.tw_body as t_body)
+#use(`` as t_tail)
+#use(`` as t_js)
+#.tw.tw_head
   <b>T-Colors:</b> &nbsp;
   <label><input type="radio" name="t" value="0" checked> Background</label>
   <label><input type="radio" name="t" value="1"> Text</label>
   <label><input type="radio" name="t" value="2"> Border</label>
   <a class="vs-mono vs-ic" style="font-size:16px" @href($$.ddm('show', '#v-history', 1))>History &nbsp;▼</a>
-</p>
-<div class="flex" style="height:307px;">
-  <div class="mbg" style="width:55px; padding:5px 3px;">
-    <label class="m-0"><input type="checkbox" onchange="i$.t.twv(this.checked)"@checked($t->p)> V3</label><hr class="my-1">
-    <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> hover</label>
-    <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> focus</label><hr class="my-1">
-    <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> from</label>
-    <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> via</label><br>
-    <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> to</label><hr class="my-1">
-  </div>
-  @if($t->p)<iframe srcdoc="@ob@inc(._tw3)@quot" id="color-frame" style="padding:" class="w-full h-full"></iframe>
-  @else<iframe srcdoc="@ob@inc(._tw)@quot" id="color-frame" style="padding:" class="w-full h-full"></iframe>
-  ~if
-</div>
-<p class="t-head inline-flex" style="align-items:center;">
-  Selected: &nbsp; 
-</p>
-</div>
-#.tw
+#.tw_head.tw_left
+<label class="m-0"><input type="checkbox" onchange="i$.t.twv(this.checked)"@checked($t->p)> V3</label><hr class="m-1">
+<label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> hover</label><br>
+<label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> focus</label><hr class="m-1">
+<label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> from</label><br>
+<label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> via</label><br>
+<label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> to</label><hr class="m-1">
+<label class="m-0"><input type="radio" name="w" checked onchange="i$.t.toggle()"> ---</label><br>
+<label class="m-0"><input type="radio" name="w" onchange="i$.t.toggle()"> sm</label><br>
+<label class="m-0"><input type="radio" name="w" onchange="i$.t.toggle()"> md</label><br>
+<label class="m-0"><input type="radio" name="w" onchange="i$.t.toggle()"> lg</label><br>
+<label class="m-0"><input type="radio" name="w" onchange="i$.t.toggle()"> xl</label><br>
+<label class="m-0"><input type="radio" name="w" onchange="i$.t.toggle()"> 2xl</label><br>
+#.tw_left.tw_body
+{!$history!}
+<script>
+i$.t.twv = function (chk) {
+  i$.load('tcolors', chk ? 1:0);
+};
+</script>
+@if($t->p)<iframe srcdoc="@ob@inc(._tw3)@quot" id="color-frame" style="padding:" class="w-full h-full"></iframe>
+@else<iframe srcdoc="@ob@inc(._tw)@quot" id="color-frame" style="padding:" class="w-full h-full"></iframe>
+~if
+#.tw_body

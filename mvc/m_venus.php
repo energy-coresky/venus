@@ -15,6 +15,53 @@ class m_venus extends Model_m
         }, $list));
     }
 
+    static function pseudo() {
+        return [
+    'hover',
+    'focus', 'focus-within', 'focus-visible',
+    'active',
+    'visited',
+    'target',
+    'first', 'last', 'only', 'odd', 'even',
+    'first-of-type', 'last-of-type', 'only-of-type',
+    'empty', 'disabled', 'enabled', 'checked',
+    'indeterminate',
+    'default',
+    'required',
+    'valid',
+    'invalid',
+    'in-range',
+    'out-of-range',
+    'placeholder',
+    'placeholder-shown',
+    'autofill',
+    'read-only',
+    'before', 'after',
+    'first-letter', 'first-line',
+    'marker',
+    'selection',
+    'file',
+    'backdrop',
+    'sm', 'md', 'lg', 'xl', '2xl',
+    'min-[…]',
+    'max-sm', 'max-md', 'max-lg', 'max-xl', 'max-2xl',
+    'max-[…]',
+    'dark',
+    'portrait',
+    'landscape',
+    'motion-safe',
+    'motion-reduce',
+    'contrast-more',
+    'contrast-less',
+    'print',
+    'supports-[…]',
+    'aria-checked', 'aria-disabled', 'aria-expanded', 'aria-hidden', 'aria-pressed', 'aria-readonly', 'aria-required', 'aria-selected', 'aria-[…]',
+    'data-[…]',
+    'rtl', 'ltr',
+    'open',
+        ];
+    }
+
     static function menu() {
         return [ // https://rogden.github.io/tailwind-config-viewer/
             'h' => [
@@ -26,6 +73,7 @@ class m_venus extends Model_m
                     'Colors' => "i$.load('tcolors')",
                     'Text' => "i$.load('text')",
                     'Box' => "i$.load('box')",
+                    'Pseudo' => "i$.load('pseudo')",
                 ],
                 'Icons' => [
                     'Bootstrap' => "i$.load('icons')",

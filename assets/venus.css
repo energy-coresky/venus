@@ -18,6 +18,9 @@ html {
 a {
   color: #007fff;
 }
+hr {
+  border-top: var(--border);
+}
 a:hover {
   color: #005ddd;
   text-decoration: underline;
@@ -189,7 +192,7 @@ pre:focus {
 #v-right #code-body pre { min-height:calc(100vh - 67px); }
 #tail    #code-body pre { min-height:calc(100vh - 93px - var(--frame-h)); }
 .tool {
-  margin-bottom: 24px;
+  border-bottom: var(--border);
 }
 #t-unicode td {
   border: 1px solid #777;
@@ -221,6 +224,14 @@ pre:focus {
 #css {
   max-height:220px;
   overflow: auto;
+}
+
+.even:nth-child(even) {
+  background-color:#e5e7eb;
+}
+.uni-td {
+  text-align:center;
+  
 }
 
 

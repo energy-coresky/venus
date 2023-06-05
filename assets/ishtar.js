@@ -18,20 +18,26 @@ var i$ = {
     cp: 0x20A0,//0xA220, 0-0x10FFFF  rule = ['0', '110 10', '1110 10 10', '11110 10 10 10'], 
     unicode: function(dir) {
         if (dir)
-            i$.cp += dir * 256;
+            i$.cp += dir * 128;
         if (i$.cp < 0)
             i$.cp = 0x10FF00;
         if (i$.cp > 0x10FFFF)
             i$.cp = 0;
-        var out = '<table id="uni-font" style="font-family:arial">';
-        for (var i = 0; i < 16; i++) {
-            out += '<tr>';
+        var i, out = '<table id="uni-font" style="font-family:arial"><tr><td></td>';
+        for (i = 0; i < 16; i++)
+            out += '<td class="text-center text-white bg-gray-500">' + (i < 10 ? i : String.fromCodePoint(i + 55)) + '</td>';
+        out += '<td></td></tr>';
+        for (i = 0; i < 8; i++) {
+            out += `<tr><td class="text-center text-white bg-gray-500">${i}</td>`;
             for (var k = 0; k < 16; k++) {//&#9763;
-                out += '<td>' + String.fromCodePoint(i$.cp + 16 * i + k); + '</td>';
+                out += '<td class="uni-td">' + String.fromCodePoint(i$.cp + 16 * i + k); + '</td>';
             }
-            out += '</tr>';
+            out += i ? '</tr>' : '<td rowspan="8" style="width:240px;font-size:200px; text-align:center"></td></tr>';
         }
         $('#unicode').html(out + '</table>' + i$.cp);
+        $('#uni-font .uni-td').css({cursor:'default'}).on('mouseenter', function() {
+            $('#uni-font td[rowspan=8]').html($(this).html())
+        });
     },
     tcolors: function() {
         $('#tcolors').find('td').each(function() {

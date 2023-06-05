@@ -82,7 +82,7 @@ class venus_c extends Controller
         ];
     }
 
-    function j_tool() {
+    function j_tool() { // 
         MVC::body("tool.$this->_2");
         $ary = ['t' => (object)[
             'p' => $p = $_POST['p'] ?? 0,
@@ -112,12 +112,18 @@ class venus_c extends Controller
                 return $ary + ['list' => ''];
             case 'box':
                 return $ary + ['list' => ''];
+            case 'pseudo':
+                $m = new t_venus('pseudo');
+                $ary += ['grp' => $m->sqlf('@select grp from $_ group by grp')];
+                return $ary + ['evar' => $m->all()];
             case 'text':
                 return $ary + ['sizes' => Tailwind::$size];
             case 'unicode':
                 $fonts = ['arial', 'verdana', 'serif', 'cursive'];
+                $m = new t_venus('unicode');
+                $opt = $m->sqlf('@select id, name from $_ where priority=0 order by id');
                 return $ary + [
-                    'opt' => option(0, unserialize(view('tool.lang', []))),
+                    'opt' => option(0, $opt),//
                     'fonts' => option(0, array_combine($fonts, $fonts)),
                 ];
             case 'icons':
