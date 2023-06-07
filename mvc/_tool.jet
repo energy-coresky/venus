@@ -23,19 +23,19 @@
 </div>
 #.tool
 
-#.unicode //////////////////////////////////////////////////////////////////////////////
+#.unicode //////////////////////////////////////////////////////////////////////////////       i$.load('unicode', i$.cp)
 @inc(.tool)
 #use(.t_head)
-#use(`qq` as t_left)
-#use(`<div class="" id="unicode"></div>` as t_body)
+#use(`<a @href()>==set9</a><hr class="m-1">` as t_left)
+#use(`{!$menu!}<div class="" id="unicode"></div>` as t_body)
 #use(`` as t_tail)
 #use(`i$.unicode()` as t_js)
-#.unicode.t_head
+#.unicode.t_head  <select onchange="i$.cp=parseInt(this.value);i$.unicode()">{!$opt!}</select>
 <b>UniCode</b>: &nbsp;
-<button class="btn mx-3 f2" onclick="i$.unicode(-1)">&lt;</button>
-<button class="btn mx-3 f2" onclick="i$.unicode(1)">&gt;</button>
-<select onchange="i$.cp=parseInt(this.value);i$.unicode()">{!$opt!}</select>
+<button class="btn mx-1" onclick="i$.unicode(-1)" style="font-family:Verdana;">◄</button>
+<button class="btn mr-3" onclick="i$.unicode(1)" style="font-family:Verdana;">►</button>
 <select onchange="$('#uni-font').css('fontFamily', this.value)">{!$fonts!}</select>
+<a class="vs-mono vs-ic" style="font-size:16px" @href($$.ddm('show', '#muni', 1))>&nbsp;▼</a>
 #.t_head
 
 #.box //////////////////////////////////////////////////////////////////////////////
@@ -72,12 +72,24 @@
 
 #.css //////////////////////////////////////////////////////////////////////////////
 @inc(.tool)
-#use(`<b>CSS</b>:` as t_head)
-#use(`qq` as t_left)
-#use(`<div class="pt-7 px-3" id="css"></div>` as t_body)
+#use(.css_head as t_head)
+#use(`<label><input type="checkbox" onchange="i$.t.toggle()"> help</label><hr class="m-1">` as t_left)
+#use(.css_body as t_body)
 #use(`` as t_tail)
-#use(`i$.css(document.body)` as t_js)
-#.css
+#use(.css_js as t_js)
+#.css.css_head
+<b>CSS</b>: &nbsp;
+@loop($list as $name)
+  <label><input type="radio" name="css" value="{{$_}}"@checked($t->p == $_) onchange="i$.load('css', this.value)"> {{$name}}</label>
+~loop
+#.css_head.css_body
+<table class="w-full" id="css"></table>{!$css!}
+#.css_body.css_js
+var css_data = JSON.parse($.trim($('#css-data').text()));
+ //alert(css_data['display'])
+i$.css(document.body, css_data, {{$t->p}});
+#.css_js
+
 
 #.icons //////////////////////////////////////////////////////////////////////////////
 @inc(.tool)
@@ -122,7 +134,7 @@
 #use(`` as t_tail)
 #use(`i$.t.toggle=function(){ let div = $$.doc('div:first', $('#text-frame'));div.toggle().next().toggle();};` as t_js)
 #.text._thead
-  <b>Text:</b> &nbsp;
+  <b>Text</b>: &nbsp;
   <label><input type="radio" name="f" value="0"> Family</label>
   <label><input type="radio" name="f" value="1" checked> Size</label>
   <label><input type="radio" name="f" value="2"> Weight</label>
@@ -143,7 +155,3 @@
 </body>
 </html>
 #._text
-
-(function() {
-
-})();

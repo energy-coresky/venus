@@ -9,13 +9,29 @@ var i$ = {
             t.prepend(r);
         });
     },
-    css: function(el) {
-        var i = 0, s = '', list = getComputedStyle(el);
-        for (; i < list.length; i++)
-            s += (1 + i) + ' ' + list[i] + ' = ' + list.getPropertyValue(list[i]) + '<br>';
-        $('#css').html(s)
+    css: function(el, css_data, p) {
+        var i = 1, s = '', name, td, list = getComputedStyle(el);
+        if (0 == p) {
+            for (; i - 1 < list.length; i++) {
+                name = td = list[i - 1];
+                if (1 === css_data[name]) {
+                    td = '<b>' + td + '</b>';
+                    css_data[name] = false;
+                }
+                s += '<tr class="even"><td width="30">' + i + '</td><td width="35%">'
+                    + td + '</td><td>' + list.getPropertyValue(name) + '</td></tr>';
+            }
+        }
+        Object.keys(css_data).forEach(function (name) {
+            if (css_data[name])
+                s += '<tr class="even"><td width="30">' + i + '</td><td width="35%"><b>'
+                + name + '</b></td><td>---</td></tr>';
+            i++;
+        });
+        $('#css').html(s);
+        //$('#info span:eq(2)').html(s);//css_data.length
     },
-    cp: 0x20A0,//0xA220, 0-0x10FFFF  rule = ['0', '110 10', '1110 10 10', '11110 10 10 10'], 
+    cp: 0,
     unicode: function(dir) {
         if (dir)
             i$.cp += dir * 128;

@@ -222,7 +222,6 @@ pre:focus {
     overflow: hidden;
 }
 #css {
-  max-height:220px;
   overflow: auto;
 }
 

@@ -88,6 +88,7 @@ class venus_c extends Controller
             'p' => $p = $_POST['p'] ?? 0,
             'name' => $this->_2,
         ]];
+        $rar = '<span style="font-family:Verdana;">►</span>';
         switch ($this->_2) {
             case 'tcolors':
                 $qq=['123' => '1', '234' => '2', '345' => '3'];
@@ -96,11 +97,11 @@ class venus_c extends Controller
                     'list' => $list = array_keys(Tailwind::$colors),
                     'c' => [$c = count($list), floor($c / 2)],
                     'history' => view('venus.popup_menu', ['menu' => ['v-history',
-                        ['Gray', $qq, '<span style="font-family:Verdana;">►</span>'],
+                        ['Gray', $qq, $rar],
                         '',
-                        ['Red', $qq, '<span style="font-family:Verdana;">►</span>'],
-                        ['Green', $qq, '<span style="font-family:Verdana;">►</span>'],
-                        ['Blue', $qq, '<span style="font-family:Verdana;">►</span>'],
+                        ['Red', $qq, $rar],
+                        ['Green', $qq, $rar],
+                        ['Blue', $qq, $rar],
                         '',
                     ]]),
                 ];
@@ -112,6 +113,9 @@ class venus_c extends Controller
                 return $ary + ['list' => ''];
             case 'box':
                 return $ary + ['list' => ''];
+            case 'css':
+                $ary['css'] = tag(html(json_encode(m_venus::css($p))), 'id="css-data" style="display:none"');
+                return $ary + ['list' => m_venus::$css];
             case 'pseudo':
                 $m = new t_venus('pseudo');
                 $ary += ['grp' => $m->sqlf('@select grp from $_ group by grp')];
@@ -119,12 +123,27 @@ class venus_c extends Controller
             case 'text':
                 return $ary + ['sizes' => Tailwind::$size];
             case 'unicode':
-                $fonts = ['arial', 'verdana', 'serif', 'cursive'];
+                $fonts = ['arial', 'verdana', 'serif', 'cursive', 'monospace'];
                 $m = new t_venus('unicode');
-                $opt = $m->sqlf('@select id, name from $_ where priority=0 order by id');
+                if ($p)
+                    $m->sqlf('update $_ set priority=9 where id=%d', $p);
+                $sql = '@select name,$cc("i$.cp=",id,";i$.unicode()") from $_ where priority=%d order by id';
                 return $ary + [
-                    'opt' => option(0, $opt),//
+                    //'opt' => option(0, $opt),//$opt = $m->sqlf('@select id, name from $_ where priority=1 order by id');
                     'fonts' => option(0, array_combine($fonts, $fonts)),
+                    'menu' => view('venus.popup_menu', ['menu' => ['muni',
+                        ['Arrows', $m->sqlf($sql, 3), $rar],
+                        '',
+                        ['ASCII', 'i$.cp=0;i$.unicode()'],
+                        ['Кириллица', 'i$.cp=1024;i$.unicode()'],
+                        ['Символы валют', 'i$.cp=8352;i$.unicode()'],
+                        ['Буквоподобные символы', 'i$.cp=8448;i$.unicode()'],
+                        ['Разные символы', 'i$.cp=9728;i$.unicode()'],
+                        '',
+                        ['Mathematics', $m->sqlf($sql, 2), $rar],
+                        ['Figures', $m->sqlf($sql, 7), $rar],
+                        ['Other', $m->sqlf($sql, 1), $rar],
+                    ]]),
                 ];
             case 'icons':
                 $src = 'C:/web/tw/node_modules/bootstrap-icons/icons/*.svg';

@@ -3,6 +3,12 @@
 class m_venus extends Model_m
 {
     static $fsize = ['320 x 480', '640 x 480', '768 x 768', '1024 x 555', '1366 x 768', /* notebook */ '1536 x 555'];
+    static $css = ['Properties', 'Types', 'Functions', 'Pseudo-classes', 'Pseudo-elements', 'At-rules'];
+    static $css_prop_grp = ['Layout', 'Text', 'Appearance', 'Animation', 'CSS Variables', 'Grid', 'Flex', 'Table', 'Generated Content', 'Other'];
+
+#$at_rules.
+#You can also browse key CSS concepts and a list of selectors organized by type. 
+#Also included is a brief DOM-CSS / CSSOM reference.
 
     static function files() {
         $list = array_map(function($v) {
@@ -10,56 +16,15 @@ class m_venus extends Model_m
         }, glob(WWW . 'venus/*.html'));
         //$list[] = 'https://ukrposhta.ua/ru';
         $list[] = LINK;
+        $list[] = LINK . 'zz2.html';
         return array_combine($list, array_map(function($v) {
             return "$$.test('$v')";
         }, $list));
     }
 
-    static function pseudo() {
-        return [
-    'hover',
-    'focus', 'focus-within', 'focus-visible',
-    'active',
-    'visited',
-    'target',
-    'first', 'last', 'only', 'odd', 'even',
-    'first-of-type', 'last-of-type', 'only-of-type',
-    'empty', 'disabled', 'enabled', 'checked',
-    'indeterminate',
-    'default',
-    'required',
-    'valid',
-    'invalid',
-    'in-range',
-    'out-of-range',
-    'placeholder',
-    'placeholder-shown',
-    'autofill',
-    'read-only',
-    'before', 'after',
-    'first-letter', 'first-line',
-    'marker',
-    'selection',
-    'file',
-    'backdrop',
-    'sm', 'md', 'lg', 'xl', '2xl',
-    'min-[…]',
-    'max-sm', 'max-md', 'max-lg', 'max-xl', 'max-2xl',
-    'max-[…]',
-    'dark',
-    'portrait',
-    'landscape',
-    'motion-safe',
-    'motion-reduce',
-    'contrast-more',
-    'contrast-less',
-    'print',
-    'supports-[…]',
-    'aria-checked', 'aria-disabled', 'aria-expanded', 'aria-hidden', 'aria-pressed', 'aria-readonly', 'aria-required', 'aria-selected', 'aria-[…]',
-    'data-[…]',
-    'rtl', 'ltr',
-    'open',
-        ];
+    static function css($p) {
+        $m = new t_venus('css');
+        return $m->sqlf('@select name,1 from $_ where css_id=%d', $p);
     }
 
     static function menu() {
