@@ -1,65 +1,18 @@
+#.jet core template
 
-#._tw.b ////////////////////////////////////////////////////////////////////////////// <div class="pt-7 px-3">
-<html><head>{!Tailwind::css() . js(['~/m/jquery.min.js', '~/w/venus/ishtar.js']) !}</head>
-<body>
-<table class="" style="" id="tcolors">
-#.b
-<tr>
-  <td colspan="{{$c[1]}}" class="text-sm py-1 pl-2 border font-mono">&nbsp;</td>
-  <td colspan="{{$c[0] - $c[1]}}" class="text-sm py-1 pl-2 border font-mono">&nbsp;</td><td></td>
-</tr><tr>
-  @loop($list as $col)<th class="text-xs">{{$col}}</th>~loop
-  <th class="text-xs">other</th>
-</tr>
-@loop($_ < 10)
-<tr>
-  @loop($list as $col)
-    <td class="text-sm bg-{{$col}}-{{$_ ? $_*100 : 50}} w-12 h-7 text-center {{$_ > 4 ? 'text-white' : 'text-black'}}">{{$_ ? $_*100 : 50}}</td>
-  ~loop
-  @if(0 == $_)<td class="border font-mono text-center" id="color-run">&nbsp;</td>
-  @elseif(1 == $_)<td class="border bg-white text-center">white</td>
-  @elseif(2 == $_)<td class="border bg-black text-white text-center">black</td>
-  @elseif(3 == $_)<td class="border font-mono" onclick="$$.sXX()">Current</td>
-  @elseif(4 == $_)<td class="border font-mono" onclick="$$.sXX()">Transparent</td>
-  @elseif(5 == $_)<td class="border font-mono" onclick="$$.sXX()">Inherit</td></td>
-  @elseif(6 == $_)<td class="border font-mono" onclick="$$.sXX()">Delete</td></td>
-  @else<td class="font-mono"></td>~if
-</tr>
-~loop
-</table><script>i$.tcolors()</script>
-</body></html>
-#._tw._tw3
-@inc(.b)
-@loop($v3 as $k => $v)
-#.red
-  <tr>
-    <th class="text-right text-xs px-1">{{$k}}</th>
-    <td class="bg-black text-green-300">o{{$_ < 9 ? 'o' . ($_ + 1) : ($_ + 1)}}</td>
-    @loop($v as $c)
-      <td style="text-align:center;background:{{$c}};width:41px;
-        color:#{{$_2 > 5 ? 999 : 000}}">{{$_2 > 10 ? ($_ ? (10 == $_ ? 950 : 100 * $_) : 50) : ($_2 ? (10 == $_2 ? 950 : 100 * $_2) : 50)}}</td>
-    ~loop
-  </tr>
-#.red
-~loop
-@php $v = $v3[$k = 'red']; $_ = 5; ~php@inc(.red)
-</table>
-<script>//i$.tcolors()</script>
-</body></html>
-#._tw3.tw
-@inc(_tool.tool)
-#use(.tw_head as t_head)
-#use(.tw_left as t_left)
-#use(.tw_body as t_body)
+#.tailwind
+#use(.t_head)
+#use(.t_left)
+#use(.t_body)
 #use(`` as t_tail)
-#use(`` as t_js)
-#.tw.tw_head
+#use(.t_js)
+#.tailwind.t_head //////////////////////////////////////////////////////////////////////////////
   <b>T-Colors:</b> &nbsp;
   <label><input type="radio" name="t" value="0" checked> Background</label>
   <label><input type="radio" name="t" value="1"> Text</label>
   <label><input type="radio" name="t" value="2"> Border</label>
-  <a class="vs-mono vs-ic" style="font-size:16px" @href($$.ddm('show', '#v-history', 1))>History &nbsp;▼</a>
-#.tw_head.tw_left
+  <a class="vs-ic ml-2 px-2 py-2 hover:bg-gray-200 clk" @href($$.ddm('show', '#v-history', 1);$(this).toggleClass('active'))>History&nbsp;▼</a>
+#.t_head.t_left
 <label class="m-0"><input type="checkbox" onchange="i$.t.twv(this.checked)"@checked($t->p)> V3</label><hr class="m-1">
 <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> hover</label><br>
 <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> focus</label><hr class="m-1">
@@ -72,14 +25,77 @@
 <label class="m-0"><input type="radio" name="w" onchange="i$.t.toggle()"> lg</label><br>
 <label class="m-0"><input type="radio" name="w" onchange="i$.t.toggle()"> xl</label><br>
 <label class="m-0"><input type="radio" name="w" onchange="i$.t.toggle()"> 2xl</label><br>
-#.tw_left.tw_body
-{!$history!}
-<script>
+#.t_left.t_body
+<table class="" style="" id="tcolors">
+@if(!$t->p)@inc(.body)@else
+@loop($v3 as $k => $v)
+#.red
+  <tr>
+    <th class="text-right text-sm px-1">{{$k}}</th>
+    <td class="bg-black text-green-300">o{{$_ < 9 ? 'o' . ($_ + 1) : ($_ + 1)}}</td>
+    @loop($v as $c)
+      <td style="text-align:center;background:{{$c}};width:41px;
+        color:#{{$_2 > 5 ? 999 : 000}}">{{$_2 > 10 ? ($_ ? (10 == $_ ? 950 : 100 * $_) : 50) : ($_2 ? (10 == $_2 ? 950 : 100 * $_2) : 50)}}</td>
+    ~loop
+    <td class="text-sm">{{'amber'==$k ? 'v2 yellow':('emerald'==$k ? 'v2 green':('violet'==$k ? 'v2 purple':''))}}</td>
+  </tr>
+#.red
+~loop
+@php $v = $v3[$k = 'red']; $_ = 5; ~php@inc(.red)
+~if
+</table>
+@if(!$t->p)<script>i$.tcolors()</script>~if
+#.t_body.body
+<tr>
+  <td colspan="{{$c[1]}}" class="py-1 pl-2 border-b border-r font-mono text-base">&nbsp;</td>
+  <td colspan="{{$c[0] - $c[1]}}" class="py-1 pl-2 border-b border-r font-mono text-base">&nbsp;</td><td></td>
+</tr><tr>
+  @loop($list as $col => $a)<th class="text-sm">{{$col}}</th>~loop
+  <th class="text-sm">other</th>
+</tr>
+@loop($_ < 10)
+<tr>
+  @loop($list as $col => $a)
+    <td style="background:{{$a[$_]}};height:25px" class="text-lg w-16 text-center {{$_ > 4 ? 'text-white' : 'text-black'}}">{{$_ ? $_*100 : 50}}</td>
+  ~loop
+  @if(0 == $_)<td class="border font-mono text-xs text-center" id="color-run">&nbsp;</td>
+  @elseif(1 == $_)<td class="border bg-white text-center">white</td>
+  @elseif(2 == $_)<td class="border bg-black text-white text-center">black</td>
+  @elseif(3 == $_)<td class="border font-mono text-base" onclick="$$.sXX()">Current</td>
+  @elseif(4 == $_)<td class="border font-mono text-base" onclick="$$.sXX()">Transparent</td>
+  @elseif(5 == $_)<td class="border font-mono text-base" onclick="$$.sXX()">Inherit</td></td>
+  @elseif(6 == $_)<td class="border font-mono text-base" onclick="$$.sXX()">Delete</td></td>
+  @else<td class="font-mono text-xs"></td>~if
+</tr>
+~loop
+#.body.t_js
 i$.t.twv = function (chk) {
   i$.load('tcolors', chk ? 1:0);
 };
-</script>
-@if($t->p)<iframe srcdoc="@ob@inc(._tw3)@quot" id="color-frame" style="padding:" class="w-full h-full"></iframe>
-@else<iframe srcdoc="@ob@inc(._tw)@quot" id="color-frame" style="padding:" class="w-full h-full"></iframe>
-~if
-#.tw_body
+#.t_js
+
+#.html //////////////////////////////////////////////////////////////////////////////
+#use(._head as t_head)
+#use(._left as t_left)
+#use(._body as t_body)
+#use(`` as t_tail)
+#use(._js as t_js)
+#.html._head
+<b>H-Colors</b>: &nbsp;
+#._head._left
+<label><input type="checkbox" onchange="i$.t.hsort(this.checked)"@checked($t->p)> sort</label><hr class="m-1">
+#._left._body
+  <table class="" style="width:500px; table-layout:fixed" id="hcolors">
+  @loop($_ < 28)
+  <tr>
+    @loop($_2 < 5)@php $c = $list[$i = $_ * 5 + $_2]; ~php
+      <td bgcolor={{$c}} style="background-color:{{$c}}; color: {{$i < 56 || 99 == $i ? 'white' : 'black'}}">{{$c}}</td>
+    ~loop
+  </tr>
+  ~loop
+  </table>
+#._body._js
+i$.t.hsort = function (chk) {
+  i$.load('hcolors', chk ? 1 : 0);
+};
+#._js

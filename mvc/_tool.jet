@@ -1,15 +1,19 @@
 #.jet core template
 
 #.ruler
-  @inc(.tool)
-  @inc(ruler.main)
-#.ruler.close
-  <a @href($(this).parents('.tool').remove()) class="x">@svg(x)</a>
-#.close.tcolors
-  @inc(color.tw)
-#.tcolors.tool
+@inc(.tool)
+@inc(ruler.main)
+#.ruler.tcolors
+{!$history!}
+@inc(.tool)
+@inc(color.tailwind)
+#.tcolors.hcolors
+@inc(.tool)
+@inc(color.html)
+#.hcolors.tool
 <div class="tool" id="t-{{$t->name}}" style="min-width:450px">
-<p class="t-head inline-flex" style="align-items:center;">@inc(.close)
+<p class="t-head inline-flex" style="align-items:center;">
+  <a @href($(this).parents('.tool').remove()) class="x">@svg(x)</a>
   @block(`` as t_head)
 </p>
 <div class="flex" style="height:@block(t_height)292px~block;">
@@ -106,25 +110,6 @@ i$.css(document.body, css_data, {{$t->p}});
   </div>
 ~loop
 #._icons
-
-#.hcolors //////////////////////////////////////////////////////////////////////////////
-@inc(.tool)
-#use(`<b>H-Colors</b>: &nbsp;` as t_head)
-#use(`<label><input type="checkbox" onchange="i$.t.hsort(this.checked)"@checked($t->p)> sort</label><hr class="m-1">` as t_left)
-#use(._hc as t_body)
-#use(`` as t_tail)
-#use(`i$.t.hsort=function(chk){ i$.load('hcolors', chk ? 1:0);};` as t_js)
-#.hcolors._hc
-  <table class="" style="width:500px; table-layout:fixed" id="hcolors">
-  @loop($_ < 28)
-  <tr>
-    @loop($_2 < 5)@php $c = $list[$i = $_ * 5 + $_2]; ~php
-      <td bgcolor={{$c}} style="background-color:{{$c}}; color: {{$i < 56 || 99 == $i ? 'white' : 'black'}}">{{$c}}</td>
-    ~loop
-  </tr>
-  ~loop
-  </table>
-#._hc
 
 #.text //////////////////////////////////////////////////////////////////////////////
 @inc(.tool)

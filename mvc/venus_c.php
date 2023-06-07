@@ -94,7 +94,7 @@ class venus_c extends Controller
                 $qq=['123' => '1', '234' => '2', '345' => '3'];
                 return $ary + [
                     'v3' => Tailwind::$color3,
-                    'list' => $list = array_keys(Tailwind::$colors),
+                    'list' => $list = Tailwind::$color2,
                     'c' => [$c = count($list), floor($c / 2)],
                     'history' => view('venus.popup_menu', ['menu' => ['v-history',
                         ['Gray', $qq, $rar],
