@@ -3,7 +3,10 @@
 #.ruler
 @inc(.tool)
 @inc(ruler.main)
-#.ruler.tcolors
+#.ruler.palette
+@inc(.tool)
+@inc(color.palette)
+#.palette.tcolors
 {!$history!}
 @inc(.tool)
 @inc(color.tailwind)
@@ -18,11 +21,16 @@
 </p>
 <div class="flex" style="height:@block(t_height)292px~block;">
   <div class="mbg whitespace-nowrap" style="width:50px; padding:5px 3px;">@block(`` as t_left)</div>
-  <div class="overflow-auto w-full">@block(`` as t_body)</div>
+  <div class="overflow-auto w-full">@block(`` as t_body)</div>@block(`` as t_right)
 </div>
-<p class="t-head inline-flex" style="align-items:center;">
-  Selected: &nbsp; @block(`` as t_tail)
-</p>
+<div class="t-head inline-flex" style="align-items:center; justify-content:space-between">
+  <div class="ml-2 flex">
+  @block(t_tail)
+    Selected: &nbsp; 
+  ~block
+  </div>
+  <a @href() class="float-right pr-3">@svg(settings)</a>
+</div>
 <script>@block(`` as t_js)</script>
 </div>
 #.tool
@@ -32,7 +40,6 @@
 #use(.t_head)
 #use(`<a @href()>==set9</a><hr class="m-1">` as t_left)
 #use(`{!$menu!}<div class="" id="unicode"></div>` as t_body)
-#use(`` as t_tail)
 #use(`i$.unicode()` as t_js)
 #.unicode.t_head  <select onchange="i$.cp=parseInt(this.value);i$.unicode()">{!$opt!}</select>
 <b>UniCode</b>: &nbsp;
@@ -48,7 +55,6 @@
 #use(`<b>BOX</b>:` as t_head)
 #use(`qq` as t_left)
 #use(`<div class="pt-7 px-3" id="x-box"></div>` as t_body)
-#use(`` as t_tail)
 #use(`` as t_js)
 #.box
 
@@ -57,7 +63,6 @@
 #use(`<b>Pseudo</b>:` as t_head)
 #use(.pleft as t_left)
 #use(.pbody as t_body)
-#use(`` as t_tail)
 #use(`` as t_js)
 #.pseudo.pbody
 <table class="p-1 w-full" id="pseudo">
@@ -79,7 +84,6 @@
 #use(.css_head as t_head)
 #use(`<label><input type="checkbox" onchange="i$.t.toggle()"> help</label><hr class="m-1">` as t_left)
 #use(.css_body as t_body)
-#use(`` as t_tail)
 #use(.css_js as t_js)
 #.css.css_head
 <b>CSS</b>: &nbsp;
@@ -100,7 +104,6 @@ i$.css(document.body, css_data, {{$t->p}});
 #use(`<b>Icons</b>: &nbsp; <button class="btn mx-3 f2" onclick="i$.ip-=150; i$.load('icons', i$.ip)">&lt;</button><button class="btn mx-3 f2" onclick="i$.ip+=150; i$.load('icons', i$.ip)">&gt;</button>` as t_head)
 #use(`qq` as t_left)
 #use(._icons as t_body)
-#use(`` as t_tail)
 #use(`i$.css(document.body)` as t_js)
 #.icons._icons
 @loop($list as $fn => $icon)
@@ -116,7 +119,6 @@ i$.css(document.body, css_data, {{$t->p}});
 #use(._thead as t_head)
 #use(`<label><input type="checkbox" onchange="i$.t.toggle()"> XXL</label><hr class="m-1">` as t_left)
 #use(`<iframe srcdoc="@ob@inc(._text)@quot" id="text-frame" style="padding:0 5px;" class="w-full h-full"></iframe>` as t_body)
-#use(`` as t_tail)
 #use(`i$.t.toggle=function(){ let div = $$.doc('div:first', $('#text-frame'));div.toggle().next().toggle();};` as t_js)
 #.text._thead
   <b>Text</b>: &nbsp;

@@ -109,6 +109,8 @@ class venus_c extends Controller
                 $list = HTML::$colors;
                 $p AND sort($list);
                 return $ary + ['list' => $list];
+            case 'palette':
+                return $ary + ['v3' => Tailwind::$color3];
             case 'ruler':
                 return $ary + ['list' => ''];
             case 'box':

@@ -34,8 +34,8 @@
     <div class="fixed bg-white pt-2" style="width:125px;">
       <select style="padding:0 5px; width:100%" onchange="$$.menu(this.value)">
         <option value="h">Tools</option>
-        <option value="t">--1</option>
-        <option value="i">--2</option>
+        <option value="m">Magic</option>
+        <option value="n">Next</option>
       </select>
     </div>
     <ul class="mt-10"></ul>

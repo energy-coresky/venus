@@ -32,6 +32,7 @@ class m_venus extends Model_m
             'h' => [
                 'Ruler' => "i$.load('ruler')",
                 'HTML Colors' => "i$.load('hcolors')",
+                'Colors Palette' => "i$.load('palette')",
                 'CSS Styles' => "i$.load('css')",
                 'Unicode' => "i$.load('unicode')",
                 'Tailwind' => [
@@ -47,8 +48,13 @@ class m_venus extends Model_m
                     '2do' => "i$.load('tcolors')",
                 ],
             ],
-            't' => [],
-            'i' => [],
+            'm' => [
+                'Chaos & Order' => [
+                    'Analyze App' => "",
+                    'Re-Build App' => "",
+                ],
+			],
+            'n' => [],
         ];
     }
 }

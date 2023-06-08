@@ -1,10 +1,10 @@
 #.jet core template
 
+#use(`` as t_tail)
 #.tailwind
 #use(.t_head)
 #use(.t_left)
 #use(.t_body)
-#use(`` as t_tail)
 #use(.t_js)
 #.tailwind.t_head //////////////////////////////////////////////////////////////////////////////
   <b>T-Colors:</b> &nbsp;
@@ -74,11 +74,11 @@ i$.t.twv = function (chk) {
 };
 #.t_js
 
+
 #.html //////////////////////////////////////////////////////////////////////////////
 #use(._head as t_head)
 #use(._left as t_left)
 #use(._body as t_body)
-#use(`` as t_tail)
 #use(._js as t_js)
 #.html._head
 <b>H-Colors</b>: &nbsp;
@@ -99,3 +99,49 @@ i$.t.hsort = function (chk) {
   i$.load('hcolors', chk ? 1 : 0);
 };
 #._js
+
+
+#.palette ////////////////////////////////////////////////////////////////////////////// var(--bg)
+#use(`51px` as t_height)
+#use(.phead as t_head)
+#use(.pleft as t_left)
+#use(.pbody as t_body)
+#use(`<div class="h-full" style="width:27px;background:var(--bg)"></div>` as t_right)
+#use(.ptail as t_tail)
+#use(.pjs as t_js)
+#.palette.phead
+<b>Palette</b>:
+&nbsp; hue <input type="range" name="hue" min="0" max="360" class="ml-2 w-32" onchange="i$.palette()">@eat
+<input type="number" value="180" style="width:39px;padding:0" onchange="i$.palette()">
+&nbsp; &nbsp;sat6n <input type="range" name="sat" min="0" max="100" class="ml-2 w-24" onchange="i$.palette()">
+<input type="number" value="50" style="width:33px;padding:0" onchange="i$.palette()">
+&nbsp; &nbsp;Algo &nbsp;<select class="py-0">
+  <option>7..(+7)</option>
+</select>
+<a class="ml-5">Apply for o15 (sky)</a>
+#.phead.pleft
+<input type="color" class="w-14 h-14" name="color" value="#f1f3f4"
+  onchange="i$.palette()" oncontextmenu="this.value='#f1f3f4';return false;">
+#.pleft.pbody
+<table class="w-full h-full" style="
+  border-left:1px solid #000;
+  border-bottom:1px solid #000;
+  border-right:1px solid #f00;
+  border-top:1px solid #f00;" id="palette"><tr></tr></table>
+#.pbody.ptail
+V3 Colors: &nbsp;
+@loop($_ < 22)
+  <div style="background-color:{{pos(array_slice($v3, $_, 1))[5]}}; border:2px solid #373; margin:0 1px;"
+    title="{{key(array_slice($v3, $_, 1))}}"
+    class="px-1 font-mono cursor-default">o{{$_ > 8 ? 1 + $_ : 'o' . (1 + $_)}}</div>
+~loop
+#.ptail.pjs
+i$.palette()
+#.pjs
+
+.header, .t-head, .mbg {
+    background-color: ;
+}
+<label class="ml-3"><input type="radio" name="hsl"@checked(1) onchange="i$.palette()"> hue</label>
+<label><input type="radio" name="hsl"@checked(0) onchange="i$.palette()"> saturation</label>
+<label><input type="radio" name="hsl"@checked(0) onchange="i$.palette()"> lightness</label>

@@ -83,6 +83,17 @@ var i$ = {
             })
         });
     },
+    palette: function() {
+        var rgb = $('input[type=color]').val(), hue = $('input[name=hue]').val(), sat = $('input[name=sat]').val(), s = '';
+        for (var i = 0; i < 11; i++) {
+            var cc = 100 - 5 - i * 7, fc = i > 6 ? 'ddd' : '000';
+            s += `<td class="palette" style="color:#${fc};background:hsl(${hue} ${sat}% ${cc}%)"></td>`;
+        }
+        $('#palette').html(s).find('td').each(function(i) {
+            i = 10 == i ? 950 : (i ? (100 * i) : 50);
+            $(this).html(i + '<br>' + i$.rgb2hex(i$.style(this, 'background-color')));
+        });
+    },
     get: function(el, pref) {
         var i, ary = el.className.split(' '), len = pref.length;
         for (i in ary)
