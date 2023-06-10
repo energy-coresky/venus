@@ -7,21 +7,21 @@
 @inc(.tool)
 @inc(color.palette)
 #.palette.tcolors
-{!$history!}
+{!$popup_c!}
 @inc(.tool)
 @inc(color.tailwind)
 #.tcolors.hcolors
 @inc(.tool)
 @inc(color.html)
 #.hcolors.tool
-<div class="tool" id="t-{{$t->name}}" style="min-width:450px">
+<div class="tool relative" id="t-{{$t->name}}" style="min-width:450px">
 <p class="t-head inline-flex" style="align-items:center;">
   <a @href($(this).parents('.tool').remove()) class="x">@svg(x)</a>
   @block(`` as t_head)
 </p>
 <div class="flex" style="height:@block(t_height)292px~block;">
   <div class="mbg whitespace-nowrap" style="width:50px; padding:5px 3px;">@block(`` as t_left)</div>
-  <div class="overflow-auto w-full">@block(`` as t_body)</div>@block(`` as t_right)
+  <div class="overflow-auto@block(`` as w_body)">@block(`` as t_body)</div>@block(t_right)@use(` w-full` as w_body)~block
 </div>
 <div class="t-head inline-flex" style="align-items:center; justify-content:space-between">
   <div class="ml-2 flex">

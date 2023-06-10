@@ -5,6 +5,7 @@
 #use(.t_head)
 #use(.t_left)
 #use(.t_body)
+#use(.t_right)
 #use(.t_js)
 #.tailwind.t_head //////////////////////////////////////////////////////////////////////////////
   <b>T-Colors:</b> &nbsp;
@@ -12,8 +13,9 @@
   <label><input type="radio" name="t" value="1"> Text</label>
   <label><input type="radio" name="t" value="2"> Border</label>
   <a class="vs-ic ml-2 px-2 py-2 hover:bg-gray-200 clk" @href($$.ddm('show', '#v-history', 1);$(this).toggleClass('active'))>History&nbsp;▼</a>
+  <a class="vs-ic ml-2 px-2 py-2 hover:bg-gray-200 clk" @href($$.ddm('show', '#other-col', 1);$(this).toggleClass('active'))>Other Colors&nbsp;▼</a>
 #.t_head.t_left
-<label class="m-0"><input type="checkbox" onchange="i$.t.twv(this.checked)"@checked($t->p)> V3</label><hr class="m-1">
+<label class="m-0"><input type="checkbox" onchange="i$.t.twv(this.checked)"@checked($sky->w_v3)> V3</label><hr class="m-1">
 <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> hover</label><br>
 <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> focus</label><hr class="m-1">
 <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> from</label><br>
@@ -26,49 +28,64 @@
 <label class="m-0"><input type="radio" name="w" onchange="i$.t.toggle()"> xl</label><br>
 <label class="m-0"><input type="radio" name="w" onchange="i$.t.toggle()"> 2xl</label><br>
 #.t_left.t_body
-<table class="" style="" id="tcolors">
-@if(!$t->p)@inc(.body)@else
-@loop($v3 as $k => $v)
+@use(`" style="width:{{$sky->w_v3 ? 538 : 385}}px` as w_body)
+<table class="h-full" style="width:{{$sky->w_v3 ? 521 : 385}}px" id="tcolors">
+@if(!$sky->w_v3)@inc(.v2)@else~{- V3 -}
+@loop($v3 as $k => $v)@eat
 #.red
-  <tr>
+@eat<tr class="use-c">@eat
     <th class="text-right text-sm px-1">{{$k}}</th>
     <td class="bg-black text-green-300">o{{$_ < 9 ? 'o' . ($_ + 1) : ($_ + 1)}}</td>
-    @loop($v as $c)
-      <td style="text-align:center;background:{{$c}};width:41px;
-        color:#{{$_2 > 5 ? 999 : 000}}">{{$_2 > 10 ? ($_ ? (10 == $_ ? 950 : 100 * $_) : 50) : ($_2 ? (10 == $_2 ? 950 : 100 * $_2) : 50)}}</td>
+    @loop($v as $c)@eat
+      <td class="use-c" style="text-align:center;background:{{$c}};width:41px;
+        color:#{{$_2 > 5 ? 999 : 000}}">{{$_2 > 10 ? ($_ ? (10 == $_ ? 950 : 100 * $_) : 50) : ($_2 ? (10 == $_2 ? 950 : 100 * $_2) : 50)}}</td>@eat
     ~loop
-    <td class="text-sm">{{'amber'==$k ? 'v2 yellow':('emerald'==$k ? 'v2 green':('violet'==$k ? 'v2 purple':''))}}</td>
-  </tr>
+  </tr>@eat
 #.red
-~loop
-@php $v = $v3[$k = 'red']; $_ = 5; ~php@inc(.red)
-~if
-</table>
-@if(!$t->p)<script>i$.tcolors()</script>~if
-#.t_body.body
-<tr>
-  <td colspan="{{$c[1]}}" class="py-1 pl-2 border-b border-r font-mono text-base">&nbsp;</td>
-  <td colspan="{{$c[0] - $c[1]}}" class="py-1 pl-2 border-b border-r font-mono text-base">&nbsp;</td><td></td>
-</tr><tr>
-  @loop($list as $col => $a)<th class="text-sm">{{$col}}</th>~loop
-  <th class="text-sm">other</th>
-</tr>
-@loop($_ < 10)
-<tr>
+~loop@eat
+@php $v = $v3[$k = 'red']; $_ = 5; ~php@inc(.red)@eat
+~if~{- V3 -}
+</table><script></script>
+#.t_body.v2
+<tr style="height:41px">
   @loop($list as $col => $a)
-    <td style="background:{{$a[$_]}};height:25px" class="text-lg w-16 text-center {{$_ > 4 ? 'text-white' : 'text-black'}}">{{$_ ? $_*100 : 50}}</td>
+    <th class="text-sm" style="line-height:12px; border-right:1px solid silver"><span class="bg-black text-green-300 px-1"
+      style="font-weight:normal">{!$v2_ary[$_]!}</span><br>{!$col!}
+      @if($rename[$col] ?? false)
+        <span class="text-xs" style="line-height:3px"><br>v2 {{$rename[$col]}}</span>
+      ~if
+    </th>
   ~loop
-  @if(0 == $_)<td class="border font-mono text-xs text-center" id="color-run">&nbsp;</td>
-  @elseif(1 == $_)<td class="border bg-white text-center">white</td>
-  @elseif(2 == $_)<td class="border bg-black text-white text-center">black</td>
-  @elseif(3 == $_)<td class="border font-mono text-base" onclick="$$.sXX()">Current</td>
-  @elseif(4 == $_)<td class="border font-mono text-base" onclick="$$.sXX()">Transparent</td>
-  @elseif(5 == $_)<td class="border font-mono text-base" onclick="$$.sXX()">Inherit</td></td>
-  @elseif(6 == $_)<td class="border font-mono text-base" onclick="$$.sXX()">Delete</td></td>
-  @else<td class="font-mono text-xs"></td>~if
-</tr>
+</tr>@eat
+@loop($_ < 10)@eat
+<tr class="use-c">@eat
+  @loop($list as $col => $a)@eat
+    <td style="background:{{$a[$_]}};height:25px" class="use-c text-lg w-16 text-center {{$_ > 4 ? 'text-white' : 'text-black'}}">{{$_ ? $_*100 : 50}}</td>@eat
+  ~loop@eat
+</tr>@eat
 ~loop
-#.body.t_js
+#.v2.t_right
+<div class="mbg whitespace-nowrap" style="width:50px; padding:5px 3px;">
+<label class="m-0"><input type="radio" name="rm" onchange="i$.t.toggle()" checked> lens</label><br>
+<label class="m-0"><input type="radio" name="rm" onchange="i$.t.toggle()"> used</label><hr class="m-1">
+Opacity<br>
+<input type="radio" name="opa" onchange="">
+<input type="radio" name="opa" onchange="" checked>
+<input type="radio" name="opa" onchange=""><br>
+<input type="range" list="opa-m" min="0" max="100" value="100" step="5" class="range-vert relative" style="left:0px; top:5px;" onchange="i$.opacity(this)">
+<datalist id="opa-m" style="top:-150px; left:25px;">
+  <option value="0" label="&nbsp;"></option>
+  <option value="25" label="25"></option>
+  <option value="50" label="50"></option>
+  <option value="75" label="75"></option>
+  <option value="100" label="&nbsp;"></option>
+</datalist>
+</div>
+<table class="h-full" style="width:calc(100% - {{$t->p ? 641 : 485}}px)" id="big-colors">
+  @loop($_ < 3)<tr><td></td><td></td><td></td></tr>~loop
+</table>
+#.t_right.t_js
+i$.tcolors();
 i$.t.twv = function (chk) {
   i$.load('tcolors', chk ? 1:0);
 };
@@ -106,17 +123,29 @@ i$.t.hsort = function (chk) {
 #use(.phead as t_head)
 #use(.pleft as t_left)
 #use(.pbody as t_body)
+@use(` w-full` as w_body)
 #use(`<div class="h-full" style="width:27px;background:var(--bg)"></div>` as t_right)
 #use(.ptail as t_tail)
 #use(.pjs as t_js)
 #.palette.phead
+<span class="absolute text-sm" style="left:106px;top:-2px">Y</span>@eat
+<span class="absolute text-sm" style="left:118px;top:-2px">G</span>@eat
+<span class="absolute text-sm" style="left:147px;top:-2px">I</span>@eat
+<span class="absolute text-sm" style="left:160px;top:-2px">F</span>
 <b>Palette</b>:
-&nbsp; hue <input type="range" name="hue" min="0" max="360" class="ml-2 w-32" onchange="i$.palette()">@eat
-<input type="number" value="180" style="width:39px;padding:0" onchange="i$.palette()">
-&nbsp; &nbsp;sat6n <input type="range" name="sat" min="0" max="100" class="ml-2 w-24" onchange="i$.palette()">
-<input type="number" value="50" style="width:33px;padding:0" onchange="i$.palette()">
-&nbsp; &nbsp;Algo &nbsp;<select class="py-0">
-  <option>7..(+7)</option>
+&nbsp; Hue <input type="range" min="0" max="360" value="150" class="ml-2 w-32" onchange="i$.palette(this,1)">@eat
+<input type="number" min="0" max="360" value="150" style="width:39px;padding:0" onchange="i$.palette(this,0)">
+&nbsp; &nbsp;Sat6n <input type="range" min="0" max="100" value="33" class="ml-2 w-24" onchange="i$.palette(this,1)">
+<input type="number" min="0" max="100" value="33" style="width:33px;padding:0" onchange="i$.palette(this,0)">
+&nbsp; &nbsp;Algo &nbsp;<select class="py-0 w-28" onchange="alert('2do')">
+  <option>L8..(+8)</option>
+  <option>L7..(+7)</option>
+  <option>L5..(+5)</option>
+  <option>L35..(+5)</option>
+  <option>L10..(+5,25)</option>
+  <option>S3L5..(+)</option>
+  <option>L..rand</option>
+  <option>Custom..</option>
 </select>
 <a class="ml-5">Apply for o15 (sky)</a>
 #.phead.pleft

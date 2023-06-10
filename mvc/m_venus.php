@@ -27,6 +27,31 @@ class m_venus extends Model_m
         return $m->sqlf('@select name,1 from $_ where css_id=%d', $p);
     }
 
+    function v2_ary() {
+        return ['oo2', 'oo6', 'oo8', 'o12', 'o16', 'o17', 'o18', 'o21'];
+    }
+
+    function popup_c() {
+        $html = view('venus.popup_menu', ['menu' => ['v-history',
+            ['Gray', $qq=['123' => '1', '234' => '2', '345' => '3'], venus_c::$rar], '',
+            ['Red', $qq, venus_c::$rar],
+            ['Green', $qq, venus_c::$rar],
+            ['Blue', $qq, venus_c::$rar], '',
+        ]]);
+        $white = tag('', 'class="inline px-10 text-xs bg-white border-2 relative", style="top:0px; margin:0 7px 3px 0"');
+        $silver = tag('','class="inline px-10 text-xs bg-white border-2 relative", style="top:0px; margin:0 7px 3px 0; background-color:silver"');
+        $black = tag('', 'class="inline px-10 text-xs bg-black border-2 relative", style="top:0px; margin:0 7px 3px 0"');
+        return $html . view('venus.popup_menu', ['menu' => ['other-col',
+            ['white', '', "$white<code>#FFFFFF</code>"],
+            ['silver', '', "$silver<code>#C0C0C0</code>"],
+            ['black', '', "$black<code>#000000</code>"], '',
+            ['Delete Color', ''], '',
+            ['Current Color', ''],
+            ['Transparent', ''],
+            ['Inherit', ''],
+        ]]);
+    }
+
     static function menu() {
         return [ // https://rogden.github.io/tailwind-config-viewer/
             'h' => [

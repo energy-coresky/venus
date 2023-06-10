@@ -28,13 +28,13 @@ $(function() {
 #.menu
 
 #.popup_menu //////////////////////////////////////////////////////////////////////////////
-<div class="absolute inline-block" id="{{$id = array_shift($menu)}}">
+<div class="absolute inline-block z-10" id="{{$id = array_shift($menu)}}">
   <div style="width:225px; left:30px;top:22px;" hidden
        class="popup-menu absolute w-56 rounded-sm shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none">
     <div class="py-1" role="none">
     @loop($menu as $a)
       @if($a)
-        <a href="javascript:;"@if(!$sub = is_array($a[1])) onclick="{{$a[1]}}"~if class="menu" onmouseenter="$$.ddm('hover', $(this), {{(int)$sub}})">{{$a[0]}}
+        <a href="javascript:;"@if(!$sub = is_array($a[1])) onclick="{{$a[1]}}"~if class="menu" onmouseenter="$$.ddm('hover', $(this), {{(int)$sub}})">{!$a[0]!}
           @if($a[2] ?? false)<span class="float-right">{!$a[2]!}</span>~if
         </a>
         @if($sub)

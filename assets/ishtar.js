@@ -3,7 +3,9 @@ var i$ = {
     ip: 0,
     t: {}, // tools
     load: function(tool, p) {
-        ajax('tool&' + tool, {p:p || 0}, function(r) {
+        if ('undefined' == typeof p)
+            p = '';
+        ajax('tool&' + tool, {p:p}, function(r) {
             var t = $($$.div ? '#tail' : '#v-right');
             t.find('#t-' + tool).remove();
             t.prepend(r);
@@ -56,13 +58,14 @@ var i$ = {
         });
     },
     tcolors: function() {
-        $('#tcolors').find('td').each(function() {
+        var lock = false;
+        $('#tcolors td.use-c').each(function() {
             $(this).css({
                 cursor:'default'
             }).on('click', function() {
-                if ($(this).hasClass('font-mono'))
-                    return;
                 $(this).css('textDecoration', 'underline');
+                lock = !lock;
+               return;
                 var bg = i$.get(this, 'bg-'), el = $('#tcolors').find('td:eq(1)')[0], el0 = $(el).prev()[0];
                 el0.className = el.className;
                 el0.innerHTML = el.innerHTML;
@@ -74,20 +77,63 @@ var i$ = {
                      //       if($$.$tk) i$.set($$.$tk[0], bg, 3);
       
             }).on('mouseenter', function() {
-                if ($(this).hasClass('font-mono'))
+                if (lock)
                     return;
-                var bg = i$.get(this, 'bg-'), el = $('#color-run')[0];
-                i$.set(el, bg, 3);
-                bg = i$.rgb2hex(i$.style(this, 'background-color'));
-                $(el).html(bg).css('color', i$.style(this, 'color'));
+                var el, tt = this, next = $(tt.nextSibling).hasClass('use-c'), x, ary = [],
+                    tr = tt.parentNode, pr = tr.previousSibling, nr = tr.nextSibling;
+                if ((el = tt.previousSibling) && $(el).hasClass('use-c'))
+                    tt = el;
+                if (!next)
+                    tt = tt.previousSibling;
+                for (var n = -1; tt && $(tt).hasClass('use-c'); n++)
+                    tt = tt.previousSibling;
+                if (pr && $(pr).hasClass('use-c'))
+                    tr = pr;
+                if (!nr)
+                    tr = tr.previousSibling;
+                for (var i = 0; i < 3; i++) {
+                    el = $(tr).find('td.use-c:eq(' + n + ')')[0];
+                    for (var j = 0; j < 3; j++) {
+                        ary.push(el);
+                        if (el === this)
+                            x = i * 3 + j;
+                        el = el.nextSibling;
+                    }
+                    tr = tr.nextSibling;
+                }
+                $('#big-colors td').each(function(i) {
+                    let cl = i$.style(ary[i], 'background-color');
+                    this.style.backgroundColor = cl;
+                    let cls = i == x ? 'c' : 'h', html = i$.rgb2hex(cl) + '<br>-' + ary[i].innerHTML;
+                    this.innerHTML = '<div class="' + cls + '-over">' + html + '</div>';
+                });
+                
+//                var bg = i$.get(this, 'bg-'), el = $('#color-run')[0];
+  //              i$.set(el, bg, 3);
+    //            bg = i$.rgb2hex(i$.style(this, 'background-color'));
+      //          $(el).html(bg).css('color', i$.style(this, 'color'));
             })
         });
     },
-    palette: function() {
-        var rgb = $('input[type=color]').val(), hue = $('input[name=hue]').val(), sat = $('input[name=sat]').val(), s = '';
+    opacity: function(el) {
+        $('#tcolors tr.use-c').each(function() {
+            var cell = $(this).find('td:last')[0];
+            var c = i$.style(cell, 'background-color');
+            var a = /(\d+),\s?(\d+),\s?(\d+)/.exec(c), opa = parseInt(el.value) / 100;
+            c = `rgba(${a[1]}, ${a[2]}, ${a[3]}, ${opa})`;
+            //$('#info span:eq(2)').text(c);
+            cell.style.backgroundColor = c;
+        });
+    },
+    palette: function(el, d) {
+        if (el)
+            d ? $(el).next().val(el.value) : $(el).prev().val(el.value);
+        var rgb = $('#t-palette input[type=range]').val(),
+            hue = $('#t-palette input:eq(0)').val(),
+            sat = $('#t-palette input:eq(2)').val(), s = '';
         for (var i = 0; i < 11; i++) {
-            var cc = 100 - 5 - i * 7, fc = i > 6 ? 'ddd' : '000';
-            s += `<td class="palette" style="color:#${fc};background:hsl(${hue} ${sat}% ${cc}%)"></td>`;
+            var li = 100 - 8 - i * 8, fc = i > 6 ? 'ddd' : '000';
+            s += `<td class="palette" style="color:#${fc};background:hsl(${hue} ${sat}% ${li}%)"></td>`;
         }
         $('#palette').html(s).find('td').each(function(i) {
             i = 10 == i ? 950 : (i ? (100 * i) : 50);

@@ -2,6 +2,8 @@
 
 class venus_c extends Controller
 {
+    static $rar = '<span style="font-family:Verdana;">►</span>';
+
     function a_ware() {
     }
 
@@ -82,28 +84,23 @@ class venus_c extends Controller
         ];
     }
 
-    function j_tool() { // 
+    function j_tool() {
         MVC::body("tool.$this->_2");
         $ary = ['t' => (object)[
             'p' => $p = $_POST['p'] ?? 0,
             'name' => $this->_2,
         ]];
-        $rar = '<span style="font-family:Verdana;">►</span>';
+        $w = $this->t_venus->w();
         switch ($this->_2) {
             case 'tcolors':
-                $qq=['123' => '1', '234' => '2', '345' => '3'];
+                '' === $_POST['p'] or $w->w_v3 = $p;
                 return $ary + [
                     'v3' => Tailwind::$color3,
                     'list' => $list = Tailwind::$color2,
                     'c' => [$c = count($list), floor($c / 2)],
-                    'history' => view('venus.popup_menu', ['menu' => ['v-history',
-                        ['Gray', $qq, $rar],
-                        '',
-                        ['Red', $qq, $rar],
-                        ['Green', $qq, $rar],
-                        ['Blue', $qq, $rar],
-                        '',
-                    ]]),
+                    'popup_c' => $this->m_venus->popup_c(),
+                    'v2_ary' => $this->m_venus->v2_ary(),
+                    'rename' => ['amber' => 'yellow', 'emerald' => 'green', 'violet' => 'purple'],
                 ];
             case 'hcolors':
                 $list = HTML::$colors;
@@ -134,7 +131,7 @@ class venus_c extends Controller
                     //'opt' => option(0, $opt),//$opt = $m->sqlf('@select id, name from $_ where priority=1 order by id');
                     'fonts' => option(0, array_combine($fonts, $fonts)),
                     'menu' => view('venus.popup_menu', ['menu' => ['muni',
-                        ['Arrows', $m->sqlf($sql, 3), $rar],
+                        ['Arrows', $m->sqlf($sql, 3), self::$rar],
                         '',
                         ['ASCII', 'i$.cp=0;i$.unicode()'],
                         ['Кириллица', 'i$.cp=1024;i$.unicode()'],
@@ -142,9 +139,9 @@ class venus_c extends Controller
                         ['Буквоподобные символы', 'i$.cp=8448;i$.unicode()'],
                         ['Разные символы', 'i$.cp=9728;i$.unicode()'],
                         '',
-                        ['Mathematics', $m->sqlf($sql, 2), $rar],
-                        ['Figures', $m->sqlf($sql, 7), $rar],
-                        ['Other', $m->sqlf($sql, 1), $rar],
+                        ['Mathematics', $m->sqlf($sql, 2), self::$rar],
+                        ['Figures', $m->sqlf($sql, 7), self::$rar],
+                        ['Other', $m->sqlf($sql, 1), self::$rar],
                     ]]),
                 ];
             case 'icons':

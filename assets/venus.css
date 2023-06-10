@@ -21,6 +21,21 @@ a {
 hr {
   border-top: var(--border);
 }
+.range-vert {
+  appearance: slider-vertical;
+  height:150px;
+  width:25px;
+}
+#opa-m {
+  display:flex;
+  flex-direction: column-reverse;
+  justify-content: space-between;
+  height:150px;
+  position:relative;
+}
+#opa-m option {
+  padding: 0;
+}
 a:hover {
   color: #005ddd;
   text-decoration: underline;
@@ -105,6 +120,7 @@ pre:focus {
   top: 27px;
   height: calc(100vh - 44px);
   cursor: w-resize;
+  z-index: 100;
 }
 #main {
   min-width: 640px;
@@ -178,6 +194,7 @@ pre:focus {
   position: relative;
   right: -14px;
   bottom: calc(-100% - 24px);
+  z-index: 90;
 }
 
 .header, .t-head, .mbg {
@@ -218,8 +235,8 @@ pre:focus {
 }
 
 #hcolors td {
-    width: 100px !important;
-    overflow: hidden;
+  width: 100px !important;
+  overflow: hidden;
 }
 #css {
   overflow: auto;
@@ -239,9 +256,21 @@ pre:focus {
   color: #000 !important;
   border-bottom:2px solid #3b82f6 !important;
 }
-.palette {
+.palette, #big-colors td {
   font-family: monospace;
   text-align:center;
   vertical-align:middle;
+}
+#big-colors td {
+  
+}
+.h-over, .c-over {
+  background-color:#fff;
+  display:inline-block;
+  padding:3px 5px;
+}
+.c-over {
+  background-color:#2563eb;
+  color:#fff;
 }
 

@@ -14,6 +14,10 @@ class t_venus extends Model_t
         return $dd;
     }
 
+    function w() {
+        return $this;
+    }
+
     function components() {
         return $this->sqlf('@select name, $cc("$$.test(\':",id,"\')") from $_');
     }
