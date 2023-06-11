@@ -89,6 +89,7 @@ class venus_c extends Controller
         $ary = ['t' => (object)[
             'p' => $p = $_POST['p'] ?? 0,
             'name' => $this->_2,
+            'w' => ['---', 'sm', 'md', 'lg', 'xl', '2xl'],
         ]];
         $w = $this->t_venus->w();
         switch ($this->_2) {

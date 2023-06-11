@@ -102,10 +102,10 @@ var i$ = {
                     tr = tr.nextSibling;
                 }
                 $('#big-colors td').each(function(i) {
-                    let cl = i$.style(ary[i], 'background-color');
-                    this.style.backgroundColor = cl;
-                    let cls = i == x ? 'c' : 'h', html = i$.rgb2hex(cl) + '<br>-' + ary[i].innerHTML;
-                    this.innerHTML = '<div class="' + cls + '-over">' + html + '</div>';
+                    let bg = i$.style(ary[i], 'background-color');
+                    this.style.backgroundColor = bg;
+                    let cls = i == x ? 'c' : 'h', html = '<br>' + $(ary[i]).attr('c') + '-' + ary[i].innerHTML;
+                    this.innerHTML = '<div class="' + cls + '-over">' + i$.rgb2hex(bg) + html + i$.twopa + '</div>';
                 });
                 
 //                var bg = i$.get(this, 'bg-'), el = $('#color-run')[0];
@@ -114,15 +114,15 @@ var i$ = {
       //          $(el).html(bg).css('color', i$.style(this, 'color'));
             })
         });
+        $('#tcolors td.use-c:last').mouseenter();
     },
     opacity: function(el) {
         $('#tcolors tr.use-c').each(function() {
             var cell = $(this).find('td:last')[0];
             var c = i$.style(cell, 'background-color');
             var a = /(\d+),\s?(\d+),\s?(\d+)/.exec(c), opa = parseInt(el.value) / 100;
-            c = `rgba(${a[1]}, ${a[2]}, ${a[3]}, ${opa})`;
-            //$('#info span:eq(2)').text(c);
-            cell.style.backgroundColor = c;
+          //$('#info span:eq(2)').text(opa);
+            cell.style.backgroundColor = `rgba(${a[1]}, ${a[2]}, ${a[3]}, ${opa})`;
         });
     },
     palette: function(el, d) {
@@ -159,11 +159,18 @@ var i$ = {
     style: function(el, name) {
         return getComputedStyle(el, null).getPropertyValue(name)
     },
+    twopa: '',
     rgb2hex: function(r, g, b) {
+        var opacity = '';
+        i$.twopa = '';
         if (!g) {
-            var ary = /(\d+),\s?(\d+),\s?(\d+)/.exec(r);
+            var ary = /(\d+),\s?(\d+),\s?(\d+),? ?([\d\.]*)/.exec(r);
+            if ('' !== ary[4]) {
+                i$.twopa = '/' + Math.round(parseFloat(ary[4]) * 100);
+                opacity = Math.round(parseFloat(ary[4]) * 256 + 256).toString(16).slice(1);
+            }
             r = parseInt(ary[1]), g = parseInt(ary[2]), b = parseInt(ary[3]);
         }
-        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+        return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1) + opacity;
     }
 };

@@ -10,7 +10,8 @@ class Maat
         $str = '<?php ' . Plan::_g("assets/tailwind.css");
         //$str = '<?php ' . Plan::_g("assets/t.css");
         $i = 0;
-        $ary = [];
+        $ary = [[], 'cls' => []];
+        $cls = [];
         $n0 = '';
         $n1 = $n2 = false;
         foreach (token_get_all(unl($str)) as $token) {
@@ -33,11 +34,18 @@ class Maat
             switch ($id) {
                 case '{':
                     if (1 == ++$i) {
-                        //$ary[] = $n0;
+                        if ('.' == $n0[0]) {
+                            $n0 = substr($n0, 1);
+                            if ($pos = strpos($n0, '-', 1))
+                                $n0 = substr($n0, 0, $pos);
+                            $cls[$n0] = 1;
+                        } else {
+                            $ary[0][] = $n0;
+                        }
                         $n0 = false;
                         $n1 = $str = '';
                     } elseif (2 == $i) {
-                        $ary[] = $n1;
+                        //$ary[] = $n1;
                         $n1 = false;
                     }
                     break;
@@ -55,8 +63,9 @@ class Maat
                 $n1 .= $str;
             
         }
-        echo '-parse'.$i;
-        print_r($ary);
+        ksort($cls);
+        var_export($cls);
+        
     }
 }
 /*

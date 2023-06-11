@@ -21,12 +21,7 @@
 <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> from</label><br>
 <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> via</label><br>
 <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> to</label><hr class="m-1">
-<label class="m-0"><input type="radio" name="w" checked onchange="i$.t.toggle()"> ---</label><br>
-<label class="m-0"><input type="radio" name="w" onchange="i$.t.toggle()"> sm</label><br>
-<label class="m-0"><input type="radio" name="w" onchange="i$.t.toggle()"> md</label><br>
-<label class="m-0"><input type="radio" name="w" onchange="i$.t.toggle()"> lg</label><br>
-<label class="m-0"><input type="radio" name="w" onchange="i$.t.toggle()"> xl</label><br>
-<label class="m-0"><input type="radio" name="w" onchange="i$.t.toggle()"> 2xl</label><br>
+@loop($t->w as $w)<label class="m-0"><input type="radio" name="w"@checked(!$_) onchange="i$.t.toggle()"> {{$w}}</label><br>~loop
 #.t_left.t_body
 @use(`" style="width:{{$sky->w_v3 ? 538 : 385}}px` as w_body)
 <table class="h-full" style="width:{{$sky->w_v3 ? 521 : 385}}px" id="tcolors">
@@ -37,7 +32,7 @@
     <th class="text-right text-sm px-1">{{$k}}</th>
     <td class="bg-black text-green-300">o{{$_ < 9 ? 'o' . ($_ + 1) : ($_ + 1)}}</td>
     @loop($v as $c)@eat
-      <td class="use-c" style="text-align:center;background:{{$c}};width:41px;
+      <td class="use-c" c="{{$k}}" style="text-align:center;background:{{$c}};width:41px;
         color:#{{$_2 > 5 ? 999 : 000}}">{{$_2 > 10 ? ($_ ? (10 == $_ ? 950 : 100 * $_) : 50) : ($_2 ? (10 == $_2 ? 950 : 100 * $_2) : 50)}}</td>@eat
     ~loop
   </tr>@eat
@@ -60,14 +55,16 @@
 @loop($_ < 10)@eat
 <tr class="use-c">@eat
   @loop($list as $col => $a)@eat
-    <td style="background:{{$a[$_]}};height:25px" class="use-c text-lg w-16 text-center {{$_ > 4 ? 'text-white' : 'text-black'}}">{{$_ ? $_*100 : 50}}</td>@eat
+    <td style="background:{{$a[$_]}};height:25px" c="{!$col!}"
+      class="use-c text-lg w-16 text-center {{$_ > 4 ? 'text-white' : 'text-black'}}">{{$_ ? $_*100 : 50}}</td>@eat
   ~loop@eat
 </tr>@eat
 ~loop
 #.v2.t_right
-<div class="mbg whitespace-nowrap" style="width:50px; padding:5px 3px;">
+<div class="mbg whitespace-nowrap" style="width:50px; padding:5px 3px;@if($sky->w_v3)border-left:1px solid #ccc~if">
 <label class="m-0"><input type="radio" name="rm" onchange="i$.t.toggle()" checked> lens</label><br>
 <label class="m-0"><input type="radio" name="rm" onchange="i$.t.toggle()"> used</label><hr class="m-1">
+<label class="m-0"><input type="checkbox" name="4x4" onchange="i$.t.toggle()"> 4x4</label><hr class="m-1">
 Opacity<br>
 <input type="radio" name="opa" onchange="">
 <input type="radio" name="opa" onchange="" checked>
@@ -81,7 +78,7 @@ Opacity<br>
   <option value="100" label="&nbsp;"></option>
 </datalist>
 </div>
-<table class="h-full" style="width:calc(100% - {{$t->p ? 641 : 485}}px)" id="big-colors">
+<table class="h-full" style="width:calc(100% - {{$sky->w_v3 ? 641 : 485}}px)" id="big-colors">
   @loop($_ < 3)<tr><td></td><td></td><td></td></tr>~loop
 </table>
 #.t_right.t_js
@@ -167,6 +164,8 @@ V3 Colors: &nbsp;
 #.ptail.pjs
 i$.palette()
 #.pjs
+
+
 
 .header, .t-head, .mbg {
     background-color: ;
