@@ -23,7 +23,7 @@
 #.box //////////////////////////////////////////////////////////////////////////////
 #use(`192px` as t_height)
 #use(`<b>BOX</b>:` as t_head)
-#use(`qq` as t_left)
+#use(`--` as t_left)
 #use(`` as t_js)
 <div class="pt-7 px-3" id="x-box"></div>
 #.box

@@ -52,6 +52,7 @@ $(function() {
 </div><script>$$.ddm('init', $('#{{$id}}'))</script>
 #.popup_menu
 
+
 #.tool ////////////////////////// THE LAYOUT ////////////////////////////////////////
 <div class="tool relative" id="t-{{$t->name}}" style="min-width:450px">
 <p class="t-head inline-flex" style="align-items:center;">
@@ -74,6 +75,7 @@ $(function() {
 </div>
 #.tool
 
+
 #.settings ////////////////////////// THE LAYOUT ////////////////////////////////////////
 <div class="w-full h-full bg-blue-200">@block(`` as head)
   <div class="bg-white inset-5 absolute">
@@ -81,6 +83,7 @@ $(function() {
   </div>
 </div>
 #.settings
+
 
 #.empty.page ////////////////////////// THE LAYOUT ////////////////////////////////////////
 <!DOCTYPE html><html>

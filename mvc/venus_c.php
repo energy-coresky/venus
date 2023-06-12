@@ -2,8 +2,6 @@
 
 class venus_c extends Controller
 {
-    static $rar = '<span style="font-family:Verdana;">►</span>';
-
     function a_ware() {
     }
 
@@ -53,11 +51,11 @@ class venus_c extends Controller
             'list' => view('venus.popup_menu', ['menu' => ['project-files',
                 ['Add new file', '', 'Alt + N'],
                 ['Add new component', '', 'Alt + C'],
-                ['Components', $this->t_venus->components(), '<span style="font-family:Verdana;">►</span>'],
+                ['Components', $this->t_venus->components(), m_venus::$rar],
                 '',
                 ['Delete current file/component', ''],
                 '',
-                ['Files', m_venus::files(), '<span style="font-family:Verdana;">►</span>'],
+                ['Files', m_venus::files(), m_venus::$rar],
             ]]),
         ]);
     }
@@ -76,20 +74,12 @@ class venus_c extends Controller
     function j_settings() {
         MVC::$layout = '_venus.settings';
         MVC::body("settings.$this->_2");
-        $m = new t_venus('memory');
-        if ($_POST) {
-            $m->update(['tmemo' => $_POST['ta']], 99);
-            SKY::w('tailwind', $_POST['tw']);
-        }
-        return [
-            'ta' => $m->cell(99, 'tmemo'),
-        ];
+        return $this->t_settings->{"_$this->_2"}();
     }
 
     function j_tool() {
         MVC::$layout = '_venus.tool';
         MVC::body("tool.$this->_2");
-        $this->t_venus->w();
         $y = (object)[
             'p' => $p = $_POST['p'] ?? 0,
             'name' => $this->_2,

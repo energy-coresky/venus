@@ -10,12 +10,8 @@ class t_venus extends Model_t
             return $dd;
         SKY::$databases += Plan::app_r('conf.php')['app']['databases'];
         global $sky;
-        $sky->memory(8, 'w', $dd = SQL::open('w'));
+        $sky->memory(101, 'w', $dd = SQL::open('w'));
         return $dd;
-    }
-
-    function w() {
-        return $this;
     }
 
     function components() {

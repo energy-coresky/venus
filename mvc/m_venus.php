@@ -5,6 +5,7 @@ class m_venus extends Model_m
     static $fsize = ['320 x 480', '640 x 480', '768 x 768', '1024 x 555', '1366 x 768', /* notebook */ '1536 x 555'];
     static $css = ['Properties', 'Types', 'Functions', 'Pseudo-classes', 'Pseudo-elements', 'At-rules'];
     static $css_prop_grp = ['Layout', 'Text', 'Appearance', 'Animation', 'CSS Variables', 'Grid', 'Flex', 'Table', 'Generated Content', 'Other'];
+    static $rar = '<span style="font-family:Verdana;">►</span>';
 
 #$at_rules.
 #You can also browse key CSS concepts and a list of selectors organized by type. 
@@ -33,10 +34,10 @@ class m_venus extends Model_m
 
     function popup_c() {
         $html = view('venus.popup_menu', ['menu' => ['v-history',
-            ['Gray', $qq=['123' => '1', '234' => '2', '345' => '3'], venus_c::$rar], '',
-            ['Red', $qq, venus_c::$rar],
-            ['Green', $qq, venus_c::$rar],
-            ['Blue', $qq, venus_c::$rar], '',
+            ['Gray', $qq=['123' => '1', '234' => '2', '345' => '3'], m_venus::$rar], '',
+            ['Red', $qq, m_venus::$rar],
+            ['Green', $qq, m_venus::$rar],
+            ['Blue', $qq, m_venus::$rar], '',
         ]]);
         $white = tag('', 'class="inline px-10 text-xs bg-white border-2 relative", style="top:0px; margin:0 7px 3px 0"');
         $silver = tag('','class="inline px-10 text-xs bg-white border-2 relative", style="top:0px; margin:0 7px 3px 0; background-color:silver"');
