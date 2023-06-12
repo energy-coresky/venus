@@ -1,46 +1,17 @@
 #.jet core template
 
 #.ruler
-@inc(.tool)
-@inc(ruler.main)
-#.ruler.palette
-@inc(.tool)
-@inc(color.palette)
-#.palette.tcolors
-{!$popup_c!}
-@inc(.tool)
-@inc(color.tailwind)
-#.tcolors.hcolors
-@inc(.tool)
-@inc(color.html)
-#.hcolors.tool
-<div class="tool relative" id="t-{{$t->name}}" style="min-width:450px">
-<p class="t-head inline-flex" style="align-items:center;">
-  <a @href($(this).parents('.tool').remove()) class="x">@svg(x)</a>
-  @block(`` as t_head)
-</p>
-<div class="flex" style="height:@block(t_height)292px~block;">
-  <div class="mbg whitespace-nowrap" style="width:50px; padding:5px 3px;">@block(`` as t_left)</div>
-  <div class="overflow-auto@block(`` as w_body)">@block(`` as t_body)</div>@block(t_right)@use(` w-full` as w_body)~block
-</div>
-<div class="t-head inline-flex" style="align-items:center; justify-content:space-between">
-  <div class="ml-2 flex">
-  @block(t_tail)
-    Selected: &nbsp; 
-  ~block
-  </div>
-  <a @href() class="float-right pr-3">@svg(settings)</a>
-</div>
-<script>@block(`` as t_js)</script>
-</div>
-#.tool
+@inc(ruler.)
+#.ruler._
+@inc(color.)
+#._
 
 #.unicode //////////////////////////////////////////////////////////////////////////////       i$.load('unicode', i$.cp)
-@inc(.tool)
+{!$menu!}
 #use(.t_head)
 #use(`<a @href()>==set9</a><hr class="m-1">` as t_left)
-#use(`{!$menu!}<div class="" id="unicode"></div>` as t_body)
 #use(`i$.unicode()` as t_js)
+<div class="" id="unicode"></div>
 #.unicode.t_head  <select onchange="i$.cp=parseInt(this.value);i$.unicode()">{!$opt!}</select>
 <b>UniCode</b>: &nbsp;
 <button class="btn mx-1" onclick="i$.unicode(-1)" style="font-family:Verdana;">◄</button>
@@ -50,21 +21,17 @@
 #.t_head
 
 #.box //////////////////////////////////////////////////////////////////////////////
-@inc(.tool)
 #use(`192px` as t_height)
 #use(`<b>BOX</b>:` as t_head)
 #use(`qq` as t_left)
-#use(`<div class="pt-7 px-3" id="x-box"></div>` as t_body)
 #use(`` as t_js)
+<div class="pt-7 px-3" id="x-box"></div>
 #.box
 
 #.pseudo //////////////////////////////////////////////////////////////////////////////
-@inc(.tool)
 #use(`<b>Pseudo</b>:` as t_head)
 #use(.pleft as t_left)
-#use(.pbody as t_body)
 #use(`` as t_js)
-#.pseudo.pbody
 <table class="p-1 w-full" id="pseudo">
 @loop($evar as $row)
   <tr class="even">
@@ -74,25 +41,22 @@
   </tr>
 ~loop
 </table>
-#.pbody.pleft
+#.pseudo.pleft
 <label><input type="radio" checked onchange="i$.t.hsort(this.checked)"@checked(0)> ALL</label><hr class="m-1">
 @loop($grp as $one)<label><input type="radio" onchange="i$.t.hsort(this.checked)"@checked(0)> {{$one}}</label><br>~loop
 #.pleft
 
 #.css //////////////////////////////////////////////////////////////////////////////
-@inc(.tool)
 #use(.css_head as t_head)
 #use(`<label><input type="checkbox" onchange="i$.t.toggle()"> help</label><hr class="m-1">` as t_left)
-#use(.css_body as t_body)
 #use(.css_js as t_js)
+<table class="w-full" id="css"></table>{!$css!}
 #.css.css_head
 <b>CSS</b>: &nbsp;
 @loop($list as $name)
   <label><input type="radio" name="css" value="{{$_}}"@checked($t->p == $_) onchange="i$.load('css', this.value)"> {{$name}}</label>
 ~loop
-#.css_head.css_body
-<table class="w-full" id="css"></table>{!$css!}
-#.css_body.css_js
+#.css_head.css_js
 var css_data = JSON.parse($.trim($('#css-data').text()));
  //alert(css_data['display'])
 i$.css(document.body, css_data, {{$t->p}});
@@ -100,26 +64,22 @@ i$.css(document.body, css_data, {{$t->p}});
 
 
 #.icons //////////////////////////////////////////////////////////////////////////////
-@inc(.tool)
 #use(`<b>Icons</b>: &nbsp; <button class="btn mx-3 f2" onclick="i$.ip-=150; i$.load('icons', i$.ip)">&lt;</button><button class="btn mx-3 f2" onclick="i$.ip+=150; i$.load('icons', i$.ip)">&gt;</button>` as t_head)
 #use(`qq` as t_left)
-#use(._icons as t_body)
 #use(`i$.css(document.body)` as t_js)
-#.icons._icons
 @loop($list as $fn => $icon)
   <div class="w-32 h-12 fl" style="border-right:1px solid #ccc; border-bottom:1px solid #ccc;">
     <div style="margin:2px 5px">{! $icon !}</div>
     <p class="text-xs">{{$fn}}</p>
   </div>
 ~loop
-#._icons
+#.icons
 
 #.text //////////////////////////////////////////////////////////////////////////////
-@inc(.tool)
 #use(._thead as t_head)
 #use(`<label><input type="checkbox" onchange="i$.t.toggle()"> XXL</label><hr class="m-1">` as t_left)
-#use(`<iframe srcdoc="@ob@inc(._text)@quot" id="text-frame" style="padding:0 5px;" class="w-full h-full"></iframe>` as t_body)
 #use(`i$.t.toggle=function(){ let div = $$.doc('div:first', $('#text-frame'));div.toggle().next().toggle();};` as t_js)
+<iframe srcdoc="@ob@inc(._text)@quot" id="text-frame" style="padding:0 5px;" class="w-full h-full"></iframe>
 #.text._thead
   <b>Text</b>: &nbsp;
   <label><input type="radio" name="f" value="0"> Family</label>

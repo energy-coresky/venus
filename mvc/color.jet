@@ -1,28 +1,18 @@
 #.jet core template
 
-#use(`` as t_tail)
-#.tailwind
-#use(.t_head)
-#use(.t_left)
-#use(.t_body)
-#use(.t_right)
-#use(.t_js)
-#.tailwind.t_head //////////////////////////////////////////////////////////////////////////////
+#.t_head
   <b>T-Colors:</b> &nbsp;
   <label><input type="radio" name="t" value="0" checked> Background</label>
   <label><input type="radio" name="t" value="1"> Text</label>
   <label><input type="radio" name="t" value="2"> Border</label>
   <a class="vs-ic ml-2 px-2 py-2 hover:bg-gray-200 clk" @href($$.ddm('show', '#v-history', 1);$(this).toggleClass('active'))>History&nbsp;▼</a>
   <a class="vs-ic ml-2 px-2 py-2 hover:bg-gray-200 clk" @href($$.ddm('show', '#other-col', 1);$(this).toggleClass('active'))>Other Colors&nbsp;▼</a>
-#.t_head.t_left
-<label class="m-0"><input type="checkbox" onchange="i$.t.twv(this.checked)"@checked($sky->w_v3)> V3</label><hr class="m-1">
-<label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> hover</label><br>
-<label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> focus</label><hr class="m-1">
-<label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> from</label><br>
-<label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> via</label><br>
-<label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> to</label><hr class="m-1">
-@loop($t->w as $w)<label class="m-0"><input type="radio" name="w"@checked(!$_) onchange="i$.t.toggle()"> {{$w}}</label><br>~loop
-#.t_left.t_body
+#.tcolors.t_head //////////////////////////////////////////////////////////////////////////////
+{!$popup_c!}
+#use(.t_head)
+#use(.t_left)
+#use(.t_right)
+#use(.t_js)
 @use(`" style="width:{{$sky->w_v3 ? 538 : 385}}px` as w_body)
 <table class="h-full" style="width:{{$sky->w_v3 ? 521 : 385}}px" id="tcolors">
 @if(!$sky->w_v3)@inc(.v2)@else~{- V3 -}
@@ -41,7 +31,7 @@
 @php $v = $v3[$k = 'red']; $_ = 5; ~php@inc(.red)@eat
 ~if~{- V3 -}
 </table><script></script>
-#.t_body.v2
+#.tcolors.v2
 <tr style="height:41px">
   @loop($list as $col => $a)
     <th class="text-sm" style="line-height:12px; border-right:1px solid silver"><span class="bg-black text-green-300 px-1"
@@ -60,7 +50,15 @@
   ~loop@eat
 </tr>@eat
 ~loop
-#.v2.t_right
+#.v2.t_left
+<label class="m-0"><input type="checkbox" onchange="i$.t.twv(this.checked)"@checked($sky->w_v3)> V3</label><hr class="m-1">
+<label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> hover</label><br>
+<label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> focus</label><hr class="m-1">
+<label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> from</label><br>
+<label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> via</label><br>
+<label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> to</label><hr class="m-1">
+@loop($t->w as $w)<label class="m-0"><input type="radio" name="w"@checked(!$_) onchange="i$.t.toggle()"> {{$w}}</label><br>~loop
+#.t_left.t_right
 <div class="mbg whitespace-nowrap" style="width:50px; padding:5px 3px;@if($sky->w_v3)border-left:1px solid #ccc~if">
 <label class="m-0"><input type="radio" name="rm" onchange="i$.t.toggle()" checked> lens</label><br>
 <label class="m-0"><input type="radio" name="rm" onchange="i$.t.toggle()"> used</label><hr class="m-1">
@@ -89,26 +87,24 @@ i$.t.twv = function (chk) {
 #.t_js
 
 
-#.html //////////////////////////////////////////////////////////////////////////////
+#._head
+<b>H-Colors</b>: &nbsp;
+#.hcolors._head //////////////////////////////////////////////////////////////////////////////
 #use(._head as t_head)
 #use(._left as t_left)
-#use(._body as t_body)
 #use(._js as t_js)
-#.html._head
-<b>H-Colors</b>: &nbsp;
-#._head._left
-<label><input type="checkbox" onchange="i$.t.hsort(this.checked)"@checked($t->p)> sort</label><hr class="m-1">
-#._left._body
-  <table class="" style="width:500px; table-layout:fixed" id="hcolors">
-  @loop($_ < 28)
-  <tr>
-    @loop($_2 < 5)@php $c = $list[$i = $_ * 5 + $_2]; ~php
-      <td bgcolor={{$c}} style="background-color:{{$c}}; color: {{$i < 56 || 99 == $i ? 'white' : 'black'}}">{{$c}}</td>
-    ~loop
-  </tr>
+<table class="" style="width:500px; table-layout:fixed" id="hcolors">
+@loop($_ < 28)
+<tr>
+  @loop($_2 < 5)@php $c = $list[$i = $_ * 5 + $_2]; ~php
+    <td bgcolor={{$c}} style="background-color:{{$c}}; color: {{$i < 56 || 99 == $i ? 'white' : 'black'}}">{{$c}}</td>
   ~loop
-  </table>
-#._body._js
+</tr>
+~loop
+</table>
+#.hcolors._left
+<label><input type="checkbox" onchange="i$.t.hsort(this.checked)"@checked($t->p)> sort</label><hr class="m-1">
+#._left._js
 i$.t.hsort = function (chk) {
   i$.load('hcolors', chk ? 1 : 0);
 };
@@ -119,11 +115,15 @@ i$.t.hsort = function (chk) {
 #use(`51px` as t_height)
 #use(.phead as t_head)
 #use(.pleft as t_left)
-#use(.pbody as t_body)
 @use(` w-full` as w_body)
 #use(`<div class="h-full" style="width:27px;background:var(--bg)"></div>` as t_right)
 #use(.ptail as t_tail)
 #use(.pjs as t_js)
+<table class="w-full h-full" style="
+  border-left:1px solid #000;
+  border-bottom:1px solid #000;
+  border-right:1px solid #f00;
+  border-top:1px solid #f00;" id="palette"><tr></tr></table>
 #.palette.phead
 <span class="absolute text-sm" style="left:106px;top:-2px">Y</span>@eat
 <span class="absolute text-sm" style="left:118px;top:-2px">G</span>@eat
@@ -148,13 +148,7 @@ i$.t.hsort = function (chk) {
 #.phead.pleft
 <input type="color" class="w-14 h-14" name="color" value="#f1f3f4"
   onchange="i$.palette()" oncontextmenu="this.value='#f1f3f4';return false;">
-#.pleft.pbody
-<table class="w-full h-full" style="
-  border-left:1px solid #000;
-  border-bottom:1px solid #000;
-  border-right:1px solid #f00;
-  border-top:1px solid #f00;" id="palette"><tr></tr></table>
-#.pbody.ptail
+#.pleft.ptail
 V3 Colors: &nbsp;
 @loop($_ < 22)
   <div style="background-color:{{pos(array_slice($v3, $_, 1))[5]}}; border:2px solid #373; margin:0 1px;"

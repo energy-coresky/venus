@@ -12,7 +12,7 @@ class venus_c extends Controller
     }
 
     function tail_y() {
-        return MVC::$layout ? parent::tail_y() : null;
+        return MVC::$layout && !$this->fly ? parent::tail_y() : null;
     }
 
     function a_tailwind() {
@@ -74,6 +74,8 @@ class venus_c extends Controller
     }
 
     function j_settings() {
+        MVC::$layout = '_venus.settings';
+        MVC::body("settings.$this->_2");
         $m = new t_venus('memory');
         if ($_POST) {
             $m->update(['tmemo' => $_POST['ta']], 99);
@@ -85,77 +87,14 @@ class venus_c extends Controller
     }
 
     function j_tool() {
+        MVC::$layout = '_venus.tool';
         MVC::body("tool.$this->_2");
-        $ary = ['t' => (object)[
+        $this->t_venus->w();
+        $y = (object)[
             'p' => $p = $_POST['p'] ?? 0,
             'name' => $this->_2,
             'w' => ['---', 'sm', 'md', 'lg', 'xl', '2xl'],
-        ]];
-        $w = $this->t_venus->w();
-        switch ($this->_2) {
-            case 'tcolors':
-                '' === $_POST['p'] or $w->w_v3 = $p;
-                return $ary + [
-                    'v3' => Tailwind::$color3,
-                    'list' => $list = Tailwind::$color2,
-                    'c' => [$c = count($list), floor($c / 2)],
-                    'popup_c' => $this->m_venus->popup_c(),
-                    'v2_ary' => $this->m_venus->v2_ary(),
-                    'rename' => ['amber' => 'yellow', 'emerald' => 'green', 'violet' => 'purple'],
-                ];
-            case 'hcolors':
-                $list = HTML::$colors;
-                $p AND sort($list);
-                return $ary + ['list' => $list];
-            case 'palette':
-                return $ary + ['v3' => Tailwind::$color3];
-            case 'ruler':
-                return $ary + ['list' => ''];
-            case 'box':
-                return $ary + ['list' => ''];
-            case 'css':
-                $ary['css'] = tag(html(json_encode(m_venus::css($p))), 'id="css-data" style="display:none"');
-                return $ary + ['list' => m_venus::$css];
-            case 'pseudo':
-                $m = new t_venus('pseudo');
-                $ary += ['grp' => $m->sqlf('@select grp from $_ group by grp')];
-                return $ary + ['evar' => $m->all()];
-            case 'text':
-                return $ary + ['sizes' => Tailwind::$size];
-            case 'unicode':
-                $fonts = ['arial', 'verdana', 'serif', 'cursive', 'monospace'];
-                $m = new t_venus('unicode');
-                if ($p)
-                    $m->sqlf('update $_ set priority=9 where id=%d', $p);
-                $sql = '@select name,$cc("i$.cp=",id,";i$.unicode()") from $_ where priority=%d order by id';
-                return $ary + [
-                    //'opt' => option(0, $opt),//$opt = $m->sqlf('@select id, name from $_ where priority=1 order by id');
-                    'fonts' => option(0, array_combine($fonts, $fonts)),
-                    'menu' => view('venus.popup_menu', ['menu' => ['muni',
-                        ['Arrows', $m->sqlf($sql, 3), self::$rar],
-                        '',
-                        ['ASCII', 'i$.cp=0;i$.unicode()'],
-                        ['Кириллица', 'i$.cp=1024;i$.unicode()'],
-                        ['Символы валют', 'i$.cp=8352;i$.unicode()'],
-                        ['Буквоподобные символы', 'i$.cp=8448;i$.unicode()'],
-                        ['Разные символы', 'i$.cp=9728;i$.unicode()'],
-                        '',
-                        ['Mathematics', $m->sqlf($sql, 2), self::$rar],
-                        ['Figures', $m->sqlf($sql, 7), self::$rar],
-                        ['Other', $m->sqlf($sql, 1), self::$rar],
-                    ]]),
-                ];
-            case 'icons':
-                $src = 'C:/web/tw/node_modules/bootstrap-icons/icons/*.svg';
-                $list = [];
-                foreach (glob($src) as $i => $fn) {
-                    if ($i < $p)
-                        continue;
-                    $list[basename($fn, '.svg')] = file_get_contents($fn);
-                    if (count($list) > 149)
-                        break;
-                }
-                return $ary + ['list' => $list];
-        }
+        ];
+        return $this->m_tools->{"_$this->_2"}($p) + ['t' => $y];
     }
 }

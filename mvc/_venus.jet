@@ -1,9 +1,5 @@
 #.jet core template
 
-#.empty.page
-@inc(layout.main)
-#.empty.page
-
 #.ware //////////////////////////////////////////////////////////////////////////////
 <script>
 $(function() {
@@ -56,25 +52,181 @@ $(function() {
 </div><script>$$.ddm('init', $('#{{$id}}'))</script>
 #.popup_menu
 
-#.settings //////////////////////////////////////////////////////////////////////////////
-<form class="m-3" method="post">
-  <h1>Settings</h1>
-  <p class="text-2xl">App hot keys</p>
-  <p>ESC - ...</p>
-  <p>F2 - Save file</p>
-  <p>F4 - </p>
-  <p>F6 - </p>
-  <p>F8 - Switch IFRAME size</p>
-  <p>F9 - Swap panels</p>
-  <p>F10 - </p>
-  <p class="text-2xl">Browser hot keys</p>
-  <p>F3 - Search on the page</p>
-  <p>F5 - Refresh the page</p>
-  <p>F11 - Full screen mode</p>
-  <p>F12 - On/Off - Chrome DEV tools
-    <button onclick="ajax('settings', $('form.m-3').serialize(), box)" class="btn-blue">Save</button>
-    Tailwindcss file: <input name="tw" value="{{SKY::w('tailwind')}}">
-  </p>
-  <textarea class="w-full" name="ta" rows="28">{{$ta}}</textarea>
-</form>
+#.tool ////////////////////////// THE LAYOUT ////////////////////////////////////////
+<div class="tool relative" id="t-{{$t->name}}" style="min-width:450px">
+<p class="t-head inline-flex" style="align-items:center;">
+  <a @href($(this).parents('.tool').remove()) class="x">@svg(x)</a>
+  @block(`` as t_head)
+</p>
+<div class="flex" style="height:@block(t_height)292px~block;">
+  <div class="mbg whitespace-nowrap" style="width:50px; padding:5px 3px;">@block(`` as t_left)</div>
+  <div class="overflow-auto@block(`` as w_body)">@inc(*)</div>@block(t_right)@use(` w-full` as w_body)~block
+</div>
+<div class="t-head inline-flex" style="align-items:center; justify-content:space-between">
+  <div class="ml-2 flex">
+  @block(t_tail)
+    Selected: &nbsp; 
+  ~block
+  </div>
+  <a @href(ajax('settings&{{$t->name}}', box)) class="float-right pr-3">@svg(settings)</a>
+</div>
+<script>@block(`` as t_js)</script>
+</div>
+#.tool
+
+#.settings ////////////////////////// THE LAYOUT ////////////////////////////////////////
+<div class="w-full h-full bg-blue-200">@block(`` as head)
+  <div class="bg-white inset-5 absolute">
+    @inc(*)
+  </div>
+</div>
 #.settings
+
+#.empty.page ////////////////////////// THE LAYOUT ////////////////////////////////////////
+<!DOCTYPE html><html>
+<head>{!Tailwind::css(false)!}@head
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+  $$.fn = '{{$page}}'; //cur_page
+</script>
+</head>
+<body class="h-screen" style="overflow:hidden">{- justify-center items-center  -}
+<div id="mov-x"></div>
+<div id="main">
+  <div id="v-head">
+    <a href="{{LINK}}" class="vs-ic mr-3">@svg(home)</a>
+    <a @href($(this).find('svg').toggle()) class="vs-ic">@inc(.moonsun)</a>
+    <a @href($(this).find('svg').show()) class="vs-ic ml-3">@svg(fileplus)</a>
+    <button class="btn mx-3 f2" onclick="$$.save()">Save - F2</button>
+    <button class="btn mx-3 f4" onclick="$$.test()">Load - F4</button>
+    <button class="btn mx-3 f6" onclick="alert()">??? - F6</button>
+    <span class="m1-2" >Frame&nbsp;</span>
+    <select id="fsize" onchange="$$.switch(this)">{! $fsize !}<option cust>*</option></select>
+    <button class="btn ml-1 f8" onclick="$$.switch()">Switch - F8</button>
+    <button class="btn ml-1" onclick="$$.mm(-1)">Min</button>
+    <button class="btn ml-1" onclick="$$.mm(1)">Max</button>
+    <a @href($(this).find('svg').toggle()) class="">@inc(.mobile)</a>
+    <button class="btn ml-3 mr-5 f10" onclick="$$.swap()">Catch - F10</button>
+    <a @href($(this).find('svg').toggle(); $$.bg()) class="">@inc(.screen)</a>
+    <!-- from right -->
+    <span class="absolute right-20">@inc(.pdaxt)</span>
+    <a @href(ajax('settings&all', box)) class="vs-ic absolute right-8">@svg(settings)</a>
+  </div>
+  <div id="v-menu">
+    <div class="fixed bg-white pt-2" style="width:125px;">
+      <select style="padding:0 5px; width:100%" onchange="$$.menu(this.value)">
+        <option value="h">Tools</option>
+        <option value="m">Magic</option>
+        <option value="n">Next</option>
+      </select>
+    </div>
+    <ul class="mt-10"></ul>
+  </div>
+  <div id="v-main" style=""> <!-- resize:both; overflow:auto; -->
+    <div id="sw-icon"><a @href($$.swap()) title="Swap panels - F9">@svg(arrows)</a></div>
+    <iframe src="" class="w-full h-full"></iframe>
+  </div>
+  <div id="v-right"></div>
+  <div id="v-tail">@inc(.tail)</div>
+</div>
+@tail</body></html>
+#.empty.page.tail ------------------------------------------------------------------------------
+<div id="info">
+  <span class="relative" style="right:calc(-100% + 15px); width:75px; margin-left:-75px">cursor pos</span>
+  <span class="ml-3">-</span>
+  <span class="ml-3"></span>
+</div>
+<div id="mov-y"></div>
+<div id="tail">
+  <p id="code-head" class="header fixed pl-8" style="height:22px; align-items:center; display:inline-flex; overflow:hidden; white-space:nowrap;">
+    Filename &nbsp;<b></b>
+    <!-- &nbsp; &nbsp;<button class="btn mx-3" onclick="$$.swap()">Delete file</button> -->
+    &nbsp; &nbsp;Project files &nbsp;
+    <a class="vs-mono vs-ic" style="font-size:16px" @href($$.ddm('show', '#project-files', 1))>▼</a>
+    &nbsp; &nbsp; &nbsp; &nbsp;<label><input type="checkbox" checked> &nbsp;Tidy</label>
+    &nbsp; &nbsp;<label><input type="checkbox" checked> &nbsp;Comments</label>
+    &nbsp; &nbsp;<label><input type="checkbox" checked> &nbsp;Scripts</label>
+    &nbsp; &nbsp;<label><input type="checkbox" checked> &nbsp;CSS</label>
+    &nbsp; &nbsp;<label><input type="checkbox"> &nbsp;Re-format &lt;PRE&gt;</label>
+    &nbsp; &nbsp;<label><input type="checkbox"> &nbsp;Limit length of the lines</label>
+  </p><div id="project-list"></div>
+  <div id="code-body" class="flex" style="margin-top:22px;">
+    <pre style="padding:0 1px; text-align:right; background-color:#f1f3f4; color:#9d174d;" class=""></pre>
+    <pre style="padding-left:1px; margin-left:0px; border-left:0px solid #ccc; min-width:calc(100% - 24px)"
+      contenteditable="true"></pre>
+  </div>
+</div>
+#.tail.pdaxt ------------------------------------------------------------------------------
+<span class="pdaxt">
+  <a href="{{$page ?: LINK}}">S</a>
+  <a @href(dev('_dev'))>D</a>
+  <a href="/">?</a>
+  <a @href(sky.trace(1))>X</a>
+  <a @href(sky.trace(0))>T</a>
+</span>
+#.pdaxt
+
+
+
+Colors
+
+Dimension
+  Width
+  Height
+  Padding
+  Margin
+  Negative Margin
+  Min Width
+  Max Width
+  Min Height
+  Max Height
+Text
+  Font Size
+  Font Weight
+  Letter Spacing
+  Line Height
+Border
+  Radius
+  Width
+Other
+  Screens
+  Shadows
+  Opacity
+  Transitions
+
+HTML Colors
+CSS Styles
+Unicode
+
+#.screen ////////////////////////// IMAGES ////////////////////////////////////////////
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" hidden>
+  <path d="M0 0h16v16H0V0zm1 1v6.5h6.5V1H1zm7.5 0v6.5H15V1H8.5zM15 8.5H8.5V15H15V8.5zM7.5 15V8.5H1V15h6.5z"></path>
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+  <rect x="0" y="0" width="12" height="4" style="fill:#93c5fd;stroke:none" />
+  <rect x="12" y="0" width="4" height="12" style="fill:#fde68a;stroke:none" />
+  <rect x="4" y="12" width="12" height="4" style="fill:#6ee7b7;stroke:none" />
+  <rect x="0" y="4" width="4" height="12" style="fill:#f87171;stroke:none" />
+</svg>
+#.screen
+
+#.moonsun
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" style="margin:0 1px" viewBox="0 0 16 16">
+  <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+  <path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/>
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" hidden>
+  <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+</svg>
+#.moonsun
+
+#.mobile
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+  <path d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h6zM5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H5z"></path>
+  <path d="M8 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"></path>
+</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" hidden>
+  <path d="M1 4.5a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1v-6zm-1 6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2v6z"></path>
+  <path d="M14 7.5a1 1 0 1 0-2 0 1 1 0 0 0 2 0z"></path>
+</svg>
+#.mobile

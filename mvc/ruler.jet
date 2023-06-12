@@ -1,14 +1,12 @@
 #.jet core template
 
-#.main
+#.ruler
 #use(`51px` as t_height)
 #use(`<b>Ruler</b>:` as t_head)
 #use(`--` as t_left)
-#use(.t_body)
 #use(`` as t_tail)
 #use(`i$.css(document.body)` as t_js)
-#.main.t_body
 <div class="pt-7 px-3" id="ruler">
   <div style="position:absolute; left:150px;top:20px;"></div>
 </div>
-#.t_body
+#.ruler
