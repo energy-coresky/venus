@@ -11,13 +11,22 @@ class m_venus extends Model_m
 #You can also browse key CSS concepts and a list of selectors organized by type. 
 #Also included is a brief DOM-CSS / CSSOM reference.
 
+    static function &ghost($dd, $name = 'all', $char = '') {
+        $char = 'all' == $name ? 'w' : 't';
+        list($id, $txt, $cfg) = $dd->sqlf('-select id, txt, cfg from $_memory where name=%s', $name);
+        SKY::ghost($char, $cfg, 'update $_memory set cfg=%s where id=' . $id, 0, $dd);
+        $ary = [&SKY::$mem[$char][3], $txt, $id];
+        return $ary;
+    }
+
     static function files() {
         $list = array_map(function($v) {
             return basename($v);
         }, glob(WWW . 'venus/*.html'));
-        //$list[] = 'https://ukrposhta.ua/ru';
         $list[] = LINK;
-        $list[] = LINK . 'zz2.html';
+        $list[] = 'https://ukrposhta.ua/ua';
+        $list[] = 'https://coresky.net/';
+
         return array_combine($list, array_map(function($v) {
             return "$$.test('$v')";
         }, $list));
@@ -79,7 +88,7 @@ class m_venus extends Model_m
                     'Analyze App' => "",
                     'Re-Build App' => "",
                 ],
-			],
+            ],
             'n' => [],
         ];
     }

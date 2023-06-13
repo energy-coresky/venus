@@ -7,6 +7,8 @@ class venus_c extends Controller
 
     function head_y($action) {
         'a_ware' == $action or MVC::$layout = '';
+        $this->y3 = explode('.', $this->_3, 3) + ['', '', ''];
+        return ['y_3' => $this->y3];
     }
 
     function tail_y() {
@@ -74,7 +76,9 @@ class venus_c extends Controller
     function j_settings() {
         MVC::$layout = '_venus.settings';
         MVC::body("settings.$this->_2");
-        return $this->t_settings->{"_$this->_2"}();
+        if ($this->y3[0] == 'save')
+            $this->t_settings->save($_POST['ta'] ?? $_POST);
+        return $this->t_settings->form();
     }
 
     function j_tool() {

@@ -3,14 +3,14 @@
 class t_venus extends Model_t
 {
     protected $table = 'preset';
+    public $w;
 
     function head_y() {
         static $dd;
         if ($dd)
             return $dd;
         SKY::$databases += Plan::app_r('conf.php')['app']['databases'];
-        global $sky;
-        $sky->memory(101, 'w', $dd = SQL::open('w'));
+        $this->w =& m_venus::ghost($dd = SQL::open('w'));
         return $dd;
     }
 
@@ -22,7 +22,7 @@ class t_venus extends Model_t
         if (':' == $fn[0]) {
             $css = $tw ? Tailwind::css() : '';
             return $css . $this->t_venus->cell(substr($fn, 1), 'tmemo');
-        } elseif (strpos($fn, '/')) {
+        } elseif ($ext = strpos($fn, '/')) {
             preg_match('/^https?:/', $fn) or $fn = "https://$fn";
         } else {
             $fn = WWW . 'venus/' . basename($fn);
@@ -33,7 +33,7 @@ class t_venus extends Model_t
         $i = 2;
         foreach($node->find('body *') as $el)
             $el->e = $i++;*/
-        return file_get_contents($fn);
+        return $ext ? get($fn, '', false) : file_get_contents($fn);
     }
 
     function put($fn, $data = null) {

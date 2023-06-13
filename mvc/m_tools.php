@@ -2,11 +2,13 @@
 
 class m_tools extends Model_m
 {
+    private $addr;
+
     function head_y() {
-        return $this->t_venus->head_y();
+        return $this->t_settings->head_y();
     }
 
-	function _tcolors($p) {
+    function _tcolors($p) {
         '' === $_POST['p'] or $this->w_v3 = $p;
         return [
             'v3' => Tailwind::$color3,
@@ -16,46 +18,46 @@ class m_tools extends Model_m
             'v2_ary' => $this->m_venus->v2_ary(),
             'rename' => ['amber' => 'yellow', 'emerald' => 'green', 'violet' => 'purple'],
         ];
-	}
+    }
 
-	function _hcolors($p) {
+    function _hcolors($p) {
         $list = HTML::$colors;
         $p AND sort($list);
         return ['list' => $list];
-	}
+    }
 
-	function _palette($p) {
-		return ['v3' => Tailwind::$color3];
-	}
+    function _palette($p) {
+        return ['v3' => Tailwind::$color3];
+    }
 
-	function _ruler($p) {
-		return ['list' => ''];
-	}
+    function _ruler($p) {
+        return ['list' => ''];
+    }
 
-	function _box($p) {
-		return ['list' => ''];
-	}
+    function _box($p) {
+        return ['list' => ''];
+    }
 
-	function _css($p) {
+    function _css($p) {
         return [
-			'css' => tag(html(json_encode(m_venus::css($p))), 'id="css-data" style="display:none"'),
-			'list' => m_venus::$css,
-		];
-	}
+            'css' => tag(html(json_encode(m_venus::css($p))), 'id="css-data" style="display:none"'),
+            'list' => m_venus::$css,
+        ];
+    }
 
-	function _text($p) {
-		return ['sizes' => Tailwind::$size];
-	}
+    function _text($p) {
+        return ['sizes' => Tailwind::$size];
+    }
 
-	function _pseudo($p) {
+    function _pseudo($p) {
         $m = new t_venus('pseudo');
         return [
-			'grp' => $m->sqlf('@select grp from $_ group by grp'),
-			'evar' => $m->all(true),
-		];
-	}
+            'grp' => $m->sqlf('@select grp from $_ group by grp'),
+            'evar' => $m->all(true),
+        ];
+    }
 
-	function _unicode($p) {
+    function _unicode($p) {
         $fonts = ['arial', 'verdana', 'serif', 'cursive', 'monospace'];
         $m = new t_venus('unicode');
         if ($p)
@@ -78,9 +80,9 @@ class m_tools extends Model_m
                 ['Other', $m->sqlf($sql, 1), m_venus::$rar],
             ]]),
         ];
-	}
+    }
 
-	function _icons($p) {
+    function _icons($p) {
         $src = 'C:/web/tw/node_modules/bootstrap-icons/icons/*.svg';
         $list = [];
         foreach (glob($src) as $i => $fn) {
@@ -91,8 +93,8 @@ class m_tools extends Model_m
                 break;
         }
         return ['list' => $list];
-	}
+    }
 
-	function _($p) {
-	}
+    function _($p) {
+    }
 }

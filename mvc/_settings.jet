@@ -1,8 +1,23 @@
 #.jet core template
 
 #.all //////////////////////////////////////////////////////////////////////////////
-#use(.all_head as head)
-<form method="post">
+#use(`Venus settings` as head)
+
+
+#.all
+
+#.ruler //////////////////////////////////////////////////////////////////////////////
+#use(.body)
+#.ruler.body
+???
+#.body
+
+#._ //////////////////////////////////////////////////////////////////////////////
+Empty for now
+#._
+
+
+
   <h1>Settings</h1>
   <p class="text-2xl">App hot keys</p>
   <p>ESC - ...</p>
@@ -16,22 +31,4 @@
   <p>F3 - Search on the page</p>
   <p>F5 - Refresh the page</p>
   <p>F11 - Full screen mode</p>
-  <p>F12 - On/Off - Chrome DEV tools
-    <button onclick="ajax('settings', $('form.m-3').serialize(), box)" class="btn-blue">Save</button>
-    Tailwindcss file: <input name="tw" value="{{SKY::w('tailwind')}}">
-  </p>
-  <textarea class="" name="ta" rows="25">{{$ta}}</textarea>
-</form>
-#.all.all_head
-???
-#.all_head
-
-#.ruler //////////////////////////////////////////////////////////////////////////////
-#use(.body)
-#.ruler.body
-???
-#.body
-
-#._ //////////////////////////////////////////////////////////////////////////////
-Empty for now
-#._
+  <p>F12 - On/Off - Chrome DEV tools</p>
