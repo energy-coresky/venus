@@ -191,7 +191,9 @@ var $$ = {
         $.each($.parseHTML(html, document, true), function(i, el) {
             var tt = 0, nn = el.nodeName.toLowerCase();
             if (el.className)
-                $$.classes.push(el.className);
+                $$.post[0].push(el.className);
+            if (nn == 'style')
+                $$.post[1].push(el.innerHTML);
             if (nn == '#text') { // #cdata-section #document #document-fragment
                 if (tt = $(el).text().trim())
                     out += indent + $$.html(tt) + '\n';
@@ -248,18 +250,19 @@ var $$ = {
             $$.fn = fn;
         $$.$f.attr('src', sky.home + '_venus?src=' + $$.fn);
     },
-    classes: [],
+    post: [[], []],
     onload: function() {
         $$.doc().mouseup($$.m_up).mousemove($$.m_move).find('body *').mouseenter($$.m_enter);
         $('#code-head b').html($$.fn);//r.html
         var html = $$.doc('html:first').html().replaceAll('\r\n', '\n').replaceAll('\r', '\n');
-        $$.classes = [];
+        $$.post = [[], []];
         html = $$.parse(html);
         var br = html.replace(/[^\n]/g, '').length;
         for (var i = 1, lines = '  1'; i <= br; lines += '\n' + ++i);
         $('#code-body pre:eq(0)').html(lines).next().html(html);
-        ajax('src&src=' + $$.fn, {doc: $$.classes}, function(r) {
+        ajax('src&src=' + $$.fn, {doc: $$.post}, function(r) {
             $('#project-list').html(r.list);
+            $('#code-body pre:eq(1)').prepend(r.css);
         });
     },
     div: 0,

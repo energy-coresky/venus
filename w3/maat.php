@@ -5,12 +5,12 @@ class Maat
     function __construct() {
     }
 
-    static function parse_css($css) {
+    static function parse_css($css, $test = false) {
         $maat = new Maat;
         ini_set('memory_limit', '1024M');
-        //$css = Plan::_g("assets/tailwin.css");
+        if ($test)
+            return $maat->test($css);
         return $maat->reBuild($css);
-        //$this->test($css);
     }
 
     function test(&$css) { # for lost chars
@@ -81,9 +81,11 @@ class Maat
                 if (T_WHITESPACE == $id) {
                     $str = ' '; # 2do: comment between spaces
                 } elseif (T_COMMENT == $id) {
-                    if ('#' != $str && '*' == $str[1])
+                    if ('#' != $str && '*' == $str[1]) # //
                         continue;
-                    $space = true;
+                    if ("\n" != $str[-1] && " " != $str[-1])
+                        $space = true;
+                    $str = trim($str);
                 }
             }
             switch ($id) {

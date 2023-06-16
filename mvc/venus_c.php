@@ -48,12 +48,14 @@ class venus_c extends Controller
     }
 
     function j_src() {
-        Plan::_p('mvc/venus-doc.html', var_export($_POST['doc'], 1));
-        $v = new Vesper;
-        Plan::_p('mvc/venus-do.html', var_export($v->in($_POST['doc']), 1));
-
+        #$v = new Vesper;
+        #Plan::_p('mvc/venus-do.html', var_export($v->in($_POST['doc'][0]), 1));
+   #Plan::_p('mvc/venus-1.html', $_POST['doc'][1][0]);
+        $css = trim(substr($q = Maat::parse_css($_POST['doc'][1][0]), 6040));// 6040
+   #Plan::_p('mvc/venus-2.html', $q);
         json([
-            'html' => preg_replace("/&(\w+);/", '&amp;$1;', $this->t_venus->get($this->_3)),
+            'css' => html("<style>\n$css\n</style>\n"),
+            //'html' => preg_replace("/&(\w+);/", '&amp;$1;', $this->t_venus->get($this->_3)),
             'list' => view('venus.popup_menu', ['menu' => ['project-files',
                 ['Add new file', '', 'Alt + N'],
                 ['Add new component', '', 'Alt + C'],

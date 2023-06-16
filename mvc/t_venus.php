@@ -20,7 +20,8 @@ class t_venus extends Model_t
 
     function get($fn, $tw = false) {
         if (':' == $fn[0]) {
-            $css = $tw ? Tailwind::css() : '';
+            //$css = $tw ? Tailwind::css() : '';
+            $css = $tw ? '<script src="https://cdn.tailwindcss.com"></script>' : '';
             return $css . $this->t_venus->cell(substr($fn, 1), 'tmemo');
         } elseif ($ext = strpos($fn, '/')) {
             preg_match('/^https?:/', $fn) or $fn = "https://$fn";
