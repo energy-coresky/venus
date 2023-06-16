@@ -2,10 +2,13 @@
 var i$ = {
     ip: 0,
     t: {}, // tools
-    load: function(tool, p) {
-        if ('undefined' == typeof p)
-            p = '';
-        ajax('tool&' + tool, {p:p}, function(r) {
+    load: function(tool, p3, post) {
+        if ('object' == typeof tool)
+            tool = $(tool).parents('.tool:first')[0].id.slice(2);
+        if ('boolean' == typeof p3)
+            p3 = p3 ? 1 : 0;
+        p3 = 'undefined' == typeof p3 ? '' : '=' + p3;
+        ajax('tool&' + tool + p3, post || {}, function(r) {
             var t = $($$.div ? '#tail' : '#v-right');
             t.find('#t-' + tool).remove();
             t.prepend(r);

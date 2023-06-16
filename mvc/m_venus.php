@@ -5,6 +5,7 @@ class m_venus extends Model_m
     static $fsize = ['320 x 480', '640 x 480', '768 x 768', '1024 x 555', '1366 x 768', /* notebook */ '1536 x 555'];
     static $css = ['Properties', 'Types', 'Functions', 'Pseudo-classes', 'Pseudo-elements', 'At-rules'];
     static $css_prop_grp = ['Layout', 'Text', 'Appearance', 'Animation', 'CSS Variables', 'Grid', 'Flex', 'Table', 'Generated Content', 'Other'];
+    static $css_tpl_grp = ['color', 'text', 'box', 'table', 'animation', 'Grid', 'Flex', 'Other'];
     static $rar = '<span style="font-family:Verdana;">►</span>';
 
 #$at_rules.
@@ -24,7 +25,6 @@ class m_venus extends Model_m
             return basename($v);
         }, glob(WWW . 'venus/*.html'));
         $list[] = LINK;
-        $list[] = 'https://ukrposhta.ua/ua';
         $list[] = 'https://coresky.net/';
 
         return array_combine($list, array_map(function($v) {
@@ -69,15 +69,16 @@ class m_venus extends Model_m
                 'HTML Colors' => "i$.load('hcolors')",
                 'Colors Palette' => "i$.load('palette')",
                 'CSS Styles' => "i$.load('css')",
-                'Unicode' => "i$.load('unicode')",
                 'Tailwind' => [
                     'Colors' => "i$.load('tcolors')",
                     'Text' => "i$.load('text')",
                     'Box' => "i$.load('box')",
-                    'Pseudo' => "i$.load('pseudo')",
+                    'Syntax' => "i$.load('syntax')",
                 ],
-                'Icons' => [
-                    'Bootstrap' => "i$.load('icons')",
+                'Images & Fonts' => [
+                    'Collections' => "i$.load('icons')",
+                    'Create SVG' => "ajax('settings&icons=new', box)",
+                    'Unicode' => "i$.load('unicode')",
                 ],
                 'Alpine.js' => [
                     '2do' => "i$.load('tcolors')",

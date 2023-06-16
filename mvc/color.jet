@@ -51,13 +51,13 @@
 </tr>@eat
 ~loop
 #.v2.t_left
-<label class="m-0"><input type="checkbox" onchange="i$.t.twv(this.checked)"@checked($sky->w_v3)> V3</label><hr class="m-1">
+<label class="m-0"><input type="checkbox" onchange="i$.load(this,this.checked)"@checked($sky->w_v3)> V3</label><hr class="m-1">
 <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> hover</label><br>
 <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> focus</label><hr class="m-1">
 <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> from</label><br>
 <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> via</label><br>
 <label class="m-0"><input type="checkbox" onchange="i$.t.toggle()"> to</label><hr class="m-1">
-@loop($t->w as $w)<label class="m-0"><input type="radio" name="w"@checked(!$_) onchange="i$.t.toggle()"> {{$w}}</label><br>~loop
+@loop($media as $w)<label class="m-0"><input type="radio" name="w"@checked(!$_) onchange="i$.t.toggle()"> {{$w}}</label><br>~loop
 #.t_left.t_right
 <div class="mbg whitespace-nowrap" style="width:50px; padding:5px 3px;@if($sky->w_v3)border-left:1px solid #ccc~if">
 <label class="m-0"><input type="radio" name="rm" onchange="i$.t.toggle()" checked> lens</label><br>
@@ -81,9 +81,6 @@ Opacity<br>
 </table>
 #.t_right.t_js
 i$.tcolors();
-i$.t.twv = function (chk) {
-  i$.load('tcolors', chk ? 1:0);
-};
 #.t_js
 
 
@@ -103,11 +100,8 @@ i$.t.twv = function (chk) {
 ~loop
 </table>
 #.hcolors._left
-<label><input type="checkbox" onchange="i$.t.hsort(this.checked)"@checked($t->p)> sort</label><hr class="m-1">
+<label><input type="checkbox" onchange="i$.load(this,this.checked)"@checked($y_3[0])> sort</label><hr class="m-1">
 #._left._js
-i$.t.hsort = function (chk) {
-  i$.load('hcolors', chk ? 1 : 0);
-};
 #._js
 
 

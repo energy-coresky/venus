@@ -54,7 +54,7 @@ $(function() {
 
 
 #.tool ////////////////////////// THE LAYOUT ////////////////////////////////////////
-<div class="tool relative" id="t-{{$t->name}}" style="min-width:450px">
+<div class="tool relative" id="t-{{$y_2}}" style="min-width:450px">
 <p class="t-head inline-flex" style="align-items:center;">
   <a @href($(this).parents('.tool').remove()) class="x">@svg(x)</a>
   @block(`` as t_head)
@@ -69,50 +69,11 @@ $(function() {
     Selected: &nbsp; 
   ~block
   </div>
-  <a @href(ajax('settings&{{$t->name}}', box)) class="float-right pr-3">@svg(settings)</a>
+  <a @href(ajax('settings&{{$y_2}}', box)) class="float-right pr-3">@svg(settings)</a>
 </div>
 <script>@block(`` as t_js)</script>
 </div>
 #.tool
-
-
-#.settings ////////////////////////// THE LAYOUT ////////////////////////////////////////
-<div class="w-full h-full bg-{{$y_color}}-200">
-  <div class="bg-white inset-5 absolute">
-    <span class="font-mono text-9xl absolute right-4 top-12 text-{{$y_color}}-200">{{'all' == $y_2 ? '♀' : '♂'}}</span>
-    <div class="h-14 flex justify-between items-center">
-      <div class="w-1/3">@block(`left-top` as head)</div>
-      <div class="w-1/3 text-center"><h1 class="uppercase font-bold">{{$y_title}} settings</h1></div>
-      <div class="w-1/3 text-right px-2">
-        @if($y_3[1])
-          <button onclick="ajax('settings&{{$y_2}}=save.1', $('#ta-form').serialize(), box)" class="btn-blue">Save - F2</button>
-          <button onclick="ajax('settings&{{$y_2}}', box)" class="btn-blue">Close Edit</button>
-        @else
-          <button onclick="ajax('settings&{{$y_2}}=doc.1', box)" class="btn-blue">Edit Help</button>
-        ~if
-      </div>
-    </div>
-    <div class="flex h-4/5">
-      <div style="width:150px">@block(`left` as left)</div>
-      <div style="width:calc((100% - 150px) / 2)">
-        @if($y_3[1])
-          <form method="post" id="ta-form" class="h-full px-2">
-            <textarea class="w-full h-full" name="ta">{{$y_txt}}</textarea>
-          </form>
-        @else
-          {!$form!}
-          @inc(*)
-        ~if
-      </div>
-      <div style="width:calc((100% - 150px) / 2)" class="p-2 overflow-auto">
-        {!Display::md($y_txt)!}
-      </div>
-    </div>
-    <div class="">@block(`tail` as tail)</div>
-  </div>
-</div>
-#.settings    Tailwindcss file: <input name="tw" value="{{SKY::w('tailwind')}}">
-
 
 #.empty.page ////////////////////////// THE LAYOUT ////////////////////////////////////////
 <!DOCTYPE html><html>
@@ -156,7 +117,7 @@ $(function() {
   </div>
   <div id="v-main" style=""> <!-- resize:both; overflow:auto; -->
     <div id="sw-icon"><a @href($$.swap()) title="Swap panels - F9">@svg(arrows)</a></div>
-    <iframe src="" class="w-full h-full"></iframe>
+    <iframe src="" class="w-full h-full" onload="$$.onload()"></iframe>
   </div>
   <div id="v-right"></div>
   <div id="v-tail">@inc(.tail)</div>

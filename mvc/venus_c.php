@@ -7,8 +7,8 @@ class venus_c extends Controller
 
     function head_y($action) {
         'a_ware' == $action or MVC::$layout = '';
-        $this->y3 = explode('.', $this->_3, 3) + ['', '', ''];
-        return ['y_3' => $this->y3];
+        $this->y3 = explode('.', $this->_3, 5) + ['', '', '', '', ''];
+        return ['y_2' => $this->_2, 'y_3' => $this->y3];
     }
 
     function tail_y() {
@@ -43,11 +43,15 @@ class venus_c extends Controller
         ];
     }
 
-    function a_fn() {
+    function a_src() {
         echo $this->t_venus->get(end($_GET), true);
     }
 
-    function j_code() {
+    function j_src() {
+        Plan::_p('mvc/venus-doc.html', var_export($_POST['doc'], 1));
+        $v = new Vesper;
+        Plan::_p('mvc/venus-do.html', var_export($v->in($_POST['doc']), 1));
+
         json([
             'html' => preg_replace("/&(\w+);/", '&amp;$1;', $this->t_venus->get($this->_3)),
             'list' => view('venus.popup_menu', ['menu' => ['project-files',
@@ -74,21 +78,14 @@ class venus_c extends Controller
     }
 
     function j_settings() {
-        MVC::$layout = '_venus.settings';
+        MVC::$layout = '_settings.layout';
         MVC::body("settings.$this->_2");
-        if ($this->y3[0] == 'save')
-            $this->t_settings->save($_POST['ta'] ?? $_POST);
-        return $this->t_settings->form();
+        return $this->t_settings->model($this->_2);
     }
 
     function j_tool() {
         MVC::$layout = '_venus.tool';
         MVC::body("tool.$this->_2");
-        $y = (object)[
-            'p' => $p = $_POST['p'] ?? 0,
-            'name' => $this->_2,
-            'w' => ['---', 'sm', 'md', 'lg', 'xl', '2xl'],
-        ];
-        return $this->m_tools->{"_$this->_2"}($p) + ['t' => $y];
+        return $this->m_tools->model($this->_2);
     }
 }

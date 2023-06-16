@@ -28,11 +28,16 @@
 <div class="pt-7 px-3" id="x-box"></div>
 #.box
 
-#.pseudo //////////////////////////////////////////////////////////////////////////////
-#use(`<b>Pseudo</b>:` as t_head)
+
+#.shead
+<b>Syntax</b>: &nbsp;
+<label><input type="radio" name="syn" checked onchange="i$.t.hsort(this.checked)"@checked(1)> Pseudo</label>
+<label><input type="radio" name="syn" onchange="i$.t.hsort(this.checked)"@checked(0)> Classes</label>
+#.syntax.shead //////////////////////////////////////////////////////////////////////////////
+#use(.shead as t_head)
 #use(.pleft as t_left)
 #use(`` as t_js)
-<table class="p-1 w-full" id="pseudo">
+<table class="p-1 w-full" id="syntax">
 @loop($evar as $row)
   <tr class="even">
   <td class="border px-1">{{$row->name}}:</td>
@@ -41,10 +46,11 @@
   </tr>
 ~loop
 </table>
-#.pseudo.pleft
+#.syntax.pleft
 <label><input type="radio" checked onchange="i$.t.hsort(this.checked)"@checked(0)> ALL</label><hr class="m-1">
 @loop($grp as $one)<label><input type="radio" onchange="i$.t.hsort(this.checked)"@checked(0)> {{$one}}</label><br>~loop
 #.pleft
+
 
 #.css //////////////////////////////////////////////////////////////////////////////
 #use(.css_head as t_head)
@@ -54,18 +60,18 @@
 #.css.css_head
 <b>CSS</b>: &nbsp;
 @loop($list as $name)
-  <label><input type="radio" name="css" value="{{$_}}"@checked($t->p == $_) onchange="i$.load('css', this.value)"> {{$name}}</label>
+  <label><input type="radio" name="css" value="{{$_}}"@checked($y_3[0] == $_) onchange="i$.load(this,this.value)"> {{$name}}</label>
 ~loop
+<span class="absolute right-12">122 lines</span>
 #.css_head.css_js
 var css_data = JSON.parse($.trim($('#css-data').text()));
  //alert(css_data['display'])
-i$.css(document.body, css_data, {{$t->p}});
+i$.css(document.body, css_data, {{$y_3[0]}});
 #.css_js
 
-
 #.icons //////////////////////////////////////////////////////////////////////////////
-#use(`<b>Icons</b>: &nbsp; <button class="btn mx-3 f2" onclick="i$.ip-=150; i$.load('icons', i$.ip)">&lt;</button><button class="btn mx-3 f2" onclick="i$.ip+=150; i$.load('icons', i$.ip)">&gt;</button>` as t_head)
-#use(`qq` as t_left)
+#use(.i_head as t_head)
+#use(`<label class="m-0"><input type="checkbox" name="rm" onchange=""> lens</label><hr class="m-1">` as t_left)
 #use(`i$.css(document.body)` as t_js)
 @loop($list as $fn => $icon)
   <div class="w-32 h-12 fl" style="border-right:1px solid #ccc; border-bottom:1px solid #ccc;">
@@ -73,7 +79,19 @@ i$.css(document.body, css_data, {{$t->p}});
     <p class="text-xs">{{$fn}}</p>
   </div>
 ~loop
-#.icons
+#.icons.i_head
+<b>Icons</b>: &nbsp;
+<button class="btn mx-3 f2" onclick="i$.ip-=150; i$.load('icons', i$.ip + '.{{$y_3[1]}}')">&lt;</button>
+<button class="btn mx-3 f2" onclick="i$.ip+=150; i$.load('icons', i$.ip + '.{{$y_3[1]}}')">&gt;</button>
+Icons set: &nbsp; <select onchange="i$.ip=0;i$.load(this,'0.' + this.value)">
+  <option value="0">∑ All sets</option>
+  <option value="-1">♥ Favorites</option>
+  {!$srcs!}
+</select> &nbsp;
+@if($y_3[1])
+  <button class="btn mx-3 f2" onclick="ajax('tool&icons=lic.{{$y_3[1]}}',box)">Show License</button>
+~if
+#.i_head
 
 #.text //////////////////////////////////////////////////////////////////////////////
 #use(._thead as t_head)

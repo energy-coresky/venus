@@ -3,7 +3,12 @@
 class t_settings extends Model_t
 {
     protected $table = 'memory';
+
     public $t;//sky sql "insert into memory values(null,'palette',null,0,null,'',null)" w venus
+
+    private $menu = [];
+    private $ary = [];
+    private $form_data = [];
 
     function head_y() {
         if ($this->dd)
@@ -14,124 +19,142 @@ class t_settings extends Model_t
         } else {
             $this->t =& m_venus::ghost($dd, $this->_2);
         }
-        MVC::$_y += [
-            'y_2' => $this->_2,
-            'y_title' => 'all' == $this->_2 ? 'Venus' : ucfirst($this->_2),
-            'y_color' => 'all' == $this->_2 ? 'pink' : 'blue',
-            'y_txt' => $this->t[1],
-            'y_w' => (object)$this->t_venus->w[0],
-            'y_t' => (object)$this->t[0],
-        ];
         return $dd;
     }
 
-    function form() {
-        $onclick = "ajax('settings&$this->_2=save.0', $('#f1').serialize(), box)";
-        $form = $this->{"_$this->_2"}();
-        $form += [99 => ['Save', 'button', 'class="btn-blue" onclick="' . $onclick . '"']];
-        return ['form' => Form::A($this->t[0], $form)];
+    function clk($u) {
+        return "ajax('settings&$this->_2=$u', $('#f1').serialize(), box)";
     }
 
-    function save($s) {
-trace($this->t_venus->w);
-        is_string($s)
-            ? $this->update(['txt' => MVC::$_y['y_txt'] = $s], $this->t[2])
-            : call_user_func(['SKY', 'all' == $this->_2 ? 'w' : 't'], $s);
+    function model($name) {
+        if ($this->y3[0] == 'save') {
+            isset($_POST['ta'])
+                ? $this->update(['txt' => MVC::$_y['y_txt'] = $_POST['ta']], $this->t[2])
+                : call_user_func(['SKY', 'all' == $name ? 'w' : 't'], $_POST);
+        }
+        $this->form_data = $this->t[0];
+        if ($form = $this->{"_$name"}($u))
+            $form += [99 => ['Save', 'button', 'class="btn-blue" onclick="' . $this->clk($u ?? 'save.0') . '"']];
+        return $this->ary + [
+            'form' => Form::A($this->form_data, $form),
+            'title' => 'all' == $name ? 'Venus' : ucfirst($name),
+            'color' => 'all' == $name ? 'pink' : 'blue',
+            'txt' => $this->t[1],
+            'left_w' => $this->menu ? 150 : 0,
+            'menu' => $this->menu,
+        ];
     }
 
-    function _all() {
+    function _all(&$u = null) {
+        $this->menu = [
+            'q' => 'Список',
+            'a' => 'Настройки',
+            's' => 'Test 1',
+            'f' => 'Keyboard Shortcuts',
+        ];
         return [
             'tailwind' => ['Tailwind'],
-            'test' => ['Test'],
+            'pref' => ['Venus prefix for integrated classes'],
         ];
     }
 
-    function _tcolors() {
+    function _syntax(&$u = null) {
+        $this->menu = [
+            'form' => 'Common',
+            'pseudo' => 'Pseudo',
+            'classes' => 'Classes',
+        ];
+        if ('classes' == $this->y3[2]) {
+            $id = $this->y3[3];
+            $m = new t_venus('tw');
+            if ('put' == $this->y3[0]) {
+                $_POST['!dt_u'] = '$now';
+                $_POST['css'] = $_POST['url'] = '';
+                $id ? $m->update($_POST, $id) : ($id = $m->insert($_POST));
+            }
+            $this->form_data = $id ? $m->one($id) : [];
+            $this->ary['list'] = $m->all(['tw_id=' => 0]);
+            $u = "put.0.classes.$id";
+            return [
+                'tw_id' => 0, # classes
+                ['ID', 'ni', $id ?: 'New Item'],
+                'grp' => ['Group', 'select', array_combine($a = m_venus::$css_tpl_grp, $a)],
+                'name' => ['Name', '', 'style="width:50%"'],
+                'tpl' => ['Template', 'textarea_rs', 'style="width:90%" rows="7"'],
+            ];
+        }
         return [
             
         ];
     }
 
-    function _hcolors() {
+    function _tcolors(&$u = null) {
+        return [
+            'vcolor' => ['Color palette', 'radio', ['Show both', 'V2 only', 'V3 only']],
+        ];
+    }
+
+    function _hcolors(&$u = null) {
         return [
             
         ];
     }
 
-    function _palette() {
+    function _palette(&$u = null) {
         return [
             
         ];
     }
 
-    function _ruler() {
+    function _ruler(&$u = null) {
         return [
             
         ];
     }
 
-    function _box() {
+    function _box(&$u = null) {
         return [
             
         ];
     }
 
-    function _css() {
+    function _css(&$u = null) {
         return [
             
         ];
     }
 
-    function _text() {
+    function _text(&$u = null) {
         return [
             
         ];
     }
 
-    function _pseudo() {
+    function _unicode(&$u = null) {
         return [
             
         ];
     }
 
-    function _unicode() {
-        return [
-            
-        ];
+    function _icons(&$u = null) {
+        /*        $src = 'path-to/icons/*.svg';
+        $list = [];
+        foreach (glob($src) as $i => $fn) {
+            if ($i < $this->y3[0])
+                continue;
+            $list[basename($fn, '.svg')] = file_get_contents($fn);
+#$this->sqlf('insert into icon values(null,%s,X,%s)', basename($fn, '.svg'), file_get_contents($fn));
+            $list[basename($fn, '.svg')] = file_get_contents($fn);
+            if (count($list) > 149)
+                break;
+        }
+        //return ['list' => $list];*/
+        return [];
     }
 
-    function _icons() {
-        return [
-            
-        ];
-    }
-
-    function _() {
+    function _(&$u = null) {
         return [
             
         ];
     }
 }
-/*
-
-https://ukrposhta.ua/ru
-https://api.jquery.com/jquery.parsehtml/
-https://rogden.github.io/tailwind-config-viewer/#Spacing
- <a href="https://tailwindui.com/">tailwindui.com</a> <a href="https://tailwindui.com/preview">tailwindui.com/preview</a><br>
-    <a href="https://tailwindcss.com/docs/text-color">docs</a> |
-    <a href="https://tailblocks.cc/">tailblocks.cc</a><br>
-    <a href="https://alpinejs.dev/start-here">alpine.js</a> |
-    <a href="https://tabler-icons.io/">bootstrap-icons +++</a><br>
-    <a href="https://www.tailwindtoolbox.com/starter-components">tailwindtoolbox</a> |
-    <a href="https://blocks.wickedtemplates.com/">wickedtemplates</a><br>
-https://github.com/svgdotjs/svg.js  | https://svgjs.dev/docs/3.0/ | https://jsfiddle.net/Fuzzy/f2wbgx5a/ | https://habr.com/ru/post/195184/
-<g>, <use>, <defs> � <symbol>  https://habr.com/ru/post/230443/
-https://www.w3schools.com/html/html_formatting.asp
-@@@@@@@@@@ https://developer.mozilla.org/ru/docs/Web/CSS/CSS_Backgrounds_and_Borders/Box-shadow_generator
-----ICONS:
-https://heroicons.com/
-123
-
-*/
-
-

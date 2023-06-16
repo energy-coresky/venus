@@ -23,6 +23,9 @@ var $$ = {
     F: {W:640, H:480},    // frame size current
     prev: {W:640, H:480}, // frame size previouse
     S: {},                // screen (window)
+    log: function(str) {
+        $('#info span:eq(2)').text(str);
+    },
     doc: function(selector, fr) {
         if (!fr)
             fr = $$.$f;
@@ -187,12 +190,15 @@ var $$ = {
 
         $.each($.parseHTML(html, document, true), function(i, el) {
             var tt = 0, nn = el.nodeName.toLowerCase();
+            if (el.className)
+                $$.classes.push(el.className);
             if (nn == '#text') { // #cdata-section #document #document-fragment
                 if (tt = $(el).text().trim())
                     out += indent + $$.html(tt) + '\n';
             } else if (nn == '#comment') {
                 out += indent + $$.html('<!-- ' + el.data.trim().replace(/\n+/g, "\n") + ' -->\n', 'com');
             } else {
+                //
                 var curr = $(el).html().trim();
                 var depth = el.children[0] && nn != 'pre';
                 if (depth) {
@@ -235,22 +241,25 @@ var $$ = {
         return $$.html(m[1]) + $$.html('\n' + m[2] + '\n' + m[3] + '\n') + $$.tidy(m[4], '  ')
             + $$.html('\n</head>\n') + $$.html(m[5]) + '\n' + $$.tidy(m[6]) + $$.html('\n</body>\n</html>');
     },
-    code: function(r) {
-        $('#project-list').html(r.list);
-        $('#code-head b').html($$.fn);
-        html = $$.parse(r.html.replaceAll('\r\n', '\n').replaceAll('\r', '\n'));
-        var br = html.replace(/[^\n]/g, '').length;
-        for (var i = 1, lines = '  1'; i <= br; lines += '\n' + ++i);
-        $('#code-body pre:eq(0)').html(lines).next().html(html);
-    },
     fn: sky.home,
     cur_page: '',
     test: function(fn) {
         if (fn)
             $$.fn = fn;
-        $$.$f.attr('src', sky.home + '_venus?fn=' + $$.fn).on('load', function (e) {
-            ajax('code&fn=' + $$.fn, $$.code);
-            $$.doc().mouseup($$.m_up).mousemove($$.m_move).find('body *').mouseenter($$.m_enter);
+        $$.$f.attr('src', sky.home + '_venus?src=' + $$.fn);
+    },
+    classes: [],
+    onload: function() {
+        $$.doc().mouseup($$.m_up).mousemove($$.m_move).find('body *').mouseenter($$.m_enter);
+        $('#code-head b').html($$.fn);//r.html
+        var html = $$.doc('html:first').html().replaceAll('\r\n', '\n').replaceAll('\r', '\n');
+        $$.classes = [];
+        html = $$.parse(html);
+        var br = html.replace(/[^\n]/g, '').length;
+        for (var i = 1, lines = '  1'; i <= br; lines += '\n' + ++i);
+        $('#code-body pre:eq(0)').html(lines).next().html(html);
+        ajax('src&src=' + $$.fn, {doc: $$.classes}, function(r) {
+            $('#project-list').html(r.list);
         });
     },
     div: 0,

@@ -3,125 +3,123 @@
 class Maat
 {
     function __construct() {
-        $this->parse();
     }
 
-    function parse() {
-        $str = '<?php ' . Plan::_g("assets/tailwind.css");
-        //$str = '<?php ' . Plan::_g("assets/t.css");
-        $i = 0;
-        $ary = [[], 'cls' => []];
-        $cls = [];
-        $n0 = '';
-        $n1 = $n2 = false;
-        foreach (token_get_all(unl($str)) as $token) {
+    static function parse_css($css) {
+        $maat = new Maat;
+        ini_set('memory_limit', '1024M');
+        //$css = Plan::_g("assets/tailwin.css");
+        return $maat->reBuild($css);
+        //$this->test($css);
+    }
+
+    function test(&$css) { # for lost chars
+        $s1 = preg_replace("/\s+/", '', $css); # may have comments
+        $ary =& $this->parse($css);
+        $s2 =& $this->toString($ary);
+        $s2 = preg_replace("/\s+/", '', $s2); # comments cropped
+        $diff = [];
+        for ($i = $cx = 0, $cnt = strlen($s1); $i < $cnt; $i++) {
+            if (!isset($s2[$i - $cx]))
+                exit('Failed length'); # for console
+            if ($s1[$i] === $s2[$i - $cx])
+                continue;
+            if ('}' === $s1[$i] && ';' === $s2[$i - $cx]) { # semicolon added
+                $cx--;
+                continue;
+            }
+            $pos = strpos($s1, '*/', $i);
+            if (false === $pos) {
+                $diff[] = substr($s1, $i);
+                break;
+            }
+            $diff[] = substr($s1, $i, 2 + $pos - $i);
+            $cx += 2 + $pos - $i;
+            $i = 1 + $pos;
+        }
+        $cnt = count($diff);
+        echo $i - $cx == strlen($s2)
+            ? "Test passed, found $cnt comments, first 10:\n"
+            : 'Test failed';
+        print_r(array_slice($diff, 0, 10));
+    }
+
+    function reBuild(&$css) {
+        $ary =& $this->parse($css);
+        return $this->toString($ary);
+    }
+
+    function &toString(&$ary, $plus = 0) {
+        $out = '';
+        $pad = str_pad('', 2 * $plus, ' ');
+        foreach ($ary as $one) {
+            $out .= $pad . $one[0] . " {\n";
+            if ($one[2] > $plus) {
+                $out .= $this->toString($one[1], 1 + $plus);
+            } else foreach ($one[1] as $prop) {
+                $out .= "$pad  $prop;\n";
+            }
+            $out .= "$pad}\n\n";
+        }
+        $out = substr($out, 0, -1);
+        return $out;
+    }
+
+    function &parse(&$in, $plus = 0) {
+        $in = preg_replace("~(#+|//+)~", "$1\n", '<?php ' . unl($in));
+        $depth = $has_child = 0;
+        $sum = '';
+        $ary = [];
+        foreach (token_get_all($in) as $k => $token) {
             $id = $str = $token;
             if (is_array($token)) {
                 list($id, $str) = $token;
-                if (in_array($id, [T_OPEN_TAG, T_COMMENT, T_DOC_COMMENT, T_WHITESPACE]))
+                if (!$k || T_DOC_COMMENT == $id || $space) {
+                    $space = false;
                     continue;
-                //@$ary[token_name($id)]++;
-                switch ($id) {
-                    case T_CONSTANT_ENCAPSED_STRING://"Courier New" 'text'
-                        break;
-                    case T_STRING:
-                        ;
-                        break;
                 }
-            } else {
-                //@$ary[$id]++;
+                if (T_WHITESPACE == $id) {
+                    $str = ' '; # 2do: comment between spaces
+                } elseif (T_COMMENT == $id) {
+                    if ('#' != $str && '*' == $str[1])
+                        continue;
+                    $space = true;
+                }
             }
             switch ($id) {
                 case '{':
-                    if (1 == ++$i) {
-                        if ('.' == $n0[0]) {
-                            $n0 = substr($n0, 1);
-                            if ($pos = strpos($n0, '-', 1))
-                                $n0 = substr($n0, 0, $pos);
-                            $cls[$n0] = 1;
-                        } else {
-                            $ary[0][] = $n0;
-                        }
-                        $n0 = false;
-                        $n1 = $str = '';
-                    } elseif (2 == $i) {
-                        //$ary[] = $n1;
-                        $n1 = false;
+                    if (1 == ++$depth) {
+                        $key = trim($sum);
+                        $prop = [];
+                        $sum = '';
+                        continue 2;
+                    } elseif (2  == $depth) {
+                        $has_child = 1;
+                    }
+                    break;
+                case ';':
+                    if (1 == $depth) {
+                        $prop[] = trim($sum);
+                        $sum = '';
+                        continue 2;
                     }
                     break;
                 case '}':
-                    if (0 == --$i) {
-                        $n0 = $str = '';
-                    } elseif (1 == $i) {
-                        $n1 = $str = '';
+                    if (0 == --$depth) {
+                        if ($has_child) {
+                            $prop =& $this->parse($sum, 1 + $plus);
+                        } else {
+                            '' === trim($sum) or $prop[] = trim($sum);
+                        }
+                        $ary[] = [$key, $prop, $plus + $has_child];
+                        $sum = '';
+                        $has_child = 0;
+                        continue 2;
                     }
                     break;
             }
-            if (false !== $n0)
-                $n0 .= $str;
-            if (false !== $n1)
-                $n1 .= $str;
-            
+            $sum .= preg_replace("~(#+|//+)\n~", "$1", $str);
         }
-        ksort($cls);
-        var_export($cls);
-        
+        return $ary;
     }
 }
-/*
-    --[T_OPEN_TAG] => 1
-    --[T_COMMENT] => 6631
-    --[T_WHITESPACE] => 318944
-    --[T_DOC_COMMENT] => 37
-    --[T_CONSTANT_ENCAPSED_STRING] => 125
-    [T_VAR] => 20384  var(--tw-ring-inset)
-    [T_DOUBLE_COLON] => 2401 ::
-    [T_NS_SEPARATOR] => 61908 \
-    [T_LNUMBER] => 121719 105
-    [T_DNUMBER] => 12838  1.15   .5
-    [T_STRING] => 425535 tw hover
-*
-xxx
-xxx[title]
-[type='button'] [hidden]
-#xxx
-.xxx
-::xxx
-:xxx
-@media { }
-
-    [T_DEC] => 50961 -- (variable start)
-    [T_LIST] => 74
-    [T_EMPTY] => 141
-    [T_CASE] => 6
-    [T_CLONE] => 18
-    [T_DEFAULT] => 12
-    [T_PRINT] => 3
-    [T_UNSET] => 5
-    [T_LOGICAL_AND] => 1
-    [T_STATIC] => 30
-    [T_FUNCTION] => 68
-    [T_BREAK] => 66
-
-(
-    [*] => 1805
-    [,] => 49304
-    [{] => 41563 ===
-    [-] => 229034
-    [:] => 137943
-    [;] => 56937
-    [}] => 41563
-    [%] => 1866
-    [[] => 3149 ===
-    []] => 3149
-    [=] => 48
-    [(] => 41785 ???
-    [)] => 41427
-    [+] => 111
-    [.] => 43415
-    [@] => 43
-    [/] => 1302
-    [>] => 1548
-    [~] => 1548
-)
-*/

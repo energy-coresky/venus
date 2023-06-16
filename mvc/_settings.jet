@@ -1,34 +1,64 @@
 #.jet core template
 
-#.all //////////////////////////////////////////////////////////////////////////////
-#use(`Venus settings` as head)
-
-
-#.all
-
-#.ruler //////////////////////////////////////////////////////////////////////////////
-#use(.body)
-#.ruler.body
-???
-#.body
-
-#._ //////////////////////////////////////////////////////////////////////////////
+#._
+#use(`` as left)
 Empty for now
 #._
 
+#.all //////////////////////////////////////////////////////////////////////////////
+#.all
 
+#.syntax //////////////////////////////////////////////////////////////////////////////
+@if('classes' == $y_3[2])
+  <h1>Classes</h1>
+  <div class="overflow-auto">
+    @loop($list as $id => $row)
+      <a class="block" @href(ajax('settings&{{$y_2}}=open.0.classes.{{$id}}', box))>{{$row->name}}</a>
+    ~loop
+  </div>
+~if
+#.syntax
 
-  <h1>Settings</h1>
-  <p class="text-2xl">App hot keys</p>
-  <p>ESC - ...</p>
-  <p>F2 - Save file</p>
-  <p>F4 - </p>
-  <p>F6 - </p>
-  <p>F8 - Switch IFRAME size</p>
-  <p>F9 - Swap panels</p>
-  <p>F10 - </p>
-  <p class="text-2xl">Browser hot keys</p>
-  <p>F3 - Search on the page</p>
-  <p>F5 - Refresh the page</p>
-  <p>F11 - Full screen mode</p>
-  <p>F12 - On/Off - Chrome DEV tools</p>
+#.layout
+<div class="w-full h-full bg-{{$color}}-200">
+  <div class="bg-white inset-5 absolute">
+    <span class="font-mono text-9xl absolute right-4 top-12 text-{{$color}}-200">{{'all' == $y_2 ? '♀' : '♂'}}</span>
+    <div class="h-14 flex justify-between items-center">
+      <div class="w-1/3">@block(`left-top` as head)</div>
+      <div class="w-1/3 text-center"><h1 class="uppercase font-bold">{{$title}} settings</h1></div>
+      <div class="w-1/3 text-right px-2">
+        @if($y_3[1])
+          <button onclick="ajax('settings&{{$y_2}}=save.1', $('#ta-form').serialize(), box)" class="btn-blue">Save - F2</button>
+          <button onclick="ajax('settings&{{$y_2}}', box)" class="btn-blue">Close Edit</button>
+        @else
+          <button onclick="ajax('settings&{{$y_2}}=doc.1', box)" class="btn-blue">Edit Help</button>
+        ~if
+      </div>
+    </div>
+    <div class="flex h-4/5">
+      <div style="width:{{$left_w}}px">
+      @block(left)
+          <h1>Настройки</h1>
+          @loop($menu as $k => $name)
+            <a @href(ajax('settings&{{$y_2}}=open.0.{{$k}}', box)) class="block s-menu"@active($k == $y_3[2])>{{$name}}</a>
+          ~loop
+      ~block
+      @inc(*)
+      </div>
+      <div style="width:calc((100% - {{$left_w}}px) / 2)">
+        @if($y_3[1])
+          <form method="post" id="ta-form" class="h-full px-2">
+            <textarea class="w-full h-full" name="ta">{{$txt}}</textarea>
+          </form>
+        @else
+          {!$form!}
+        ~if
+      </div>
+      <div style="width:calc((100% - {{$left_w}}px) / 2)" class="p-2 overflow-auto">
+        {!Display::md($txt)!}
+      </div>
+    </div>
+    <div class="">@block(`tail` as tail)</div>
+  </div>
+</div>
+#.layout
