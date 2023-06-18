@@ -55,6 +55,8 @@ class t_settings extends Model_t
         return [
             'tailwind' => ['Tailwind'],
             'pref' => ['Venus prefix for integrated classes'],
+            'tab_html' => ['HTML Tab size', 'number', '', 2],
+            'tab_php' => ['PHP Tab size', 'number', '', 4],
         ];
     }
 

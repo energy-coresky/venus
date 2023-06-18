@@ -161,7 +161,56 @@ var $$ = {
             str = `<span class="vs-${cls}">` + str + '</span>';
         return str;
     },
-    attr: function(el) {
+    tidyold: function(html, indent = '', parent = 0) {
+        var prevIsText, out = '', child = 0, simple = 0;
+
+        $.each($.parseHTML(html, document, true), function(i, el) {
+            var tt = 0, nn = el.nodeName.toLowerCase();
+            if (el.className)
+                $$.post[0].push(el.className);
+            if (nn == 'style')
+                $$.post[1].push(el.innerHTML);
+            if (nn == '#text') { // #cdata-section #document #document-fragment
+                if (tt = $(el).text().trim())
+                    out += indent + $$.html(tt) + '\n';
+            } else if (nn == '#comment') {
+                out += indent + $$.html('<!-- ' + el.data.trim().replace(/\n+/g, "\n") + ' -->\n', 'com');
+            } else {
+                //
+                var curr = $(el).html().trim();
+                var depth = el.children[0] && nn != 'pre';
+                if (depth) {
+                    curr = $$.tidy(curr, indent + '  ', el);
+                    curr = curr.simple ? curr.out : '\n' + curr.out + indent;
+                }
+             $(el).html(curr);//??
+                if (curr && ('script' == nn || 'pre' == nn))
+                    curr = '\n' + curr + '\n' + indent;
+                if ('style' == nn)
+                    curr = '<div id="vs-style-' + $$.post[1].length + '"></div>';
+                curr = $$.attr(el) + curr; // el.outerHTML.trim()
+                if (!el.hasChildNodes() && $$.self_ct2.includes(nn)) {
+                    curr = curr.replace(/&gt;$/, '/&gt;');
+                } else if (!$$.self_ct.includes(nn)) {
+                    curr += '&lt;/' + '<span class="vs-tag">' + nn + '</span>&gt;';
+                }
+                if (nn == 'br') {
+                    out = (child ? '' : indent) + out.replace(/\s+$/gm, '') + curr + '\n';
+                } else if (nn == 'a' && !depth && parent && 'LI' == parent.nodeName) {
+                    out = curr;
+                    simple = 1;
+                } else if (!depth && prevIsText) {
+                    out = out.replace(/\s+$/gm, '') + ' ' + curr + '\n';
+                } else {
+                    out += indent + curr + '\n';
+                }
+            }
+            prevIsText = tt;
+            child = 1;
+        });
+        return parent ? {out:out, simple:simple} : out.trimRight();
+    },
+    attrold: function(el) {
         var ary = [], nn = el.nodeName.toLowerCase();
         $.each(el.attributes, function() {//if (this.specified)
             if ('id' == this.name) {
@@ -185,53 +234,6 @@ var $$ = {
         'path', 'rect', 'circle', 'ellipse', 'line', 'polygon', 'polyline',
         'animate', 'stop'
     ],
-    tidy: function(html, indent = '', parent = 0) {
-        var prevIsText, out = '', child = 0, simple = 0;
-
-        $.each($.parseHTML(html, document, true), function(i, el) {
-            var tt = 0, nn = el.nodeName.toLowerCase();
-            if (el.className)
-                $$.post[0].push(el.className);
-            if (nn == 'style')
-                $$.post[1].push(el.innerHTML);
-            if (nn == '#text') { // #cdata-section #document #document-fragment
-                if (tt = $(el).text().trim())
-                    out += indent + $$.html(tt) + '\n';
-            } else if (nn == '#comment') {
-                out += indent + $$.html('<!-- ' + el.data.trim().replace(/\n+/g, "\n") + ' -->\n', 'com');
-            } else {
-                //
-                var curr = $(el).html().trim();
-                var depth = el.children[0] && nn != 'pre';
-                if (depth) {
-                    curr = $$.tidy(curr, indent + '  ', el);
-                    curr = curr.simple ? curr.out : '\n' + curr.out + indent;
-                }
-             $(el).html(curr);//??
-                if (curr && ('script' == nn || 'style' == nn || 'pre' == nn))
-                    curr = '\n' + curr + '\n' + indent;
-                curr = $$.attr(el) + curr; // el.outerHTML.trim()
-                if (!el.hasChildNodes() && $$.self_ct2.includes(nn)) {
-                    curr = curr.replace(/&gt;$/, '/&gt;');
-                } else if (!$$.self_ct.includes(nn)) {
-                    curr += '&lt;/' + '<span class="vs-tag">' + nn + '</span>&gt;';
-                }
-                if (nn == 'br') {
-                    out = (child ? '' : indent) + out.replace(/\s+$/gm, '') + curr + '\n';
-                } else if (nn == 'a' && !depth && parent && 'LI' == parent.nodeName) {
-                    out = curr;
-                    simple = 1;
-                } else if (!depth && prevIsText) {
-                    out = out.replace(/\s+$/gm, '') + ' ' + curr + '\n';
-                } else {
-                    out += indent + curr + '\n';
-                }
-            }
-            prevIsText = tt;
-            child = 1;
-        });
-        return parent ? {out:out, simple:simple} : out.trimRight();
-    },
     parse: function(s) {
         var re = '(<!doctype[^>]*>)\\s*'
                + '(<html[^>]*>)\\s*'
@@ -250,19 +252,54 @@ var $$ = {
             $$.fn = fn;
         $$.$f.attr('src', sky.home + '_venus?src=' + $$.fn);
     },
-    post: [[], []],
+    tree: function(html) {
+        var tree = [];
+        $.each($.parseHTML(html, document, true), function(i, el) {
+            // #cdata-section #document #document-fragment
+            var data = '', i = 0, name = el.nodeName.toLowerCase(), attr = {">":name};
+            switch (name) {
+                case '#text':
+                    data = $(el).text().trim();
+                    if ('' === data)
+                        return;
+                    break;
+                case '#comment':
+                    data = el.data.trim().replace(/\n+/g, "\n");
+                    break;
+                default:
+                    if (-1 == el.outerHTML.indexOf('><'))
+                        data = 0; // Void element
+                    if (!el.hasChildNodes())
+                        break;
+                    data = $$.tree(el.innerHTML.trim());
+                    if (1 == data.length && '#text' == data[0][0])
+                        data = data[0][1];
+            }
+            if (el.attributes) $.each(el.attributes, function() {
+                attr[this.name] = this.value;
+                i++;
+            });
+            tree.push([i ? attr : name, data]);
+        });
+        return tree;
+    },
+    src: {},
     onload: function() {
         $$.doc().mouseup($$.m_up).mousemove($$.m_move).find('body *').mouseenter($$.m_enter);
-        $('#code-head b').html($$.fn);//r.html
-        var html = $$.doc('html:first').html().replaceAll('\r\n', '\n').replaceAll('\r', '\n');
-        $$.post = [[], []];
-        html = $$.parse(html);
-        var br = html.replace(/[^\n]/g, '').length;
-        for (var i = 1, lines = '  1'; i <= br; lines += '\n' + ++i);
-        $('#code-body pre:eq(0)').html(lines).next().html(html);
-        ajax('src&src=' + $$.fn, {doc: $$.post}, function(r) {
-            $('#project-list').html(r.list);
-            $('#code-body pre:eq(1)').prepend(r.css);
+        let frameHTML = $$.doc('html:first').html().replaceAll('\r\n', '\n').replaceAll('\r', '\n');
+        $$.src = {tree: $$.tree(frameHTML)};
+        //var br = html.replace(/[^\n]/g, '').length;
+        //for (var i = 1, lines = '  1'; i <= br; lines += '\n' + ++i);
+//console.log(name);
+        sky.json('src&src=' + $$.fn, $$.src, function(r) { //{doc: $$.post} ajax 
+            $('#project-list').html(r.menu);
+            $('#code-body pre:eq(0)').html(r.lines).next().html(r.html);
+  //          $('#code-head b').html(r.fn);//$$.fn
+
+            //for (i = 0; i < r.css_n; i++) {
+            //    var id = 'vs-style-' + (1 + i);
+            //    $('#' + id).replaceWith("\n" + r[id]);
+            //}
         });
     },
     div: 0,

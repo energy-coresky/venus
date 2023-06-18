@@ -2,21 +2,129 @@
 
 class Maat
 {
-    function __construct() {
-    }
+    private $formats = ['rich', 'no-empty', 'compact', 'min-zed'];
+    private $opt = [
+        'test' => false,
+        'highlight' => false,
+        'format' => 'no-empty',
+    ];
+    private $tab;
+    private $pad;
 
-    static function parse_css($css, $test = false) {
-        $maat = new Maat;
+    public $css = [];
+
+    function __construct($opt = []) {
+        $this->pad = str_pad('', $this->tab = SKY::w('tab_html') ?: 2);
+        $this->opt = $opt + $this->opt;
         ini_set('memory_limit', '1024M');
-        if ($test)
-            return $maat->test($css);
-        return $maat->reBuild($css);
     }
 
-    function test(&$css) { # for lost chars
+    static function &html($ary, $opt = []) {
+        $maat = new Maat($opt);
+//trace(print_r($ary,1), '222');
+        return $maat->buildHTML($ary);
+    }
+
+    function &buildHTML(&$ary, $indent = '') {
+        $cr = ['class', 'id', 'src'];
+        $cx = ['action' => 'src', 'href' => 'src', 'for' => 'id'];
+        $out = '';
+        foreach ($ary as $v) {
+            $len = strlen($out);
+            $out .= $indent;
+            [$attr, $data] = $v;
+            switch ($node = is_object($attr) ? $attr->{'>'} : $attr) {
+            case '#text':
+                $out .= $data . "\n";
+                continue 2;
+            case '#comment':
+                $out .= "<span class=\"vs-com\">/* $data */</span>\n";
+                continue 2;
+            default:
+                $tag = "<span class=\"vs-tag\">$node</span>";
+                if (is_object($attr)) {
+                    unset($attr->{'>'});
+                    $join = [];
+                    foreach ($attr as $k => $v) {
+                        if ('class' == $k)
+                            $this->cls($v);
+                        $x = $cx[$k] ?? $k;
+                        $join[] = $k . '="' . (in_array($x, $cr) ? "<span class=\"vs-$x\">$v</span>" : $v) . '"';
+                    }
+                    $out .= "&lt;$tag " . implode(' ', $join) . '&gt;';
+                } else {
+                    $out .= "&lt;$tag&gt;";
+                }
+                if (0 === $data) {
+                    $out .= "\n"; # Void element
+                    continue 2;
+                }
+                if (is_array($data)) {
+                    $out .= "\n" . $this->buildHTML($data, $indent . $this->pad) . $indent;
+                } elseif ('style' == $node) {
+                    //$out .= '';
+                    $out .= "\n" . trim(Maat::css($data, ['highlight' => true])) . "\n";
+                } elseif ('' !== $data && strlen($data . $out) > $len + 280) {
+                    $out .= "\n$indent$this->pad$data\n$indent";
+                } else {
+                    $out .= $data;
+                }
+                $out .= "&lt;/$tag&gt;\n";
+            }
+        }
+        return $out;
+    }
+
+    function cls($cls) {
+    }
+
+    static function &css($css, $opt = []) {
+        $maat = new Maat($opt);
+        $ary =& $maat->parse($css);
+        $str =& $maat->buildCSS($ary);
+        if ($maat->opt['test'])
+            return $maat->test($css, $str);
+        return $str;
+    }
+
+    function &buildCSS(&$ary, $plus = 0) {
+        $pad = str_pad('', $this->tab * $plus);
+        $end = 'rich' == $this->opt['format'] ? "\n" : '';
+        $out = '';
+        foreach ($ary as $one) {
+            $out .= $pad . $this->name($one[0]) . " {\n";
+            if ($one[2] > $plus) {
+                $out .= $this->buildCSS($one[1], 1 + $plus);
+            } else foreach ($one[1] as $prop) {
+                $out .= "$pad$this->pad$prop;\n";
+            }
+            $out .= "$pad}\n$end";
+        }
+        if ($end)
+            $out = substr($out, 0, -1);
+        return $out;
+    }
+
+    function name($str) {
+        $ary = [];
+        $hl = $this->opt['highlight'];
+        foreach (preg_split("/\s*,\s*/", $str) as $v) {
+            if ($hl) switch ($v[0]) {
+                case '.': $ary[] = '.<span class="vs-class">' . substr($v, 1) . '</span>';
+                    break;
+                case '#': $ary[] = '#<span class="vs-id">' . substr($v, 1) . '</span>';
+                    break;
+                case '@': case ':': case '[': $ary[] = $v;
+                    break;
+                default: $ary[] = '<span class="vs-tag">' . "$v</span>";
+                    break;
+            }
+        }
+        return implode(', ', $ary);
+    }
+
+    function test(&$css, &$s2) { # for lost chars
         $s1 = preg_replace("/\s+/", '', $css); # may have comments
-        $ary =& $this->parse($css);
-        $s2 =& $this->toString($ary);
         $s2 = preg_replace("/\s+/", '', $s2); # comments cropped
         $diff = [];
         for ($i = $cx = 0, $cnt = strlen($s1); $i < $cnt; $i++) {
@@ -42,27 +150,6 @@ class Maat
             ? "Test passed, found $cnt comments, first 10:\n"
             : 'Test failed';
         print_r(array_slice($diff, 0, 10));
-    }
-
-    function reBuild(&$css) {
-        $ary =& $this->parse($css);
-        return $this->toString($ary);
-    }
-
-    function &toString(&$ary, $plus = 0) {
-        $out = '';
-        $pad = str_pad('', 2 * $plus, ' ');
-        foreach ($ary as $one) {
-            $out .= $pad . $one[0] . " {\n";
-            if ($one[2] > $plus) {
-                $out .= $this->toString($one[1], 1 + $plus);
-            } else foreach ($one[1] as $prop) {
-                $out .= "$pad  $prop;\n";
-            }
-            $out .= "$pad}\n\n";
-        }
-        $out = substr($out, 0, -1);
-        return $out;
     }
 
     function &parse(&$in, $plus = 0) {

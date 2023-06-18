@@ -11,13 +11,13 @@ class Venus extends Console
     /** Parse css */
     function a_parse() {
         $css = Plan::_g("assets/z.css");
-        echo Maat::parse_css($css);
+        echo Maat::css($css);
     }
 
     /** Test Maat parser */
     function a_test() {
         $css = Plan::_g("assets/preflight.css");
-        Maat::parse_css($css, true);
+        Maat::css($css, ['test' => true]);
     }
 
     /** Show tables */
