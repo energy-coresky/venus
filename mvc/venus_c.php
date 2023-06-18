@@ -49,11 +49,6 @@ class venus_c extends Controller
 
     function j_src() {
         #$v = new Vesper;
-        #Plan::_p('mvc/venus-do.html', var_export($v->in($_POST['doc'][0]), 1));
-   #Plan::_p('mvc/venus-1.html', $_POST['doc'][1][0]);
-        
-   #Plan::_p('mvc/venus-2.html', $q);
-
         $json = unjson(file_get_contents('php://input'));
         json(m_venus::maat($json) + [
             'menu' => view('venus.popup_menu', ['menu' => ['project-files',

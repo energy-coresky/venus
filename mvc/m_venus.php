@@ -21,22 +21,11 @@ class m_venus extends Model_m
     }
 
     static function maat(&$in) {
-        $html = Maat::html($in->tree);
-        return ['html' => $html, 'lines' => 11];
-
-        $css = ['css_n' => count($ary)];
-        $m = [0, 0];
-        foreach ($ary as $i => $one) {
-            $len = strlen($one = trim(Maat::css($one, ['highlight' => true])));
-            $css['vs-style-' . ++$i] = $one;
-            if ($len > $m[1]) {
-                $m[1] = $len;
-                $m[0] = $i;
-            }
-        }
-        if ($m[0])
-            $css["vs-style-$m[0]"] = trim(substr($css["vs-style-$m[0]"], 0)); #6104
-        return $css;
+        $maat = new Maat(['highlight' => true]);
+//trace(print_r($in->tree,1), '222');
+        $html = $maat->buildHTML($in->tree);
+        trace($maat->cls, '222');
+        return ['html' => $html, 'lines' => 0];
     }
 
     static function files() {

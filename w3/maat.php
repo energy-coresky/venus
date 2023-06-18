@@ -11,7 +11,7 @@ class Maat
     private $tab;
     private $pad;
 
-    public $css = [];
+    public $cls = [];
 
     function __construct($opt = []) {
         $this->pad = str_pad('', $this->tab = SKY::w('tab_html') ?: 2);
@@ -19,20 +19,22 @@ class Maat
         ini_set('memory_limit', '1024M');
     }
 
-    static function &html($ary, $opt = []) {
+    static function &css($css, $opt = []) {
         $maat = new Maat($opt);
-//trace(print_r($ary,1), '222');
-        return $maat->buildHTML($ary);
+        $new =& $maat->buildCSS($css);
+        if ($maat->opt['test'])
+            return $maat->test($css, $new);
+        return $new;
     }
 
     function &buildHTML(&$ary, $indent = '') {
         $cr = ['class', 'id', 'src'];
         $cx = ['action' => 'src', 'href' => 'src', 'for' => 'id'];
         $out = '';
-        foreach ($ary as $v) {
+        foreach ($ary as $data) {
             $len = strlen($out);
+            [$attr, $data] = $data;
             $out .= $indent;
-            [$attr, $data] = $v;
             switch ($node = is_object($attr) ? $attr->{'>'} : $attr) {
             case '#text':
                 $out .= $data . "\n";
@@ -47,7 +49,7 @@ class Maat
                     $join = [];
                     foreach ($attr as $k => $v) {
                         if ('class' == $k)
-                            $this->cls($v);
+                            $this->cls[] = $v;
                         $x = $cx[$k] ?? $k;
                         $join[] = $k . '="' . (in_array($x, $cr) ? "<span class=\"vs-$x\">$v</span>" : $v) . '"';
                     }
@@ -58,12 +60,11 @@ class Maat
                 if (0 === $data) {
                     $out .= "\n"; # Void element
                     continue 2;
-                }
-                if (is_array($data)) {
+                } elseif (is_array($data)) {
                     $out .= "\n" . $this->buildHTML($data, $indent . $this->pad) . $indent;
                 } elseif ('style' == $node) {
-                    //$out .= '';
-                    $out .= "\n" . trim(Maat::css($data, ['highlight' => true])) . "\n";
+                    $out .= '';
+                    // $out .= "\n" . trim($this->buildCSS($data)) . "\n";
                 } elseif ('' !== $data && strlen($data . $out) > $len + 280) {
                     $out .= "\n$indent$this->pad$data\n$indent";
                 } else {
@@ -75,19 +76,9 @@ class Maat
         return $out;
     }
 
-    function cls($cls) {
-    }
-
-    static function &css($css, $opt = []) {
-        $maat = new Maat($opt);
-        $ary =& $maat->parse($css);
-        $str =& $maat->buildCSS($ary);
-        if ($maat->opt['test'])
-            return $maat->test($css, $str);
-        return $str;
-    }
-
     function &buildCSS(&$ary, $plus = 0) {
+        if (is_string($ary))
+            $ary =& $this->parse($ary);
         $pad = str_pad('', $this->tab * $plus);
         $end = 'rich' == $this->opt['format'] ? "\n" : '';
         $out = '';
