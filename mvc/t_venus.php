@@ -14,6 +14,31 @@ class t_venus extends Model_t
         return $dd;
     }
 
+    function maat(&$in) {
+        $maat = new Maat(['highlight' => true]);
+//trace(print_r($in->tree,1), 'AAA');
+        return [
+            'html' => $html = $maat->buildHTML($in->tree),
+            'lines' => $this->lines($html),
+            'tw_css' => (new Vesper)->tw_css($maat->cls),
+            'menu' => view('venus.popup_menu', ['menu' => ['project-files',
+                ['Add new file', '', 'Alt + N'],
+                ['Add new component', '', 'Alt + C'],
+                ['Components', $this->components(), m_venus::$rar],
+                '',
+                ['Delete current file/component', ''],
+                '',
+                ['Files', m_venus::files(), m_venus::$rar],
+            ]]),
+        ];
+    }
+
+    function lines($html) {
+        for ($n = 0, $s = '', $c = substr_count($html, "\n"); $n < $c; $n++)
+            $s .= str_pad($n + 1, 3, '0', STR_PAD_LEFT) . "\n";
+        return $s;
+    }
+
     function components() {
         return $this->sqlf('@select name, $cc("$$.test(\':",id,"\')") from $_');
     }

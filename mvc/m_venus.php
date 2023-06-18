@@ -11,21 +11,12 @@ class m_venus extends Model_m
 #$at_rules.
 #You can also browse key CSS concepts and a list of selectors organized by type. 
 #Also included is a brief DOM-CSS / CSSOM reference.
-
     static function &ghost($dd, $name = 'all', $char = '') {
         $char = 'all' == $name ? 'w' : 't';
         list($id, $txt, $cfg) = $dd->sqlf('-select id, txt, cfg from $_memory where name=%s', $name);
         SKY::ghost($char, $cfg, 'update $_memory set cfg=%s where id=' . $id, 0, $dd);
         $ary = [&SKY::$mem[$char][3], $txt, $id];
         return $ary;
-    }
-
-    static function maat(&$in) {
-        $maat = new Maat(['highlight' => true]);
-//trace(print_r($in->tree,1), '222');
-        $html = $maat->buildHTML($in->tree);
-        trace($maat->cls, '222');
-        return ['html' => $html, 'lines' => 0];
     }
 
     static function files() {

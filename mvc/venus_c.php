@@ -48,19 +48,8 @@ class venus_c extends Controller
     }
 
     function j_src() {
-        #$v = new Vesper;
         $json = unjson(file_get_contents('php://input'));
-        json(m_venus::maat($json) + [
-            'menu' => view('venus.popup_menu', ['menu' => ['project-files',
-                ['Add new file', '', 'Alt + N'],
-                ['Add new component', '', 'Alt + C'],
-                ['Components', $this->t_venus->components(), m_venus::$rar],
-                '',
-                ['Delete current file/component', ''],
-                '',
-                ['Files', m_venus::files(), m_venus::$rar],
-            ]]),
-        ]);
+        json($this->t_venus->maat($json));
     }
 
     function j_save() {

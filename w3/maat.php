@@ -36,7 +36,7 @@ class Maat
             [$attr, $data] = $data;
             $out .= $indent;
             switch ($node = is_object($attr) ? $attr->{'>'} : $attr) {
-            case '#text':
+            case '#text':// #cdata-section #document #document-fragment
                 $out .= $data . "\n";
                 continue 2;
             case '#comment':
