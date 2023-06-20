@@ -5,6 +5,7 @@ return [
     'mem' => ['path' => __DIR__ . '/mvc'],
     'app' => [
         'type' => 'dev',
+        'cli' => 'c:/web/ab',
         'require' => 'Parsedown SQLite3',
         'databases' => [
             'w' => ['driver' => 'sqlite3', 'dsn' => __DIR__ . '/venus.base'],

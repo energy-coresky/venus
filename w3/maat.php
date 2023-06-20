@@ -11,7 +11,11 @@ class Maat
     private $tab;
     private $pad;
 
+    public $tw_css = '';
     public $cls = [];
+    public $page = [];
+    public $page_js = [];
+    public $page_css = [];
 
     function __construct($opt = []) {
         $this->pad = str_pad('', $this->tab = SKY::w('tab_html') ?: 2);
@@ -48,8 +52,17 @@ class Maat
                     unset($attr->{'>'});
                     $join = [];
                     foreach ($attr as $k => $v) {
-                        if ('class' == $k)
-                            $this->cls[] = $v;
+                        switch ($k) {
+                            case 'class':
+                                $this->cls[] = $v;
+                                break;
+                            case 'src': case 'href': case 'action':
+                                $cnt = $this->page["$node-$k"][$v] ?? 0;
+                                $this->page["$node-$k"][$v] = ++$cnt;
+                                break;
+                            #case '': $this->page[""][$v] = ; break;
+                            #default: $this->page[""][$v] = ; break;
+                        }
                         $x = $cx[$k] ?? $k;
                         $join[] = $k . '="' . (in_array($x, $cr) ? "<span class=\"vs-$x\">$v</span>" : $v) . '"';
                     }
@@ -62,9 +75,16 @@ class Maat
                     continue 2;
                 } elseif (is_array($data)) {
                     $out .= "\n" . $this->buildHTML($data, $indent . $this->pad) . $indent;
-                } elseif ('style' == $node) {
-                    $out .= '';
-                    // $out .= "\n" . trim($this->buildCSS($data)) . "\n";
+                } elseif (in_array($node, ['style', 'script'])  && '' !== $data) {
+                    $is_js = 'script' == $node;
+                    $txt = trim($is_js ? $this->buildJS($data) : $this->buildCSS($data));
+                    if (strlen($data) > 1000) {
+                        $is_js ? ($p =& $this->page_js) : ($p =& $this->page_css);
+                        $p[] = $txt;
+                        $out .= tag(($is_js ? 'JS' : 'CSS') . count($p), 'class="red_label"', 'span');
+                    } else {
+                        $out .= "\n" . $txt . "\n";
+                    }
                 } elseif ('' !== $data && strlen($data . $out) > $len + 280) {
                     $out .= "\n$indent$this->pad$data\n$indent";
                 } else {
@@ -76,9 +96,13 @@ class Maat
         return $out;
     }
 
+    function buildJS($str) {
+        return $str;
+    }
+
     function &buildCSS(&$ary, $plus = 0) {
         if (is_string($ary))
-            $ary =& $this->parse($ary);
+            $ary =& $this->parse_css($ary);
         $pad = str_pad('', $this->tab * $plus);
         $end = 'rich' == $this->opt['format'] ? "\n" : '';
         $out = '';
@@ -143,7 +167,10 @@ class Maat
         print_r(array_slice($diff, 0, 10));
     }
 
-    function &parse(&$in, $plus = 0) {
+    function parse_js($in) {
+    }
+
+    function &parse_css(&$in, $plus = 0) {
         $in = preg_replace("~(#+|//+)~", "$1\n", '<?php ' . unl($in));
         $depth = $has_child = 0;
         $sum = '';
@@ -187,7 +214,7 @@ class Maat
                 case '}':
                     if (0 == --$depth) {
                         if ($has_child) {
-                            $prop =& $this->parse($sum, 1 + $plus);
+                            $prop =& $this->parse_css($sum, 1 + $plus);
                         } else {
                             '' === trim($sum) or $prop[] = trim($sum);
                         }

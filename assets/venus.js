@@ -172,13 +172,6 @@ var $$ = {
       return $$.html(m[1]) + $$.html('\n' + m[2] + '\n' + m[3] + '\n') + $$.tidy(m[4], '  ')
           + $$.html('\n</head>\n') + $$.html(m[5]) + '\n' + $$.tidy(m[6]) + $$.html('\n</body>\n</html>');
   },
-    fn: sky.home,
-    cur_page: '',
-    test: function(fn) {
-        if (fn)
-            $$.fn = fn;
-        $$.$f.attr('src', sky.home + '_venus?src=' + $$.fn);
-    },
     tree: function(html) {
         var tree = [];
         $.each($.parseHTML(html, document, true), function(i, el) {
@@ -209,17 +202,28 @@ var $$ = {
         });
         return tree;
     },
+    fn: sky.home,
+    test: function(fn) {
+        if (fn)
+            $$.fn = fn;
+        $$.$f.attr('src', sky.home + '_venus?src=' + $$.fn);
+    },
     src: {},
+    code: [],
     onload: function() {
-        $$.doc().mouseup($$.m_up).mousemove($$.m_move).find('body *').mouseenter($$.m_enter);
+        $$.doc().click($$.m_clk).mouseup($$.m_up).mousemove($$.m_move).find('body *').mouseenter($$.m_enter);
         let frameHTML = $$.doc('html:first').html().replaceAll('\r\n', '\n').replaceAll('\r', '\n');
-        $$.src = {tree: $$.tree(frameHTML)};
+        $$.src = {tree: $$.tree(frameHTML), fn:$$.fn};
 //console.log(name);
         sky.json('src&src=' + $$.fn, $$.src, function(r) {
-            $('#project-list').html(r.menu);
-            $('#code-body pre:eq(0)').html(r.lines).next().html(r.html);
-  //          $('#code-head b').html(r.fn);//$$.fn
+            $$.code = r.code;
+            $('#v_sourses').next().html(r.fn).prev().replaceWith(r.menu);
+            $('#code-body pre:eq(0)').html(r.lines).next().html(r.code[0]);
+            //r.page_css
         });
+    },
+    set: function(n) {
+        $('#code-body pre:eq(0)').next().html($$.code[parseInt(n)]);
     },
     div: 0,
     swap: function() {
@@ -228,19 +232,11 @@ var $$ = {
         $('#tail').html(r)
         $$.div = 1 - $$.div;
     },
-    doc_clk: function() {
-        $('.popup-menu, .popup-sub').each($$.ddm)
+    m_clk: function() {
+        $('.popup-menu, .popup-sub').each($$.ddm);
     },
     ddm: function(mode, el, show) {
         switch (mode) {
-            case 'init':
-                return el.find('.popup-menu, .popup-sub').each(function() {
-                    this.onanimationend = function () {
-                        if ($(this).hasClass('hide-a1'))
-                            $(this).hide();
-                        this.removeAttribute('running');
-                    };
-                });
             case 'hover':
                 var fire = show ? el.next().find('.popup-sub:first')[0] : false,
                     top = el.parent().parent();
@@ -251,7 +247,19 @@ var $$ = {
                     fire && this === el[0] ? el.attr('hover', 1) : this.removeAttribute('hover');
                 });
             case 'show':
-                el = $(el).find('.popup-menu')[0];
+                var init, btn = $(show);
+                init || $(el).find('.popup-menu, .popup-sub').each(function() {
+                    this.onanimationend = init = function () {
+                        if ($(this).hasClass('hide-a1')) {
+                            $(this).hide();
+                            if ($(this).hasClass('popup-menu'))
+                                btn.removeClass('active');
+                        }
+                        this.removeAttribute('running');
+                    };
+                });
+                var xy = btn.addClass('active').position();
+                el = $(el).css({left:xy.left, top:26 + xy.top}).find('.popup-menu')[0];
                 $(el).find('[hover]').removeAttr('hover');
             default:
                 var hidden = 'none' === $(el).css('display');
@@ -259,6 +267,10 @@ var $$ = {
                     return;
                 $(el).show().attr('running', 1).removeClass(show ? 'hide-a1' : 'show-a1').addClass(show ? 'show-a1' : 'hide-a1');
         }
+    },
+    scroll: function(y, right) {
+        if ($$.div == right)
+            $('#code-body pre:eq(0)').css({marginTop:y})
     }
 };
 
@@ -316,10 +328,10 @@ body{
     };
     sky.key[121] = $$._catch; // F10
 
-    $(document).click($$.doc_clk).mouseup($$.m_up).mousemove($$.m_move).mouseenter(function () {
+    $(document).click($$.m_clk).mouseup($$.m_up).mousemove($$.m_move).mouseenter(function () {
         $$.info('-', 1);
     });
-    $$.doc().mouseup($$.m_up).mousemove($$.m_move);
+    $$.doc().click($$.m_clk).mouseup($$.m_up).mousemove($$.m_move);
 
     $('#mov-y, #mov-x').mousedown(function (e) {
         $$.doc('body').css('userSelect', 'none');

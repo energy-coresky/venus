@@ -57,6 +57,7 @@ a.menu {
   text-decoration:none;
   display: block;
   color: #374151;
+  cursor: default;
 }
 a.menu:hover, [hover] {
   background-color: #2563eb;
@@ -153,6 +154,7 @@ pre:focus {
   overflow: auto;
   border-right: var(--border);
   padding-left: .5rem;
+  background-color: #fff;
 }
 #v-main {
   grid-area:frame;
@@ -210,7 +212,7 @@ pre:focus {
 }
 #v-right .header { width: calc(100vw - 167px - var(--frame-w)); }
 #tail    .header { width: calc(133px + var(--frame-w)); }
-#v-right #code-body pre { min-height:calc(100vh - 67px); }
+#v-right #code-body pre { min-height:calc(100vh - 90px); }
 #tail    #code-body pre { min-height:calc(100vh - 93px - var(--frame-h)); }
 .tool {
   border-bottom: var(--border);
@@ -253,13 +255,14 @@ pre:focus {
   text-align:center;
   
 }
-.clk:active {
-  border-bottom:2px solid gray !important;
-}
 .active {
+  color: #fff !important;
+  background-color: #2563eb !important;
+}
+/*.active {
   color: #000 !important;
   border-bottom:2px solid #3b82f6 !important;
-}
+}*/
 .palette, #big-colors td {
   font-family: monospace;
   text-align:center;
@@ -313,6 +316,27 @@ pre:focus {
 }
 #f1 dd {
   width: 75%;
+}
+
+.menu-btn {
+  height: 26px;
+  text-decoration: none;
+  color:#6e6e6e;
+  padding: 5px 8px 0 8px;
+  cursor: default;
+}
+.menu-btn:hover {
+  text-decoration: none;
+  background-color:#e5e7eb;
+  color:#000;
+}
+.menu-btn:active {
+  color: #fff !important;
+  background-color: #2563eb !important;
+}
+#v-sourse {
+  text-decoration: underline;
+  margin-left: 11px;
 }
 
 

@@ -2,12 +2,14 @@
 
 class Vesper
 {
-    function __construct() {
-        ;
+    private $maat;
+
+    function __construct($maat) {
+        $this->maat = $maat;
     }
 
-    function tw_css($ary) {
-        //trace($ary, '222');
+    function tw_css() {
+        trace(print_r($this->maat->page,1));
         return '';
     }
 
@@ -24,3 +26,4 @@ class Vesper
         return $list;
     }
 }
+

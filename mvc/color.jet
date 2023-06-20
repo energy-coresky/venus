@@ -5,10 +5,9 @@
   <label><input type="radio" name="t" value="0" checked> Background</label>
   <label><input type="radio" name="t" value="1"> Text</label>
   <label><input type="radio" name="t" value="2"> Border</label>
-  <a class="vs-ic ml-2 px-2 py-2 hover:bg-gray-200 clk" @href($$.ddm('show', '#v-history', 1);$(this).toggleClass('active'))>History&nbsp;▼</a>
-  <a class="vs-ic ml-2 px-2 py-2 hover:bg-gray-200 clk" @href($$.ddm('show', '#other-col', 1);$(this).toggleClass('active'))>Other Colors&nbsp;▼</a>
+  <a class="menu-btn" @href($$.ddm('show', '#v_history', this))>History&nbsp;▼</a>
+  <a class="menu-btn" @href($$.ddm('show', '#other_col', this))>Other Colors&nbsp;▼</a>{!$menus!}
 #.tcolors.t_head //////////////////////////////////////////////////////////////////////////////
-{!$popup_c!}
 #use(.t_head)
 #use(.t_left)
 #use(.t_right)

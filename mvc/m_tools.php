@@ -20,7 +20,7 @@ class m_tools extends Model_m
             'v3' => Tailwind::$color3,
             'list' => $list = Tailwind::$color2,
             'c' => [$c = count($list), floor($c / 2)],
-            'popup_c' => $this->m_venus->popup_c(),
+            'menus' => m_menu::v_history() . m_menu::other_col(),
             'v2_ary' => $this->m_venus->v2_ary(),
             'rename' => ['amber' => 'yellow', 'emerald' => 'green', 'violet' => 'purple'],
         ];
@@ -68,27 +68,10 @@ class m_tools extends Model_m
         $m = new t_venus('unicode');
         if ($this->y3[0])
             $m->sqlf('update $_ set priority=9 where id=%d', $this->y3[0]);
-        $sql = '@select name,$cc("i$.cp=",id,";i$.unicode()") from $_ where priority=%d order by id';
         return [
             //'opt' => option(0, $opt),//$opt = $m->sqlf('@select id, name from $_ where priority=1 order by id');
             'fonts' => option(0, array_combine($fonts, $fonts)),
-            'menu' => view('venus.popup_menu', ['menu' => ['muni',
-                ['Favorite Pages', [], m_venus::$rar],
-                ['Favorite Symbols', ''],
-                '',
-                ['Project Fonts', [], m_venus::$rar],
-                '',
-                ['ASCII', 'i$.cp=0;i$.unicode()'],
-                ['Кириллица', 'i$.cp=1024;i$.unicode()'],
-                ['Символы валют', 'i$.cp=8352;i$.unicode()'],
-                ['Буквоподобные символы', 'i$.cp=8448;i$.unicode()'],
-                ['Разные символы', 'i$.cp=9728;i$.unicode()'],
-                '',
-                ['Arrows', $m->sqlf($sql, 3), m_venus::$rar],
-                ['Mathematics', $m->sqlf($sql, 2), m_venus::$rar],
-                ['Figures', $m->sqlf($sql, 7), m_venus::$rar],
-                ['Other', $m->sqlf($sql, 1), m_venus::$rar],
-            ]]),
+            'menu' => m_menu::muni($m),
         ];
     }
 
