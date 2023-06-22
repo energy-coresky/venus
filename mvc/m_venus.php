@@ -3,9 +3,10 @@
 class m_venus extends Model_m
 {
     static $fsize = ['320 x 480', '640 x 480', '768 x 768', '1024 x 555', '1366 x 768', /* notebook */ '1536 x 555'];
-    static $css = ['Properties', 'Types', 'Functions', 'Pseudo-classes', 'Pseudo-elements', 'At-rules'];
+    static $css = ['Elements', 'Properties', 'Types', 'Functions', 'Pseudo-classes', 'Pseudo-elements', 'At-rules'];
     static $css_prop_grp = ['Layout', 'Text', 'Appearance', 'Animation', 'CSS Variables', 'Grid', 'Flex', 'Table', 'Generated Content', 'Other'];
     static $css_tpl_grp = ['color', 'text', 'box', 'table', 'animation', 'Grid', 'Flex', 'Other'];
+    static $media = ['', 'sm', 'md', 'lg', 'xl', '2xl']; # 640 768 1024 1280 1536
 
 #$at_rules.
 #You can also browse key CSS concepts and a list of selectors organized by type. 
@@ -32,7 +33,7 @@ class m_venus extends Model_m
 
     static function css($p) {
         $m = new t_venus('css');
-        return $m->sqlf('@select name,1 from $_ where css_id=%d', $p);
+        return $m->sqlf('@select name,txt from $_ where css_id=%d', $p);
     }
 
     function v2_ary() {

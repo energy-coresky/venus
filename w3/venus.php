@@ -10,8 +10,17 @@ class Venus extends Console
 
     /** Parse css */
     function a_parse() {
-        $css = Plan::_g("assets/z.css");
+        $css = Plan::_g("assets/venus.css");
         echo Maat::css($css);
+    }
+
+    /** Debug Vesper index */
+    function a_index($in) {
+		$maat = new Maat;
+		$maat->cls = [$in ?? 'block inline-flex'];
+		$vesp = new Vesper($maat);
+		echo $vesp->tw_css();
+		print_r(json_encode($vesp->idx, JSON_PRETTY_PRINT));
     }
 
     /** Test Maat parser */
@@ -27,34 +36,14 @@ class Venus extends Console
     }
 
     /** Work with database */
-    function a_base() {//['Properties', 'Types', 'Functions', 3'Pseudo-classes', 4'Pseudo-elements', 5'At-rules'];
-        $t = new t_venus('css');  #SQL::$dd = $t->head_y();             2do $t->onduty('preset');
-# print_r($t->head_y()->sqlf('@select grp from pseudo group by grp'));
-        $char=file(__DIR__ . '/z');$qq=[[],[],[],[],[],[],[],[]];
-        $i=0;
-        //,
-        foreach (explode('#',$char[0]) as $s) {
-            
-            $s = trim($s);
-            if (!$s || '000000'==$s || 'ffffff'==$s) {
-                continue;
-            }
-         $qq[$i++ % 8][] = "#$s";
-//echo "'#$s',\n";
+    function a_base() {
+        $m = new t_venus('css');
+        $t = $m->sqlf('@select id,txt from $_ where css_id=0 limit 1111111');
 
-            //$t->head_y()->sqlf('insert into css values(null, %s,"", %d, "","","2023-06-07 09:00:00")',$s, 5);
+ //print_r($t);
+
+        foreach ($t as $id => $txt) {
+  #          $m->sqlf('update $_ set txt=%s where id=%d', html($txt), $id);
         }
-        var_export($qq);
     }
 }
-/*
-$qq=[];
-foreach(CSS::$styles as $k=> $v){
-  $qq[$k]=1;
-  foreach($v as $_) $qq[$_]=1;
-}
-ksort($qq);
-print_r($qq);
-
-
-*/

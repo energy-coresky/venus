@@ -16,7 +16,7 @@ var i$ = {
     },
     css: function(el, css_data, p) {
         var i = 1, s = '', name, td, list = getComputedStyle(el);
-        if (0 == p) {
+        if (1 == p) {
             for (; i - 1 < list.length; i++) {
                 name = td = list[i - 1];
                 if (1 === css_data[name]) {
@@ -28,9 +28,9 @@ var i$ = {
             }
         }
         Object.keys(css_data).forEach(function (name) {
-            if (css_data[name])
+            if (false !== css_data[name])
                 s += '<tr class="even"><td width="30">' + i + '</td><td width="35%"><b>'
-                + name + '</b></td><td>---</td></tr>';
+                + name + '</b></td><td>' + css_data[name] + '</td></tr>';
             i++;
         });
         $('#css').html(s);

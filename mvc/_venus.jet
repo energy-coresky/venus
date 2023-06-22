@@ -143,8 +143,6 @@ $(function() {
     </div>
     <div class="pl-8" style="height:22px; align-items:center; display:flex; overflow:hidden; white-space:nowrap;">
       <label><input type="radio" value="0" onchange="$$.set(this.value)" name="v-panel" checked> HTML</label>
-      <label><input type="radio" value="1" onchange="$$.set(this.value)" name="v-panel"> CSS</label>
-      <label><input type="radio" value="2" onchange="$$.set(this.value)" name="v-panel"> JS</label>
     </div>
   </div>
   <div id="code-body" class="flex" style="margin-top:45px;">

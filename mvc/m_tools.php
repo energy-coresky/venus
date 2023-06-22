@@ -9,7 +9,7 @@ class m_tools extends Model_m
     function model($name) {
         if (is_array($ary = $this->{"_$name"}()))
             $ary += [
-                'media' => ['---', 'sm', 'md', 'lg', 'xl', '2xl'],
+                'media' => ['---'] + m_venus::$media,
             ];
         return $ary;
     }

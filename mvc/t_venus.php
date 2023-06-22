@@ -18,20 +18,12 @@ class t_venus extends Model_t
         $maat = new Maat(['highlight' => true]);
 //trace(print_r($in->tree,1), 'AAA');
         return [
-            'code' => array_merge([$html = $maat->buildHTML($in->tree)], $maat->page_css, $maat->page_js),
-            'lines' => $this->lines($html),
-            'pos_js' => 1 + count($maat->page_css),
+            'code' => $maat->code($in->tree),
             'tw_css' => (new Vesper($maat))->tw_css(),
             'page' => $maat->page,
             'menu' => m_menu::v_sourses($this),
             'fn' => $this->get($in->fn),
         ];
-    }
-
-    function lines($html) {
-        for ($n = 0, $s = '', $c = substr_count($html, "\n"); $n < $c; $n++)
-            $s .= str_pad($n + 1, 3, ' ', STR_PAD_LEFT) . "\n";
-        return $s;
     }
 
     function get($fn, $tw = false) {

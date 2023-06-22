@@ -75,7 +75,7 @@ class t_settings extends Model_t
                 $id ? $m->update($_POST, $id) : ($id = $m->insert($_POST));
             }
             $this->form_data = $id ? $m->one($id) : [];
-            $this->ary['list'] = $m->all(['tw_id=' => 0]);
+            $this->ary['list'] = $m->all(qp('tw_id=0 order by name'));
             $u = "put.0.classes.$id";
             return [
                 'tw_id' => 0, # classes

@@ -16,11 +16,25 @@ class Maat
     public $page = [];
     public $page_js = [];
     public $page_css = [];
+    public $preflight = false;
 
     function __construct($opt = []) {
         $this->pad = str_pad('', $this->tab = SKY::w('tab_html') ?: 2);
         $this->opt = $opt + $this->opt;
         ini_set('memory_limit', '1024M');
+    }
+
+    function code($tree) {
+        $html = trim($this->buildHTML($tree));
+        $ary = [[$html, substr_count($html, "\n"), '']];
+        foreach ($this->page_css as $i => $css)
+            $ary[] = [$css, substr_count($css, "\n"), "CSS$i"];
+        foreach ($this->page_js as $i => $js)
+            $ary[] = [$js, substr_count($js, "\n"), "JS$i"];
+        $tpl = '<label><input type="radio" value="%s" onchange="$$.set(this.value)" name="v-panel"> %s</label>';
+        foreach ($ary as $i => $x)
+            $ary[0][2] .= sprintf($tpl, $i ?: '0" checked="', $i ? $x[2] : 'HTML');
+        return $ary;
     }
 
     static function &css($css, $opt = []) {
@@ -78,8 +92,12 @@ class Maat
                 } elseif (in_array($node, ['style', 'script'])  && '' !== $data) {
                     $is_js = 'script' == $node;
                     $txt = trim($is_js ? $this->buildJS($data) : $this->buildCSS($data));
-                    if (strlen($data) > 1000) {
+                    if (strlen($data) > 1000 || $this->preflight) {
                         $is_js ? ($p =& $this->page_js) : ($p =& $this->page_css);
+                        if ($this->preflight) {
+                            $p[] = $this->preflight;
+                            $this->preflight = false;
+                        }
                         $p[] = $txt;
                         $out .= tag(($is_js ? 'JS' : 'CSS') . count($p), 'class="red_label"', 'span');
                     } else {
@@ -103,17 +121,29 @@ class Maat
     function &buildCSS(&$ary, $plus = 0) {
         if (is_string($ary))
             $ary =& $this->parse_css($ary);
+    //  print_r($ary);
+        if (!$plus)
+            $this->preflight = '';
         $pad = str_pad('', $this->tab * $plus);
         $end = 'rich' == $this->opt['format'] ? "\n" : '';
         $out = '';
         foreach ($ary as $one) {
-            $out .= $pad . $this->name($one[0]) . " {\n";
-            if ($one[2] > $plus) {
-                $out .= $this->buildCSS($one[1], 1 + $plus);
-            } else foreach ($one[1] as $prop) {
-                $out .= "$pad$this->pad$prop;\n";
+            if ($one[1]) {
+                $out .= $pad . $this->name($one[0]) . " {\n";
+                if ($one[2] > $plus) {
+                    $out .= $this->buildCSS($one[1], 1 + $plus);
+                } else foreach ($one[1] as $prop) {
+                    $out .= "$pad$this->pad$prop;\n";
+                }
+                $out .= "$pad}\n$end";
+                if ('::backdrop' == $one[0] && !$plus) {//2do make real detect
+                    $this->preflight = $out;
+                    $out = '';
+                }
+            } else {
+                $out .= "$pad$one[0];\n";
             }
-            $out .= "$pad}\n$end";
+            
         }
         if ($end)
             $out = substr($out, 0, -1);
@@ -124,15 +154,14 @@ class Maat
         $ary = [];
         $hl = $this->opt['highlight'];
         foreach (preg_split("/\s*,\s*/", $str) as $v) {
-            if ($hl) switch ($v[0]) {
-                case '.': $ary[] = '.<span class="vs-class">' . substr($v, 1) . '</span>';
-                    break;
-                case '#': $ary[] = '#<span class="vs-id">' . substr($v, 1) . '</span>';
-                    break;
-                case '@': case ':': case '[': $ary[] = $v;
-                    break;
-                default: $ary[] = '<span class="vs-tag">' . "$v</span>";
-                    break;
+            if (!$hl || in_array($v[0], ['@', ':', '['])) {
+                $ary[] = $v;
+            } elseif ('.' == $v[0]) {
+                $ary[] = '.<span class="vs-class">' . substr($v, 1) . '</span>';
+            } elseif ('#' == $v[0]) {
+                $ary[] = '#<span class="vs-id">' . substr($v, 1) . '</span>';
+            } else {
+                $ary[] = '<span class="vs-tag">' . "$v</span>";
             }
         }
         return implode(', ', $ary);
@@ -207,6 +236,10 @@ class Maat
                 case ';':
                     if (1 == $depth) {
                         $prop[] = trim($sum);
+                        $sum = '';
+                        continue 2;
+                    } elseif (0 == $depth) {
+                        $ary[] = [trim($sum), [], $plus];
                         $sum = '';
                         continue 2;
                     }

@@ -214,16 +214,18 @@ var $$ = {
         $$.doc().click($$.m_clk).mouseup($$.m_up).mousemove($$.m_move).find('body *').mouseenter($$.m_enter);
         let frameHTML = $$.doc('html:first').html().replaceAll('\r\n', '\n').replaceAll('\r', '\n');
         $$.src = {tree: $$.tree(frameHTML), fn:$$.fn};
-//console.log(name);
         sky.json('src&src=' + $$.fn, $$.src, function(r) {
             $$.code = r.code;
+            $$.set(0);
+            $('#code-head div:eq(1)').html(r.code[0][2]);
             $('#v_sourses').next().html(r.fn).prev().replaceWith(r.menu);
-            $('#code-body pre:eq(0)').html(r.lines).next().html(r.code[0]);
-            //r.page_css
         });
     },
     set: function(n) {
-        $('#code-body pre:eq(0)').next().html($$.code[parseInt(n)]);
+        var s = "  1\n", code = $$.code[parseInt(n)], n = 2 + code[1];
+        for (var i = 2; i < n; i++)
+            s += i + "\n";
+        $('#code-body pre:eq(0)').html(s).next().html(code[0]);
     },
     div: 0,
     swap: function() {
