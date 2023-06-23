@@ -24,8 +24,7 @@ class Maat
         ini_set('memory_limit', '1024M');
     }
 
-    function code($tree) {
-        $html = trim($this->buildHTML($tree));
+    function code($html) {
         $ary = [[$html, substr_count($html, "\n"), '']];
         foreach ($this->page_css as $i => $css)
             $ary[] = [$css, substr_count($css, "\n"), "CSS$i"];
@@ -58,7 +57,7 @@ class Maat
                 $out .= $data . "\n";
                 continue 2;
             case '#comment':
-                $out .= "<span class=\"vs-com\">/* $data */</span>\n";
+                $out .= "<span class=\"vs-com\">&lt;!-- $data --&gt;</span>\n";
                 continue 2;
             default:
                 $tag = "<span class=\"vs-tag\">$node</span>";

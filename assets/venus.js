@@ -219,6 +219,7 @@ var $$ = {
             $$.set(0);
             $('#code-head div:eq(1)').html(r.code[0][2]);
             $('#v_sourses').next().html(r.fn).prev().replaceWith(r.menu);
+           $$.doc('html:first').append(`<style>${r.tw_css}</style>`)
         });
     },
     set: function(n) {

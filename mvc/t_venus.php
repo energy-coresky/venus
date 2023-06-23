@@ -15,11 +15,14 @@ class t_venus extends Model_t
     }
 
     function maat(&$in) {
-        $maat = new Maat(['highlight' => true]);
-//trace(print_r($in->tree,1), 'AAA');
+        $maat = new Maat(['highlight' => 0]);
+        $html = trim($maat->buildHTML($in->tree));
+        $tw_css = (new Vesper($maat))->tw_css();
+        $maat->page_css[] = $tw_css;
+        $code = $maat->code($html);
         return [
-            'code' => $maat->code($in->tree),
-            'tw_css' => (new Vesper($maat))->tw_css(),
+            'code' => $code,
+            'tw_css' => $this->sqlf('+select txt from memory where id=100') . $tw_css,
             'page' => $maat->page,
             'menu' => m_menu::v_sourses($this),
             'fn' => $this->get($in->fn),
@@ -31,7 +34,7 @@ class t_venus extends Model_t
             if (!$tw)
                 return 'Component: <b>' . $this->cell(substr($fn, 1), 'name') . '</b>';
             //$css = $tw ? Tailwind::css() : '';
-            $css = $tw ? '<script src="https://cdn.tailwindcss.com"></script>' : '';
+            $css = 0&& $tw ? '<script src="https://cdn.tailwindcss.com"></script>' : '';
             return $css . $this->cell(substr($fn, 1), 'tmemo');
         } elseif ($ext = strpos($fn, '/')) {
             preg_match('/^https?:/', $fn) or $fn = "https://$fn";
