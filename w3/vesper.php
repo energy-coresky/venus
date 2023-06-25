@@ -40,10 +40,6 @@ class Vesper
         $ms = m_venus::$media;
         $md = [0, 640, 768, 1024, 1280, 1536]; // $this->values['=screens']
         $uniq = array_combine($ms, array_pad([], 6, []));
-        $escape = [':', '.', '/', '[', ']', '(', ')', '%', '#', '+'];
-        $escape = [] + array_combine($escape, array_map(function ($v) {
-            return '\\' . $v;
-        }, $escape));
         trace(print_r($this->maat->cls, 1));
         foreach ($this->maat->cls as $cls) {
             foreach (explode(' ', $cls) as $name) {
@@ -100,8 +96,9 @@ class Vesper
         }
         $pp =& $this->idx;
         foreach ($list as $n => $div) {
-            if (isset($pp[$div])) {
-                $pp =& $pp[$div];
+            $_ = is_num($div) ? '_' . $div : $div;
+            if (isset($pp[$_])) {
+                $pp =& $pp[$_];
                 if ($last == $n)
                     return array_filter($pp, 'is_string');
                 continue;
@@ -152,12 +149,10 @@ class Vesper
     }
 
     function default($in) {
-        //$this->defaults[$name]
         switch ($in) {
             case '~num~': return 1;
-            case '=radius': return '0.25rem';
-            default: return false;
         }
+        return $this->defaults[$in] ?? false;
     }
 
     function _fraction($v) {
@@ -171,8 +166,6 @@ class Vesper
     function _num($in, $x = '@') {
         if (!is_num($in))
             return false;
-        if ('@' == $x)
-            return 1;
         return '/' == $x ? $in / 100 : $in;
     }
 
@@ -217,13 +210,6 @@ class Vesper
     function index() {
         $rules = $this->tw->sqlf('@select name, tpl, comp from $_ where tw_id=0');
         $this->idx = [];
-        $push = function ($rs, &$s, $val) {
-            $val = array_combine(array_map(function () {
-                static $i = '_a';
-                return $i++;
-            }, $val), $val);
-            return $rs ? str_replace($rs[$s][0], $rs[$s++][1], $val) : $val;
-        };
         foreach ($rules as $key => $ary) {
             if ('-' == $key[0]) {
                 $minus = true;
@@ -253,10 +239,12 @@ class Vesper
                     foreach ($pp as &$_) {
                         foreach ($nn as $y => $z) {
                             if ('' !== $z) {
+                                if (is_num($z))
+                                    $z = '_' . $z;
                                 isset($_[$z]) or $_[$z] = [];
                                 $p[] =& $_[$z];
                                 if ($cnt == $y && $x == $last) {
-                                    $_[$z] = $push($rs, $s, $tpl);
+                                    $_[$z] = $rs ? str_replace($rs[$s][0], $rs[$s++][1], $tpl) : $tpl;
                                     if ($default = $this->default($z))
                                         $_ += str_replace($z, $default, $_[$z]);
                                 }
