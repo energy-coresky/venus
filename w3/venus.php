@@ -16,11 +16,11 @@ class Venus extends Console
 
     /** Debug Vesper index */
     function a_index($in = null) {
-		$maat = new Maat;
-		$maat->cls = [$in ?? 'text-red-500 inline-flex'];
-		$vesp = new Vesper($maat);
-		echo $vesp->tw_css();
-		//print_r(json_encode($vesp->idx, JSON_PRETTY_PRINT));
+        $maat = new Maat;
+        $maat->cls = [$in ?? 'text-red-500 inline-flex'];
+        $vesp = new Vesper($maat);
+        echo $vesp->tw_css();
+        #print_r(json_encode($vesp->idx, JSON_PRETTY_PRINT));
     }
 
     /** Test Maat parser */

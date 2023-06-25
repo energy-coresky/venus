@@ -18,7 +18,7 @@ class t_venus extends Model_t
         $maat = new Maat(['highlight' => 0]);
         $html = trim($maat->buildHTML($in->tree));
         $tw_css = (new Vesper($maat))->tw_css();
-        $maat->page_css[] = $tw_css;
+        $maat->page_css[] = "/* Venus */\n" . $tw_css;
         $code = $maat->code($html);
         return [
             'code' => $code,
@@ -34,7 +34,7 @@ class t_venus extends Model_t
             if (!$tw)
                 return 'Component: <b>' . $this->cell(substr($fn, 1), 'name') . '</b>';
             //$css = $tw ? Tailwind::css() : '';
-            $css = 0&& $tw ? '<script src="https://cdn.tailwindcss.com"></script>' : '';
+            $css = 1&& $tw ? '<script src="https://cdn.tailwindcss.com"></script>' : '';
             return $css . $this->cell(substr($fn, 1), 'tmemo');
         } elseif ($ext = strpos($fn, '/')) {
             preg_match('/^https?:/', $fn) or $fn = "https://$fn";

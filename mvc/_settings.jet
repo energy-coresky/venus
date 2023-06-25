@@ -9,11 +9,11 @@ Empty for now
 #.all
 
 #.syntax //////////////////////////////////////////////////////////////////////////////
-@if('classes' == $y_3[2])
-  <h1>Classes</h1>
-  <div class="overflow-auto">
+@if($section)
+  <h1 class="uppercase">{{$section}}</h1>
+  <div>
     @loop($list as $id => $row)
-      <a class="block" @href(ajax('settings&{{$y_2}}=open.0.classes.{{$id}}', box))>{{$row->name}}</a>
+      <a class="block" @href(ajax('settings&{{$y_2}}=open.0.{{$y_3[2]}}.{{$id}}', box))>{{$row->name}}</a>
     ~loop
   </div>
 ~if
@@ -36,7 +36,7 @@ Empty for now
       </div>
     </div>
     <div class="flex h-4/5">
-      <div style="width:{{$left_w}}px">
+      <div style="width:{{$left_w}}px" class="overflow-auto">
       @block(left)
           <h1>Настройки</h1>
           @loop($menu as $k => $name)

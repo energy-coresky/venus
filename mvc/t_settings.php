@@ -7,7 +7,7 @@ class t_settings extends Model_t
     public $t;//sky sql "insert into memory values(null,'palette',null,0,null,'',null)" w venus
 
     private $menu = [];
-    private $ary = [];
+    private $ary = ['section' => ''];
     private $form_data = [];
 
     function head_y() {
@@ -64,25 +64,29 @@ class t_settings extends Model_t
         $this->menu = [
             'form' => 'Common',
             'pseudo' => 'Pseudo',
+            'values' => 'Values',
             'classes' => 'Classes',
         ];
-        if ('classes' == $this->y3[2]) {
+        if (in_array($this->y3[2], ['classes', 'values'])) {
+            $tw_id = 'classes' == $this->y3[2] ? 0 : 2;
             $id = $this->y3[3];
             $m = new t_venus('tw');
             if ('put' == $this->y3[0]) {
                 $_POST['!dt_u'] = '$now';
-                $_POST['css'] = $_POST['url'] = '';
+                $_POST['css'] = '';
                 $id ? $m->update($_POST, $id) : ($id = $m->insert($_POST));
             }
             $this->form_data = $id ? $m->one($id) : [];
-            $this->ary['list'] = $m->all(qp('tw_id=0 order by name'));
-            $u = "put.0.classes.$id";
+            $this->ary['list'] = $m->all(qp('tw_id=$. order by name', $tw_id));
+            $this->ary['section'] = $this->y3[2];
+            $u = "put.0.classes.$id";//$tw_id
             return [
-                'tw_id' => 0, # classes
+                'tw_id' => $tw_id,
                 ['ID', 'ni', $id ?: 'New Item'],
                 'grp' => ['Group', 'select', array_combine($a = m_venus::$css_tpl_grp, $a)],
-                'name' => ['Name', '', 'style="width:50%"'],
-                'tpl' => ['Template', 'textarea_rs', 'style="width:90%" rows="7"'],
+                'name' => [$tw_id ? 'ValueName' : 'Name', '', 'style="width:50%"'],
+                'comp' => [$tw_id ? 'DefaultValue' : 'Composite', '', 'style="width:50%"'],
+                'tpl' => ['Template', 'textarea_rs', 'style="width:90%" rows="21"'],
             ];
         }
         return [
