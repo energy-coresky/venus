@@ -7,6 +7,7 @@ class venus_c extends Controller
 
     function head_y($action) {
         'a_ware' == $action or MVC::$layout = '';
+        $this->t_venus->head_y();
         $this->y3 = explode('.', $this->_3, 5) + ['', '', '', '', ''];
         return ['y_2' => $this->_2, 'y_3' => $this->y3];
     }
@@ -43,13 +44,27 @@ class venus_c extends Controller
         ];
     }
 
-    function a_src() {
-        echo $this->t_venus->get(end($_GET), true);
+    function j_src() {
+        if ($this->_2) {
+            $json = unjson(file_get_contents('php://input'));
+            json($this->t_venus->maat($json));
+        } else {
+            json([
+                'html' => $this->t_venus->get($this->_3, true),
+                'tw' => SKY::w('vesper') ? '' : '<script src="https://cdn.tailwindcss.com"></script>',
+            ]);
+        }
     }
 
-    function j_src() {
-        $json = unjson(file_get_contents('php://input'));
-        json($this->t_venus->maat($json));
+    function j_set() {
+        SKY::w($this->_2, $this->_3);
+        return true;
+    }
+
+    function j_cls() {
+        $maat = new Maat;
+        $maat->cls = [$_POST['n']];
+        echo pre((new Vesper($maat))->tw_css(), '');
     }
 
     function j_save() {

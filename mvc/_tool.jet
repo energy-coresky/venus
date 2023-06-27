@@ -17,7 +17,7 @@
 <button class="btn mx-1" onclick="i$.unicode(-1)" style="font-family:Verdana;">◄</button>
 <button class="btn mr-3" onclick="i$.unicode(1)" style="font-family:Verdana;">►</button>
 <select onchange="$('#uni-font').css('fontFamily', this.value)">{!$fonts!}</select>
-<a class="vs-mono vs-ic" style="font-size:16px" @href($$.ddm('show', '#muni', 1))>&nbsp;▼</a>
+<a class="menu-btn" @href($$.ddm('show', '#muni', this))>Points&nbsp;▼</a>
 #.t_head
 
 #.box //////////////////////////////////////////////////////////////////////////////

@@ -88,6 +88,11 @@ $(function() {
 <div id="mov-x"></div>
 <div id="main">
   <div id="v-head">
+<span class="absolute" style="left:786px;top:19px;color:#888;z-index:999">▽</span>
+<span class="absolute" style="left:914px;top:19px;color:#888;z-index:999">▽</span>
+<span class="absolute" style="left:1170px;top:19px;color:#888;z-index:999">▽</span>
+<span class="absolute" style="left:1426px;top:19px;color:#888;z-index:999">▽</span>
+<span class="absolute" style="left:1682px;top:19px;color:#888;z-index:999">▽</span>
     <a href="{{LINK}}" class="vs-ic mr-3">@svg(home)</a>
     <a @href($(this).find('svg').toggle()) class="vs-ic">@inc(.moonsun)</a>
     <a @href($(this).find('svg').show()) class="vs-ic ml-3">@svg(fileplus)</a>
@@ -120,7 +125,7 @@ $(function() {
   </div>
   <div id="v-main" style=""> <!-- resize:both; overflow:auto; -->
     <div id="sw-icon"><a @href($$.swap()) title="Swap panels - F9">@svg(arrows)</a></div>
-    <iframe src="" class="w-full h-full" onload="$$.onload()"></iframe>
+    <iframe srcdoc="" class="w-full h-full" onload="$$.onload()"></iframe>
   </div>
   <div id="v-right" onscroll="$$.scroll(-this.scrollTop, 1)"></div>
   <div id="v-tail">@inc(.tail)</div>
@@ -136,7 +141,7 @@ $(function() {
 <div id="tail" onscroll="$$.scroll(-this.scrollTop, 0)">
   <div id="code-head" class="header fixed" style="height:45px;">
     <div class="pl-8" style="height:23px; align-items:center; display:flex; overflow:hidden; white-space:nowrap; border-bottom:1px solid #ccc">
-      <label><input type="checkbox" checked> &nbsp;Tidy</label>
+      <label><input type="checkbox"@checked(SKY::w('vesper')) onchange="ajax('set&vesper='+(this.checked?1:0))"> &nbsp;Vesper</label>
       <label><input type="checkbox" checked> &nbsp;Comments</label>
       <label><input type="checkbox"> &nbsp;Re-format &lt;PRE&gt;</label>
       <label><input type="checkbox"> &nbsp;Limit length of the lines</label>

@@ -203,23 +203,46 @@ var $$ = {
         return tree;
     },
     fn: sky.home,
+    r: {},
     test: function(fn) {
+        $$.r.tw = false;
         if (fn)
             $$.fn = fn;
-        $$.$f.attr('src', sky.home + '_venus?src=' + $$.fn);
+        ajax('src&0=' + $$.fn, function(r) {
+            $$.r = r;
+            $$.parsed = $$.tree(r.html);
+            if (r.tw) {
+                $$.$f.attr('srcdoc', r.tw + r.html);
+            } else { // Vesper
+                $$.onload(true);
+            }
+        }, '_venus');
+        //$$.$f.attr('src', sky.home + '_venus?src=' + $$.fn);
     },
-    src: {},
+    parsed: [],
     code: [],
-    onload: function() {
-        $$.doc().click($$.m_clk).mouseup($$.m_up).mousemove($$.m_move).find('body *').mouseenter($$.m_enter);
-        let frameHTML = $$.doc('html:first').html().replaceAll('\r\n', '\n').replaceAll('\r', '\n');
-        $$.src = {tree: $$.tree(frameHTML), fn:$$.fn};
-        sky.json('src&src=' + $$.fn, $$.src, function(r) {
+    onload: function(vesp) {
+        var tw = '';
+        if (true !== vesp) { // real onload
+            $$.doc().click($$.m_clk).mouseup($$.m_up).mousemove($$.m_move).find('body *').mouseenter($$.m_enter);
+            if ($$.r.tw) {
+                let frameHTML = $$.doc('html:first').html().replaceAll('\r\n', '\n').replaceAll('\r', '\n');
+                let p0 = frameHTML.indexOf('<style>'), p1 = frameHTML.indexOf('</style>');
+                tw = frameHTML.slice(7 + p0, p1);
+            } else {
+                return;
+            }
+        }
+        let src = {tree: $$.parsed, fn:$$.fn, tw_native: tw};
+        sky.json('src&1=' + $$.fn, src, function(r) {
             $$.code = r.code;
-            $$.set(0);
-            $('#code-head div:eq(1)').html(r.code[0][2]);
-            $('#v_sourses').next().html(r.fn).prev().replaceWith(r.menu);
-          // $$.doc('html:first').append(`<style>${r.tw_css}</style>`)
+            var last = r.code.length - 1;
+            $$.set(last);
+            if (r.preflight)
+                $$.$f.attr('srcdoc', '<style>' + r.preflight + r.code[last][0] + '</style>' + $$.r.html);
+            $('#code-head div:eq(1)').html(r.code[0][2]); // set radio list
+            $('#v_sourses').next().html(r.fn).prev().replaceWith(r.menu); // set menu
+         //  $$.doc('html:first').append(`<style>${r.preflight}</style>`)
         });
     },
     set: function(n) {

@@ -26,10 +26,10 @@ class Maat
 
     function code($html) {
         $ary = [[$html, substr_count($html, "\n"), '']];
-        foreach ($this->page_css as $i => $css)
-            $ary[] = [$css, substr_count($css, "\n"), "CSS$i"];
         foreach ($this->page_js as $i => $js)
             $ary[] = [$js, substr_count($js, "\n"), "JS$i"];
+        foreach ($this->page_css as $i => $css)
+            $ary[] = [$css, substr_count($css, "\n"), "CSS$i"];
         $tpl = '<label><input type="radio" value="%s" onchange="$$.set(this.value)" name="v-panel"> %s</label>';
         foreach ($ary as $i => $x)
             $ary[0][2] .= sprintf($tpl, $i ?: '0" checked="', $i ? $x[2] : 'HTML');
@@ -91,12 +91,8 @@ class Maat
                 } elseif (in_array($node, ['style', 'script'])  && '' !== $data) {
                     $is_js = 'script' == $node;
                     $txt = trim($is_js ? $this->buildJS($data) : $this->buildCSS($data));
-                    if (strlen($data) > 1000 || $this->preflight) {
+                    if (strlen($data) > 1000) {
                         $is_js ? ($p =& $this->page_js) : ($p =& $this->page_css);
-                        if ($this->preflight) {
-                            $p[] = $this->preflight;
-                            $this->preflight = false;
-                        }
                         $p[] = $txt;
                         $out .= tag(($is_js ? 'JS' : 'CSS') . count($p), 'class="red_label"', 'span');
                     } else {
@@ -121,8 +117,8 @@ class Maat
         if (is_string($ary))
             $ary =& $this->parse_css($ary);
     //  print_r($ary);
-        if (!$plus)
-            $this->preflight = '';
+        #if (!$plus)
+         #   $this->preflight = '';
         $pad = str_pad('', $this->tab * $plus);
         $end = 'rich' == $this->opt['format'] ? "\n" : '';
         $out = '';
@@ -136,7 +132,8 @@ class Maat
                 }
                 $out .= "$pad}\n$end";
                 if ('::backdrop' == $one[0] && !$plus) {//2do make real detect
-                    $this->preflight = $out;
+                    //$this->preflight = $out;
+                    $this->page_css[] = $out; // separate
                     $out = '';
                 }
             } else {

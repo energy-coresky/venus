@@ -14,6 +14,17 @@ var i$ = {
             t.prepend(r);
         });
     },
+    push: function(el, s) {
+        $(el).parent().find('a').removeClass('active');
+        $(el).addClass('active');
+        ajax(s, function(r) {
+            $('#s-form').html(r)
+        });
+    },
+    cls: function(name) {
+        ajax('cls', {n: name}, 's-tail');
+        //$()
+    },
     css: function(el, css_data, p) {
         var i = 1, s = '', name, td, list = getComputedStyle(el);
         if (1 == p) {

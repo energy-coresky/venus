@@ -67,6 +67,7 @@ class t_settings extends Model_t
             'values' => 'Values',
             'classes' => 'Classes',
         ];
+        $this->ary['gen'] = [];
         if (in_array($this->y3[2], ['classes', 'values'])) {
             $tw_id = 'classes' == $this->y3[2] ? 0 : 2;
             $id = $this->y3[3];
@@ -75,8 +76,13 @@ class t_settings extends Model_t
                 $_POST['!dt_u'] = '$now';
                 $_POST['css'] = '';
                 $id ? $m->update($_POST, $id) : ($id = $m->insert($_POST));
+            } elseif ('open' == $this->y3[0] && $id) {
+                MVC::$layout = '';
+                MVC::body("settings.form_only");
             }
             $this->form_data = $id ? $m->one($id) : [];
+            if ($id && !$tw_id)
+                $this->ary['gen'] = (new Vesper(new Maat))->genClass((object)$this->form_data);
             $this->ary['list'] = $m->all(qp('tw_id=$. order by name', $tw_id));
             $this->ary['section'] = $this->y3[2];
             $u = "put.0.classes.$id";//$tw_id
