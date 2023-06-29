@@ -64,7 +64,7 @@ class venus_c extends Controller
     function j_cls() {
         $maat = new Maat;
         $maat->cls = [$_POST['n']];
-        echo pre((new Vesper($maat))->tw_css(), '');
+        echo pre((new Vesper($maat))->v_css(), '');
     }
 
     function j_save() {

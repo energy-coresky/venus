@@ -101,15 +101,16 @@ $(function() {
     <a class="menu-btn" @href(alert())>??? - F6</a>
     <span style="padding-left:8px" >Frame&nbsp;</span>
     <select id="fsize" onchange="$$.switch(this)">{! $fsize !}<option cust>*</option></select>
+    <a class="menu-btn" @href($$.ddm('show', '#v_sourses', this)) id="v-sourse">Sources</a><div id="v_sourses"></div>
     <a class="menu-btn" @href($$.switch())>Switch - F8</a>
     <a class="menu-btn" @href($$.mm(-1))>Min</a>
     <a class="menu-btn" @href($$.mm(1))>Max</a>
     <a class="" @href($(this).find('svg').toggle())>@inc(.mobile)</a>
     <a class="menu-btn" @href($$.swap())>Catch - F10</a>
     <a class="" @href($(this).find('svg').toggle(); $$.bg())>@inc(.screen)</a>
-    <a class="menu-btn" @href($$.ddm('show', '#v_sourses', this))>Sources&nbsp;▼</a>
-    <div id="v_sourses"></div><div id="v-sourse"></div>
-    <!-- from right -->
+    <a class="menu-btn" @href($$.ddm('show', '#v_links', this)) id="v-links">Links</a><div id="v_links"></div>
+    
+    <!-- from right<div></div> -->
     <span class="absolute right-20">@inc(.pdaxt)</span>
     <a @href(ajax('settings&all', box)) class="vs-ic absolute right-8">@svg(settings)</a>
   </div>

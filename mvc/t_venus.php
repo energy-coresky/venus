@@ -15,15 +15,14 @@ class t_venus extends Model_t
     }
 
     function maat(&$in) {
-        $maat = new Maat(['highlight' => 0]);
+        $maat = new Maat(['highlight' => true]);
         if ($in->tw_native)
-            $maat->page_css[] = $maat->buildCSS($in->tw_native);
+            $maat->tw_native($in->tw_native, $this);
         $html = trim($maat->buildHTML($in->tree));
-        $maat->page_css[] = "/* Venus */\n" . (new Vesper($maat))->tw_css();
         return [
-            'code' => $maat->code($html),
-            'preflight' => $in->tw_native ? '' : $this->sqlf('+select txt from memory where id=100'),// . $tw_css,
-            'page' => $maat->page,
+            'code' => $maat->code($html, (new Vesper($maat))->v_css()),
+            'preflight' => $in->tw_native ? '' : $this->t_settings->preflight(),
+            'links' => m_menu::v_links($maat->links),
             'menu' => m_menu::v_sourses($this),
             'fn' => $this->get($in->fn),
         ];

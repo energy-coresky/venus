@@ -11,6 +11,19 @@ class m_menu extends Model_m
         ]);
     }
 
+    function _v_links($ary) {
+        $out = [];
+        foreach ($ary as $one => $a) {
+            [$tag, $attr] = explode('-', $one, 2);
+            $sub = [];
+            foreach ($a as $link => $n) {
+                $sub[html($link) . " ($n)"] = '';
+            }
+            $out[] = ["&lt;$tag $attr...&gt;", $sub, self::$rar];
+        }
+        return $out;
+    }
+
     function _muni($m) {
         $sql = '@select name,$cc("i$.cp=",id,";i$.unicode()") from $_ where priority=%d order by id';
         return [

@@ -26,7 +26,6 @@ class Vesper
             }
         }
         $this->index();
-        //print_r($this->values);
     }
 // class: [mask-image:radial-gradient(64rem_64rem_at_top,white,transparent)]       Component: Content Section
 // .\[mask-image\:radial-gradient\(64rem_64rem_at_top\2c white\2c transparent\)\]:[mask-image
@@ -36,13 +35,14 @@ class Vesper
    mask-image:radial-gradient(64rem 64rem at top,white,transparent);
 }*/
 
-    function tw_css() {
+    function v_css() {
         $ms = m_venus::$media;
         $md = [0, 640, 768, 1024, 1280, 1536]; // $this->values['=screens']
         $uniq = array_combine($ms, array_pad([], 6, []));
         trace(print_r($this->maat->cls, 1));
+        //trace(print_r($this->values));
         foreach ($this->maat->cls as $cls) {
-            foreach (explode(' ', $cls) as $name) {
+            foreach (preg_split('/\s+/', $cls) as $name) {
                 $ps = '[' == $name[0] ? [$name] : explode(':', $name);
                 $one = array_pop($ps);
                 if ($sct = array_intersect($ms, $ps)) {
@@ -71,7 +71,7 @@ class Vesper
                 $pp[] = [$name . $spec, $css, $depth];
             }
         }
-        return $this->maat->buildCSS($ary);
+        return $this->maat->buildCSS($ary, true);
     }
 
     function genClass($row) {
@@ -223,6 +223,7 @@ text-decoration-color:#cbd5e1
 
 */
     function color($color, $num, $ary) { // bg-sky-500/[.06] bg-[#50d71e]
+        $point = '.' == $ary[0][0] ? array_shift($ary) : false;
         $var = array_shift($ary);
         if ('[' == $color[0] && ']' == $color[-1]) # Arbitrary value
             return str_replace('&color', substr($color, 1, -1), $ary);
@@ -256,6 +257,8 @@ text-decoration-color:#cbd5e1
         } else {
             $opacity = '[' == $opacity[0] ? substr($opacity, 1, -1) : (int)$opacity / 100;
         }
+        if ($point)
+            array_unshift($ary, $point);
         $dec = implode(' ', array_map('hexdec', str_split(substr($hex, 1), 2)));
         return str_replace('&color', "rgb($dec / $opacity)", $ary);
     }

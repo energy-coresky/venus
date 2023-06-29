@@ -211,13 +211,8 @@ var $$ = {
         ajax('src&0=' + $$.fn, function(r) {
             $$.r = r;
             $$.parsed = $$.tree(r.html);
-            if (r.tw) {
-                $$.$f.attr('srcdoc', r.tw + r.html);
-            } else { // Vesper
-                $$.onload(true);
-            }
+            r.tw ? $$.$f.attr('srcdoc', r.tw + r.html) : $$.onload(true);
         }, '_venus');
-        //$$.$f.attr('src', sky.home + '_venus?src=' + $$.fn);
     },
     parsed: [],
     code: [],
@@ -227,8 +222,8 @@ var $$ = {
             $$.doc().click($$.m_clk).mouseup($$.m_up).mousemove($$.m_move).find('body *').mouseenter($$.m_enter);
             if ($$.r.tw) {
                 let frameHTML = $$.doc('html:first').html().replaceAll('\r\n', '\n').replaceAll('\r', '\n');
-                let p0 = frameHTML.indexOf('<style>'), p1 = frameHTML.indexOf('</style>');
-                tw = frameHTML.slice(7 + p0, p1);
+                frameHTML = frameHTML.substr(frameHTML.indexOf('<style>/* ! tailwindcss'));
+                tw = frameHTML.slice(7, frameHTML.indexOf('</style>'));
             } else {
                 return;
             }
@@ -236,20 +231,21 @@ var $$ = {
         let src = {tree: $$.parsed, fn:$$.fn, tw_native: tw};
         sky.json('src&1=' + $$.fn, src, function(r) {
             $$.code = r.code;
-            var last = r.code.length - 1;
-            $$.set(last);
-            if (r.preflight)
-                $$.$f.attr('srcdoc', '<style>' + r.preflight + r.code[last][0] + '</style>' + $$.r.html);
+            var vesper_css = $$.set(r.code.length - 1, r.preflight);
+            if (vesper_css)
+                $$.$f.attr('srcdoc', '<style>' + vesper_css + '</style>' + $$.r.html);
+            $$.set(0);
             $('#code-head div:eq(1)').html(r.code[0][2]); // set radio list
-            $('#v_sourses').next().html(r.fn).prev().replaceWith(r.menu); // set menu
-         //  $$.doc('html:first').append(`<style>${r.preflight}</style>`)
+            $('#v-sourse').html(r.fn + '&nbsp;▼').next().replaceWith(r.menu); // set menu
+            $('#v_links').replaceWith(r.links); // set menu
         });
     },
-    set: function(n) {
+    set: function(n, css) {
         var s = "  1\n", code = $$.code[parseInt(n)], n = 2 + code[1];
         for (var i = 2; i < n; i++)
             s += i + "\n";
-        $('#code-body pre:eq(0)').html(s).next().html(code[0]);
+        var el = $('#code-body pre:eq(0)').html(s).next().html(code[0]);
+        return css ? css + el.text() : false;
     },
     div: 0,
     swap: function() {

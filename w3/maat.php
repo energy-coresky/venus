@@ -10,13 +10,11 @@ class Maat
     ];
     private $tab;
     private $pad;
+    private $code = [];
+   private $add_space = false;
 
-    public $tw_css = '';
     public $cls = [];
-    public $page = [];
-    public $page_js = [];
-    public $page_css = [];
-    public $preflight = false;
+    public $links = [];
 
     function __construct($opt = []) {
         $this->pad = str_pad('', $this->tab = SKY::w('tab_html') ?: 2);
@@ -24,16 +22,50 @@ class Maat
         ini_set('memory_limit', '1024M');
     }
 
-    function code($html) {
-        $ary = [[$html, substr_count($html, "\n"), '']];
-        foreach ($this->page_js as $i => $js)
-            $ary[] = [$js, substr_count($js, "\n"), "JS$i"];
-        foreach ($this->page_css as $i => $css)
-            $ary[] = [$css, substr_count($css, "\n"), "CSS$i"];
+    function tw_native($css, $m) {
+        $preflight = '::backdrop';
+        $ary =& $this->parse_css($css, $preflight);
+       $this->add_space = true;
+        $this->code[] = [$css = $this->buildCSS($preflight), substr_count($css, "\n"), 'Preflight'];
+        $this->code[] = [$this->buildCSS($ary, true), -1, 'TailwindCSS'];
+       $this->add_space = false;
+        if (trim(strip_tags($css)) != $m->t_settings->preflight())
+            trace('preflight differ!', true);
+    }
+
+   function diff($diff, &$txt, &$size) {
+       $x = -1 == $size;
+       $lines = explode("\n", $txt);
+       $colors = ['=' => $txt = '', '*' => 'ffd', '+' => 'dfd', '.' => 'fdd'];
+       for ($i = $j = 0, $size = strlen($diff); $i < $size; $i++) {
+           $line = $lines[$j];
+           if (in_array($z = $diff[$i], ['+', '.']) && $x)
+               $z = '+' == $z ? '.' : '+';
+           if ($c = $colors[$z]) {
+               '.' === $z ? ($line = '&nbsp;') : $j++;
+               $txt .= '<div class="code" style="background:'."#$c\">$line</div>";
+           } else {
+               $txt .= $line . "\n";
+               $j++;
+           }
+       }
+   }
+
+    function code($html, $v_css) {
+       $n = substr_count($v_css, "\n");
+       if ($this->code && 'Preflight' == $this->code[0][2]) {
+           $tw_css =& $this->code[1];
+           $diff = Diff::parse($v_css, $tw_css[0]);
+           $this->diff($diff, $v_css, $n);
+           $this->diff($diff, $tw_css[0], $tw_css[1]);
+       }
+        $this->code[] = [$v_css, $n, 'VesperCSS'];
         $tpl = '<label><input type="radio" value="%s" onchange="$$.set(this.value)" name="v-panel"> %s</label>';
-        foreach ($ary as $i => $x)
-            $ary[0][2] .= sprintf($tpl, $i ?: '0" checked="', $i ? $x[2] : 'HTML');
-        return $ary;
+        $s = '';
+        foreach ($this->code as $i => $x)
+            $s .= sprintf($tpl, $i + 1, $x[2]);
+        array_unshift($this->code, [$html, substr_count($html, "\n"), sprintf($tpl, '0" checked="', 'HTML') . $s]);
+        return $this->code;
     }
 
     static function &css($css, $opt = []) {
@@ -70,11 +102,11 @@ class Maat
                                 $this->cls[] = $v;
                                 break;
                             case 'src': case 'href': case 'action':
-                                $cnt = $this->page["$node-$k"][$v] ?? 0;
-                                $this->page["$node-$k"][$v] = ++$cnt;
+                                $cnt = $this->links["$node-$k"][$v] ?? 0;
+                                $this->links["$node-$k"][$v] = ++$cnt;
                                 break;
-                            #case '': $this->page[""][$v] = ; break;
-                            #default: $this->page[""][$v] = ; break;
+                            #case '': $this->links[""][$v] = ; break;
+                            #default: $this->links[""][$v] = ; break;
                         }
                         $x = $cx[$k] ?? $k;
                         $join[] = $k . '="' . (in_array($x, $cr) ? "<span class=\"vs-$x\">$v</span>" : $v) . '"';
@@ -91,10 +123,9 @@ class Maat
                 } elseif (in_array($node, ['style', 'script'])  && '' !== $data) {
                     $is_js = 'script' == $node;
                     $txt = trim($is_js ? $this->buildJS($data) : $this->buildCSS($data));
-                    if (strlen($data) > 1000) {
-                        $is_js ? ($p =& $this->page_js) : ($p =& $this->page_css);
-                        $p[] = $txt;
-                        $out .= tag(($is_js ? 'JS' : 'CSS') . count($p), 'class="red_label"', 'span');
+                    if (strlen($data) > SKY::w('char_len')) {
+                        $this->code[] = [$txt, substr_count($txt, "\n"), $name = ($is_js ? 'JS' : 'CSS') . count($this->code)];
+                        $out .= tag($name, 'class="red_label"', 'span');
                     } else {
                         $out .= "\n" . $txt . "\n";
                     }
@@ -113,12 +144,16 @@ class Maat
         return $str;
     }
 
-    function &buildCSS(&$ary, $plus = 0) {
+    function &buildCSS(&$ary, $sort = false, $plus = 0) {
         if (is_string($ary))
             $ary =& $this->parse_css($ary);
-    //  print_r($ary);
-        #if (!$plus)
-         #   $this->preflight = '';
+        if ($sort) usort($ary, function ($a, $b) use ($plus) {
+            $ma = $plus < $a[2];
+            $mb = $plus < $b[2];
+            if (!$ma && !$mb)
+                return strcmp($a[0], $b[0]);
+            return $ma && $mb ? 0 : ($ma && !$mb ? 1 : -1);
+        });
         $pad = str_pad('', $this->tab * $plus);
         $end = 'rich' == $this->opt['format'] ? "\n" : '';
         $out = '';
@@ -126,20 +161,16 @@ class Maat
             if ($one[1]) {
                 $out .= $pad . $this->name($one[0]) . " {\n";
                 if ($one[2] > $plus) {
-                    $out .= $this->buildCSS($one[1], 1 + $plus);
+                    $out .= $this->buildCSS($one[1], $sort, 1 + $plus);
                 } else foreach ($one[1] as $prop) {
+                   if ($this->add_space)
+                       $prop = preg_replace("/^([\w\-]+):/", '$1: ', $prop);
                     $out .= "$pad$this->pad$prop;\n";
                 }
                 $out .= "$pad}\n$end";
-                if ('::backdrop' == $one[0] && !$plus) {//2do make real detect
-                    //$this->preflight = $out;
-                    $this->page_css[] = $out; // separate
-                    $out = '';
-                }
             } else {
                 $out .= "$pad$one[0];\n";
             }
-            
         }
         if ($end)
             $out = substr($out, 0, -1);
@@ -195,7 +226,7 @@ class Maat
     function parse_js($in) {
     }
 
-    function &parse_css(&$in, $plus = 0) {
+    function &parse_css(&$in, &$split = null, $plus = 0) {
         $in = preg_replace("~(#+|//+)~", "$1\n", '<?php ' . unl($in));
         $depth = $has_child = 0;
         $sum = '';
@@ -243,11 +274,16 @@ class Maat
                 case '}':
                     if (0 == --$depth) {
                         if ($has_child) {
-                            $prop =& $this->parse_css($sum, 1 + $plus);
+                            $null = null;
+                            $prop =& $this->parse_css($sum, $null, 1 + $plus);
                         } else {
                             '' === trim($sum) or $prop[] = trim($sum);
                         }
                         $ary[] = [$key, $prop, $plus + $has_child];
+                        if ($split === $key) {
+                            $split = $ary;
+                            $ary = [];
+                        }
                         $sum = '';
                         $has_child = 0;
                         continue 2;

@@ -7,7 +7,7 @@ class t_settings extends Model_t
     public $t;//sky sql "insert into memory values(null,'palette',null,0,null,'',null)" w venus
 
     private $menu = [];
-    private $ary = ['section' => ''];
+    private $ary = ['section' => '', 'gen' => []];
     private $form_data = [];
 
     function head_y() {
@@ -20,6 +20,10 @@ class t_settings extends Model_t
             $this->t =& m_venus::ghost($dd, $this->_2);
         }
         return $dd;
+    }
+
+    function preflight() {
+        return unl($this->sqlf('+select txt from $_ where id=100'));
     }
 
     function clk($u) {
@@ -53,10 +57,10 @@ class t_settings extends Model_t
             'f' => 'Keyboard Shortcuts',
         ];
         return [
-            'tailwind' => ['Tailwind'],
             'pref' => ['Venus prefix for integrated classes'],
             'tab_html' => ['HTML Tab size', 'number', '', 2],
             'tab_php' => ['PHP Tab size', 'number', '', 4],
+            'char_len' => ['Char length for separate panel', 'number', '', 0],
         ];
     }
 
@@ -67,7 +71,6 @@ class t_settings extends Model_t
             'values' => 'Values',
             'classes' => 'Classes',
         ];
-        $this->ary['gen'] = [];
         if (in_array($this->y3[2], ['classes', 'values'])) {
             $tw_id = 'classes' == $this->y3[2] ? 0 : 2;
             $id = $this->y3[3];
