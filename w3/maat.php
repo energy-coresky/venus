@@ -37,11 +37,13 @@ class Maat
        $x = -1 == $size;
        $lines = explode("\n", $txt);
        $colors = ['=' => $txt = '', '*' => 'ffd', '+' => 'dfd', '.' => 'fdd'];
+       $ok = true;
        for ($i = $j = 0, $size = strlen($diff); $i < $size; $i++) {
            $line = $lines[$j];
            if (in_array($z = $diff[$i], ['+', '.']) && $x)
                $z = '+' == $z ? '.' : '+';
            if ($c = $colors[$z]) {
+               $x or $ok = false;
                '.' === $z ? ($line = '&nbsp;') : $j++;
                $txt .= '<div class="code" style="background:'."#$c\">$line</div>";
            } else {
@@ -49,6 +51,7 @@ class Maat
                $j++;
            }
        }
+       $ok or $size = -$size;
    }
 
     function code($html, $v_css) {
@@ -59,7 +62,7 @@ class Maat
            $this->diff($diff, $v_css, $n);
            $this->diff($diff, $tw_css[0], $tw_css[1]);
        }
-        $this->code[] = [$v_css, $n, 'VesperCSS'];
+        $this->code[] = [$v_css, abs($n), $n < 0 ? '<r>VesperCSS</r>' : 'VesperCSS'];
         $tpl = '<label><input type="radio" value="%s" onchange="$$.set(this.value)" name="v-panel"> %s</label>';
         $s = '';
         foreach ($this->code as $i => $x)

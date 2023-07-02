@@ -303,7 +303,7 @@ pre:focus {
 #f1 .desc-chk {
   padding-left: 3px;
 }
-#f1 input[type=text], #f1 textarea {
+#f1 input[type=text], #f1 input[type=number], #f1 textarea {
   padding: 0 2px;
   margin: 2px 0;
   font-family: monospace;

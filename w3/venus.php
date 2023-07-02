@@ -19,7 +19,7 @@ class Venus extends Console
         $maat = new Maat;
         $maat->cls = [$in ?? 'text-red-500 inline-flex'];
         $vesp = new Vesper($maat);
-        echo $vesp->tw_css();
+        echo $vesp->v_css();
         #print_r(json_encode($vesp->idx, JSON_PRETTY_PRINT));
     }
 

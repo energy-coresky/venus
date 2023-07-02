@@ -61,6 +61,13 @@ class t_settings extends Model_t
             'tab_html' => ['HTML Tab size', 'number', '', 2],
             'tab_php' => ['PHP Tab size', 'number', '', 4],
             'char_len' => ['Char length for separate panel', 'number', '', 0],
+            ['Media width, sm', [
+                'sm' => ['', 'number', 'style="width:45px"', 640],
+                'md' => ['md', 'number', 'style="width:45px"', 768],
+                'lg' => ['lg', 'number', 'style="width:51px"', 1024],
+                'xl' => ['xl', 'number', 'style="width:51px"', 1280],
+                '2xl' => ['2xl', 'number', 'style="width:51px"', 1536],
+            ]],
         ];
     }
 
