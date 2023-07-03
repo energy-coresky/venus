@@ -10,14 +10,6 @@ class Vesper
     private $defaults = [];
     private $comp;
 
-  function arb($in, $x, $samples = false) {
-      if ($samples)
-          return ['[any_you_want]'];
-      if ('[' != $in[0])
-          return false;
-      return str_replace('_', ' ', substr($in, 1, -1));
-  }
-
     function __construct($maat) {
         $this->maat = $maat;
         $this->tw = new t_venus('tw');
@@ -35,20 +27,12 @@ class Vesper
         }
         $this->index();
     }
-// class: [mask-image:radial-gradient(64rem_64rem_at_top,white,transparent)]       Component: Content Section
-// .\[mask-image\:radial-gradient\(64rem_64rem_at_top\2c white\2c transparent\)\]:[mask-image
-/*
-.\[mask-image\:radial-gradient\(64rem_64rem_at_top\2c white\2c transparent\)\] {
-   -webkit-mask-image:radial-gradient(64rem 64rem at top,white,transparent);
-   mask-image:radial-gradient(64rem 64rem at top,white,transparent);
-}*/
 
     function v_css() {
         $ms = m_venus::$media;
         $md = [0, 640, 768, 1024, 1280, 1536]; // $this->values['=screens']
         $media = array_combine($ms, array_pad([], 6, []));
-        trace(var_export($this->maat->cls, 1));
-        //trace(print_r($this->values));
+        //trace(var_export($this->maat->cls, 1));
         foreach ($this->maat->cls as $cls) {
             if ('' === $cls)
                 continue;
@@ -101,27 +85,47 @@ class Vesper
         return $this->maat->buildCSS($ary, true);
     }
 
+    function arbitrary($v, &$sc = null) {
+        $pos = strpos($v = str_replace('_', ' ', substr($v, 1, -1)), 'calc(');
+        if (false !== $pos) {
+            $len = strlen($br = Rare::bracket(substr($v, 4 + $pos)));
+            $br = preg_replace("/([^\s\(])(\+|\-)(\S)/", "$1 $2 $3", $br); // 2do: more smart
+            $v = substr($v, 0, 4 + $pos) . $br . substr($v, 4 + $pos + $len);
+        }
+        if (2 == count($a = explode(':', $v, 2))) {
+            $v = implode(': ', $a);
+            null === $sc or $sc = true;
+        }
+        return $v;
+    }
+
     function genCSS($cls) { // 2do container (add 6 classes), Animation
         $minus = '';
         if ('-' == $cls[0]) {
             $minus = '-';
             $cls = substr($cls, 1);
         }
-        if ($pos = strpos($cls, '['))
-            [$cls, $arb] = explode('[', $cls, 2);
+        $pos = strpos($cls, '[');
+        if ($pos = $pos !== false)
+            [$cls, $atm] = explode('[', $cls, 2);
         $last = count($list = explode('-', $cls)) - 1;
         if ($pos)
-            $list[$last] .= "[$arb";
+            $list[$last] .= "[$atm";
         $pp =& $this->idx;
-        $arb = function ($v, $repl, $srch = '{0}') {
-            return str_replace($srch, str_replace('_', ' ', substr($repl, 1, -1)), array_filter($v, 'is_string'));
+        $arbitrary = function ($v, $repl, $srch = '{0}') {
+            $native = 1 == count($data = array_filter($v, 'is_string')) && $repl == $srch;
+            $sc = false;
+            $repl = $this->arbitrary($repl, $sc);
+            if ($native && $sc)
+                array_unshift($data, '-webkit-' . $data[0]);
+            return str_replace($srch, $repl, $data);
         };
         foreach ($list as $n => $div) {
             $_ = is_num($div) ? '_' . $div : $div;
             if (isset($pp[$_])) {
                 $pp =& $pp[$_];
                 if ($last == $n)
-                    return '[' == $div[0] ? $arb($pp, $div, $div) : array_filter($pp, 'is_string');
+                    return '[' == $div[0] ? $arbitrary($pp, $div, $div) : array_filter($pp, 'is_string');
                 continue;
             } elseif ($last == $n) {
                 foreach ($pp as $k => $v) {
@@ -132,20 +136,20 @@ class Vesper
                             ? str_replace(['{1}', '{0}'], [$cv[1], $cv[0]], array_filter($v, 'is_string'))
                             : str_replace('{0}', $minus . $cv, array_filter($v, 'is_string'));
                     } elseif ('~' == $k[0]) {
-                        $r = '[' == $div[0] && ']' == $div[-1]
-                            ? str_replace('_', ' ', substr($div, 1, -1))
+                        $cv = '[' == $div[0] && ']' == $div[-1]
+                            ? $this->arbitrary($div)
                             : call_user_func([$this, '_' . substr($k, 1, -1)], $div, $k[-1]);
-                        if (false !== $r)
-                            return str_replace('{0}', $r, array_filter($v, 'is_string'));
+                        if (false !== $cv)
+                            return str_replace('{0}', $minus . $cv, array_filter($v, 'is_string'));
                     } elseif ('[' == $k[0] && '[' == $div[0]) {
-                        return $arb($v, $div, $k);
+                        return $arbitrary($v, $div, $k);
                     }
                 }
             }
             if (isset($pp['&color']) && $last - $n < 2) {
                 return $this->color($div, $list[1 + $n] ?? '', $pp['&color']);
             } elseif ($div && '[' == $div[0]) {
-                return $arb([$div], $div, $div);
+                return $arbitrary([$div], $div, $div);
             } else {
                 return false;
             }
@@ -199,8 +203,8 @@ class Vesper
     }
 
     function value($in, $val, &$cv) {
-        if ('[' == $val[0] && ']' == $val[-1]) { # Arbitrary value
-            $cv = substr($val, 1, -1);
+        if ('[' == $val[0] && ']' == $val[-1]) {
+            $cv = $this->arbitrary($val);
             return true;
         }
         if (isset($this->values[$in])) {
@@ -227,7 +231,7 @@ class Vesper
         switch ($term) {
             case '~num1': return '1px';
             case '~num3': return '3px';
-            case '~num%': return '100%';
+            case '~nump': return '100%';
         }
         return $this->defaults[$term] ?? false;
     }
@@ -246,31 +250,32 @@ class Vesper
     }
 
     function _num($in, $x, $samples = false) {
+        $perc = function () {
+            return array_map(function ($v) {
+                return $v . '%';
+            }, range(0, 100, 5));
+        };
         if ($samples)
-            return '/' == $x ? range(0, 100, 5) : range(0, 9);
+            return '/' == $x ? range(0, 100, 5) : ('%' == $x ? $perc() : range(0, 9));
+        if ('%' == $x && '%' == $in[-1])
+            $in = substr($in, 0, -1);
         if (!is_num($in))
             return false;
         switch ($x) {
             case '/': return $in / 100;
             case 's': return $in . 'ms';
             case 'd': return $in . 'deg';
+            case 'p': case '%': return $in . '%';
             case '!': return $in;
-            case '%': return $in . '%';
             default: return $in . 'px';
         }
     }
-/*
-.decoration-slate-300{
--webkit-text-decoration-color:#cbd5e1;
-text-decoration-color:#cbd5e1
-}
 
-*/
-    function color($color, $num, $ary) { // bg-sky-500/[.06] bg-[#50d71e]
+    function color($color, $num, $ary) {
         $point = '.' == $ary[0][0] ? array_shift($ary) : false;
-        $var = '-' == $ary[0][0] && count($ary) > 1 ? array_shift($ary) : false;
+        $var = '--' == substr($ary[0], 0, 2) && count($ary) > 1 ? array_shift($ary) : false;
         if ('[' == $color[0] && ']' == $color[-1]) # Arbitrary value
-            return str_replace('&color', substr($color, 1, -1), $ary);
+            return str_replace('&color', $this->arbitrary($color), $ary);
         $pal = HTML::$color_hex + [
             'transparent' => 'transparent',
             'current' => 'currentColor',
@@ -300,7 +305,7 @@ text-decoration-color:#cbd5e1
             array_unshift($ary, "$var: 1");
             $opacity = "var($var)";
         } else {
-            $opacity = '[' == $opacity[0] ? substr($opacity, 1, -1) : (int)$opacity / 100;
+            $opacity = '[' == $opacity[0] ? $this->arbitrary($opacity) : (int)$opacity / 100;
         }
         if ($point)
             array_unshift($ary, $point);
@@ -317,9 +322,9 @@ text-decoration-color:#cbd5e1
                 $minus = true;
                 $key = substr($key, 1);
             }
+            $lsTitle = count($titles = explode(' ', $key)) - 1;
             $tpl = explode("\n", unl(trim($ary[0])));
             $pp = [&$this->idx];
-            $lsTitle = count($titles = explode(' ', $key)) - 1;
             $rs = [];
             foreach ($titles as $it => $one) { # list of titles
                 $ats = [$one];
@@ -327,13 +332,13 @@ text-decoration-color:#cbd5e1
                 if ('@' == $one[0] || $hash) {
                     $ats = [];
                     foreach (explode('|', array_shift($tpl)) as $tmp) {
-                        $a = explode('=', $tmp, 2);
-                        $ats[] = $a[0];
+                        $v = explode('=', $tmp, 2);
+                        $ats[] = $v[0];
                         if ($hash) {
-                            $rs[] = array_splice($tpl, 0, array_search('.' . $a[0], $tpl));
+                            $rs[] = array_splice($tpl, 0, array_search('.' . $v[0], $tpl));
                             array_shift($tpl);
                         } else {
-                            $rs[] = $a[1] ?? $a[0];
+                            $rs[] = $v[1] ?? $v[0];
                         }
                     }
                 } elseif ('=' == $one[0] && $ary[1]) {
