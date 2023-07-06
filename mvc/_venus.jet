@@ -23,6 +23,10 @@ $(function() {
   ~loop
 #.menu
 
+#.samples
+@inc(_settings.)
+#.samples
+
 #.popup_menu //////////////////////////////////////////////////////////////////////////////
 <div class="absolute inline-block z-10" id="{{$id}}">
   <div style="width:225px;" hidden
@@ -96,8 +100,8 @@ $(function() {
     <a href="{{LINK}}" class="vs-ic mr-3">@svg(home)</a>
     <a @href($(this).find('svg').toggle()) class="vs-ic">@inc(.moonsun)</a>
     <a @href($(this).find('svg').show()) class="vs-ic ml-3">@svg(fileplus)</a>
-    <a class="menu-btn" @href($$.save())>Save - F2</a>
-    <a class="menu-btn" @href($$.test())>Load - F4</a>
+    <a class="menu-btn f2" @href($$.save())>Save - F2</a>
+    <a class="menu-btn f4" @href($$.test())>Load - F4</a>
     <a class="menu-btn" @href(alert())>??? - F6</a>
     <span style="padding-left:8px" >Frame&nbsp;</span>
     <select id="fsize" onchange="$$.switch(this)">{! $fsize !}<option cust>*</option></select>

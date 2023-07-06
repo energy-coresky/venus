@@ -20,40 +20,36 @@ class t_venus extends Model_t
             $maat->tw_native($in->tw_native, $this);
         $html = trim($maat->buildHTML($in->tree));
         return [
-            'code' => $maat->code($html, (new Vesper($maat))->v_css()),
+            'code' => $maat->code($html, (new Vesper)->v_css($maat)),
             'preflight' => $in->tw_native ? '' : $this->t_settings->preflight(),
             'links' => m_menu::v_links($maat->links),
             'menu' => m_menu::v_sourses($this),
-            'fn' => $this->get($in->fn),
+            'fn' => $this->get($in->fn, false, $tw),
         ];
     }
 
-    function get($fn, $tw = false) {
-        if (':' == $fn[0]) {
-            if (!$tw)
-                return 'Component: <b>' . $this->cell(substr($fn, 1), 'name') . '</b>';
-            //$css = $tw ? Tailwind::css() : '';
-            return $this->cell(substr($fn, 1), 'tmemo');
-        } elseif ($ext = strpos($fn, '/')) {
-            preg_match('/^https?:/', $fn) or $fn = "https://$fn";
-        } else {
-            $fn = WWW . 'venus/' . basename($fn);
+    function get($_fn, $data, &$tw) {
+        $tw = !SKY::w('vesper');
+        $pfx = $_fn[0];
+        $fn = substr($_fn, 1);
+        if (':' == $pfx) {
+            return $data ? $this->cell($fn, 'tmemo') : 'Venus: <b>' . $this->cell($fn, 'name') . '</b>';
+        } elseif ('~' == $pfx) {//Component  m_menu::$types
+            if ($data)
+                return call_user_func(['Plan', (SKY::w('plan') ? 'mem' : 'app') . "_g"], ['main', "venus/$fn.html"]);
+            return "Application: <b>" . ucfirst(substr($fn, 2)) . '</b>';
         }
-        if (!$tw)
-            return ($ext ? 'External: ' : 'File: ') . $fn;
-        /*require_once 'main/w3/simple_html_dom.php';
-        $node = str_get_html(unl($html));
-        $node->find('body', 0)->e = 1;
-        $i = 2;
-        foreach($node->find('body *') as $el)
-            $el->e = $i++;*/
-        return $ext ? get($fn, '', false) : file_get_contents($fn);
+        $tw = '';
+        preg_match('/^https?:/', $_fn) or $_fn = "https://$_fn";
+        return $data ? get($_fn, '', false) : "URL: <b>$_fn</b>"; //file_get_contents
     }
 
     function put($fn, $data = null) {
-        ':' == $fn[0]
-            ? $this->update(['tmemo' => $data], substr($fn, 1))
-            : file_put_contents($fn, $data);
+        if (':' == $fn[0]) {
+            $this->update(['tmemo' => $data], substr($fn, 1));
+        } elseif ('~' == $fn[0]) {
+            call_user_func(['Plan', (SKY::w('plan') ? 'mem' : 'app') . "_p"], ['main', "venus/" . substr($fn, 1) . '.html'], $data);
+        }
         return true;
     }
 }

@@ -2,7 +2,7 @@
 
 class m_venus extends Model_m
 {
-    static $fsize = ['320 x 480', '640 x 480', '768 x 768', '1024 x 555', '1366 x 768', /* notebook */ '1536 x 555'];
+    static $fsize = ['320 x 480', '640 x 480', '768 x 576', '1024 x 576', '1366 x 768', /* notebook */ '1536 x 576'];
     static $css = ['Elements', 'Properties', 'Types', 'Functions', 'Pseudo-classes', 'Pseudo-elements', 'At-rules'];
     static $css_prop_grp = ['Layout', 'Text', 'Appearance', 'Animation', 'CSS Variables', 'Grid', 'Flex', 'Table', 'Generated Content', 'Other'];
     static $css_tpl_grp = ['color', 'text', 'box', 'table', 'animation', 'Grid', 'Flex', 'Other'];

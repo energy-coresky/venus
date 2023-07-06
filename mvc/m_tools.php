@@ -59,7 +59,7 @@ class m_tools extends Model_m
         $m = new t_venus('tw');
         return [
             'grp' => $m->sqlf('@select grp from $_ where tw_id=1 group by grp'),
-            'evar' => $m->all(true),
+            'evar' => $m->all(['tw_id=' => 1], '*', '&'),
         ];
     }
 

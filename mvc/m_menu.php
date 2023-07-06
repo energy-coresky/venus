@@ -3,6 +3,18 @@
 class m_menu extends Model_m
 {
     static $rar = '<span style="font-family:Verdana;">►</span>';
+    static $pnt = '<span style="font-family:monospace;font-size:18px">✓</span>';
+
+    static $types = [
+        'Components',
+        'Buttons',
+        'Alerts',
+        'Tooltips',
+        'Switches',
+        'Popovers',
+        'Progress',
+        'Other tiny HTML', //Spinners
+    ];
 
     static function __callStatic($name, $args) {
         return view('venus.popup_menu', [
@@ -46,23 +58,35 @@ class m_menu extends Model_m
     }
 
     function _v_sourses($m) {
-        $sql = '@select name, $cc("$$.test(\':",id,"\')") from $_';
-        return [
-            ['Add new file', '', 'Alt + N'],
-            ['Add new component', '', 'Alt + C'],
-            ['Components', $m->sqlf($sql), self::$rar],
-            ['Files', m_venus::files(), self::$rar],
+        $list = function ($i) use ($m) {
+            if (!SKY::w('src'))
+                return $m->sqlf('@select name, $cc("$$.test(\':",id,"\')") from $_ where flag=%d', $i);
+            static $list;
+            if (null == $list)
+                $list = call_user_func(['Plan', (SKY::w('plan') ? 'mem' : 'app') . "_b"], ['main', 'venus/*']);
+            $ary = [];
+            foreach ($list as $name) {
+                $name = basename($name, '.html');
+                if ($i != $name[0])
+                    continue;
+                $ary[substr($name, 2)] = "$$.test('~$name')";
+            }
+            return $ary;
+        };
+        $out = [
+            ['Add new component', '', 'Alt + N'],
+            ['Delete current', '', 'Alt + D'],
+            ['Links', m_venus::files(), self::$rar],
             '',
-            ['Delete current file/component', ''],
+            ['Venus sourses', 'ajax("set&src=0")', SKY::w('src') ? '' : self::$pnt],
+            ['Application sourses', 'ajax("set&src=1")', SKY::w('src') ? self::$pnt : ''],
             '',
-            ['Buttons', [], self::$rar],
-            ['Alerts', [], self::$rar],
-            ['Tooltips', [], self::$rar],
-            ['Switches', [], self::$rar],
-            ['Popovers', [], self::$rar],
-            ['Progress', [], self::$rar],
-            ['Spinners', [], self::$rar],
         ];
+        foreach (m_menu::$types as $i => $type) {
+            $out = array_merge($out, [[$type, ($ary = $list($i)) ?: '', count($ary) . ' ' . self::$rar]]);
+            $i or $out = array_merge($out, ['']);
+        }
+        return $out;
     }
 
     function _v_history() {

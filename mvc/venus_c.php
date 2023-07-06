@@ -45,13 +45,15 @@ class venus_c extends Controller
     }
 
     function j_src() {
-        if ($this->_2) {
+        if ($this->_2) { # step 1
             $json = unjson(file_get_contents('php://input'));
             json($this->t_venus->maat($json));
-        } else {
+        } else { # step 0
+            $url = 'https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp';
+          //$url = 'https://cdn.tailwindcss.com';
             json([
-                'html' => $this->t_venus->get($this->_3, true),
-                'tw' => SKY::w('vesper') ? '' : '<script src="https://cdn.tailwindcss.com"></script>',
+                'html' => $this->t_venus->get($this->_3, true, $tw),
+                'tw' => $tw ? '<script src="' . $url . '"></script><script>tailwind.config={darkMode:\'class\'}</script>' : $tw,
             ]);
         }
     }
@@ -64,7 +66,15 @@ class venus_c extends Controller
     function j_cls() {
         $maat = new Maat;
         $maat->cls = [$_POST['n']];
-        echo pre((new Vesper($maat))->v_css(), '');
+        echo pre((new Vesper)->v_css($maat), '');
+    }
+
+    function j_samples() {
+        $in = $_POST['n'];
+        return [
+            'samples' => (new Vesper)->samples($in),
+            'pref' => $in,
+        ];
     }
 
     function j_save() {

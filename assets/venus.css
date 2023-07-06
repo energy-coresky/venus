@@ -312,12 +312,12 @@ pre:focus {
   display: flex;
 }
 #f1 dt {
-  width: 25%;
+  width: 140px;
   text-align:right;
   padding-right: 7px;
 }
 #f1 dd {
-  width: 75%;
+  flex: 1 1 0%;
 }
 
 .menu-btn {
@@ -336,5 +336,7 @@ pre:focus {
   color: #fff !important;
   background-color: #2563eb !important;
 }
-
+#s-tail {
+  height: calc(20% - 42px);
+}
 

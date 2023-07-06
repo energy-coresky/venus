@@ -205,13 +205,13 @@ var $$ = {
     fn: sky.home,
     r: {},
     test: function(fn) {
-        $$.r.tw = false;
+        $$.r.tw = '';
         if (fn)
             $$.fn = fn;
         ajax('src&0=' + $$.fn, function(r) {
             $$.r = r;
             $$.parsed = $$.tree(r.html);
-            r.tw ? $$.$f.attr('srcdoc', r.tw + r.html) : $$.onload(true);
+            r.tw || '' === r.tw ? $$.$f.attr('srcdoc', r.tw + r.html) : $$.onload(true);
         }, '_venus');
     },
     parsed: [],
@@ -224,7 +224,7 @@ var $$ = {
                 let frameHTML = $$.doc('html:first').html().replaceAll('\r\n', '\n').replaceAll('\r', '\n');
                 frameHTML = frameHTML.substr(frameHTML.indexOf('<style>/* ! tailwindcss'));
                 tw = frameHTML.slice(7, frameHTML.indexOf('</style>'));
-            } else {
+            } else if ('' !== $$.r.tw) {
                 return;
             }
         }
@@ -232,7 +232,7 @@ var $$ = {
         sky.json('src&1=' + $$.fn, src, function(r) {
             $$.code = r.code;
             var vesper_css = $$.set(r.code.length - 1, r.preflight);
-            if (vesper_css)
+            if (false === $$.r.tw) // Vesper only
                 $$.$f.attr('srcdoc', '<style>' + vesper_css + '</style>' + $$.r.html);
             $$.set(0);
             $('#code-head div:eq(1)').html(r.code[0][2]); // set radio list

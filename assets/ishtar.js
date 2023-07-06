@@ -21,9 +21,21 @@ var i$ = {
             $('#s-form').html(r)
         });
     },
-    cls: function(name) {
-        ajax('cls', {n: name}, 's-tail');
-        //$()
+    samples: function(el, cls) {
+        $(el).parent().find('a').removeClass('active');
+        $(el).addClass('active');
+        ajax('samples', {n: cls}, function(r) {
+            $('#f1').next().html(r)
+        });
+    },
+    word: function(word) {
+        ajax('settings&syntax=open.0.', {n:word}, box)
+    },
+    cls: function(el, name) {
+        $(el).parent().find('a').removeClass('active');
+        $(el).addClass('active');
+        ajax('cls', {n: name}, 's-bottom-form');
+        $('#s-bottom-form').show();
     },
     css: function(el, css_data, p) {
         var i = 1, s = '', name, td, list = getComputedStyle(el);

@@ -17,6 +17,7 @@ class Maat
     public $links = [];
 
     function __construct($opt = []) {
+        trace('new Maat');
         $this->pad = str_pad('', $this->tab = SKY::w('tab_html') ?: 2);
         $this->opt = $opt + $this->opt;
         ini_set('memory_limit', '1024M');
@@ -29,8 +30,8 @@ class Maat
         $this->code[] = [$css = $this->buildCSS($preflight), substr_count($css, "\n"), 'Preflight'];
         $this->code[] = [$this->buildCSS($ary, true), -1, 'TailwindCSS'];
        $this->add_space = false;
-        if (trim(strip_tags($css)) != $m->t_settings->preflight())
-            trace('preflight differ!', true);
+        #if (trim(strip_tags($css)) != $m->t_settings->preflight())
+         #   trace('preflight differ!', true);
     }
 
    function diff($diff, &$txt, &$size) {
@@ -101,7 +102,18 @@ class Maat
                     $join = [];
                     foreach ($attr as $k => $v) {
                         switch ($k) {
+                            case 'id':
+                                if ('trace-t' == $v && is_array($data)) {
+                                    $txt = $this->buildHTML($data);
+                                    $this->code[] = [$txt, substr_count($txt, "\n"), 'Trace-T'];
+                                    $data = tag('Trace-T', 'class="red_label"', 'span');
+                                }
+                                break;
                             case 'class':
+                                if ('dev-data' == $v) {
+                                    //trace($data);
+                                    $data = ''; // crop inner
+                                }
                                 $this->cls[] = $v;
                                 break;
                             case 'src': case 'href': case 'action':
