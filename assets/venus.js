@@ -23,9 +23,6 @@ var $$ = {
     F: {W:640, H:480},    // frame size current
     prev: {W:640, H:480}, // frame size previouse
     S: {},                // screen (window)
-    log: function(str) {
-        $('#info span:eq(2)').text(str);
-    },
     doc: function(selector, fr) {
         if (!fr)
             fr = $$.$f;
@@ -53,6 +50,10 @@ var $$ = {
         if (fn) {
             if (force)
                 $$.swap();
+            if ($$._fn) {
+                fn = $$._fn;
+                $$._fn = false;
+            }
             $$.fn = fn;
             $$.test();
             $$.menu(x);
@@ -149,6 +150,9 @@ var $$ = {
             $$.root('border', '1px solid #ccc');
         }
     },
+    log: function(str) {
+        $('#info span:eq(2)').text(str);
+    },
     info: function(html, pos) {
         $('#info span:eq(' + pos + ')').html(html);
     },
@@ -177,6 +181,9 @@ var $$ = {
         $.each($.parseHTML(html, document, true), function(i, el) {
             var data = '', i = 0, name = el.nodeName.toLowerCase(), attr = {">":name};
             switch (name) {
+                case '#document': case '#document-fragment': case '#cdata-section':
+                    alert(name)
+                    break;
                 case '#text':
                     data = $(el).text().trim();
                     if ('' === data)
@@ -188,9 +195,10 @@ var $$ = {
                 default:
                     if (-1 == el.outerHTML.indexOf('><'))
                         data = 0; // Void element
-                    if (!el.hasChildNodes())
-                        break;
-                    data = $$.tree(el.innerHTML.trim());
+                    let inner = el.innerHTML.trim()             /////
+                    if (!el.hasChildNodes() || '' === inner)    /////
+                        break;                              /////
+                    data = $$.tree(inner);                  /////
                     if (1 == data.length && '#text' == data[0][0])
                         data = data[0][1];
             }
@@ -202,7 +210,8 @@ var $$ = {
         });
         return tree;
     },
-    fn: sky.home,
+    _fn: sky.home,
+    fn: '',
     r: {},
     test: function(fn) {
         $$.r.tw = '';
@@ -241,10 +250,12 @@ var $$ = {
         });
     },
     set: function(n, css) {
-        var s = "  1\n", code = $$.code[parseInt(n)], n = 2 + code[1];
-        for (var i = 2; i < n; i++)
-            s += i + "\n";
-        var el = $('#code-body pre:eq(0)').html(s).next().html(code[0]);
+        var lines = "  1\n", code = $$.code[parseInt(n)], cnt = 1 + code[1],
+            pad = cnt > 9999 ? '35px' : (cnt > 999 ? '29px' : '23px');
+        for (var i = 2; i <= cnt; i++)
+            lines += i + "\n";
+        var el = $('#code-body pre:eq(0)').html(lines).next().html(code[0])
+            .css({marginLeft:pad, minWidth:'calc(100% - ' + pad + ')'});
         return css ? css + el.text() : false;
     },
     div: 0,
@@ -323,6 +334,7 @@ body{
 }
     
     */
+    document.onselectionchange = m$.caret;
 
     $$.$f = $('iframe:first');
 

@@ -35,7 +35,8 @@ class venus_c extends Controller
 
     function empty_a($page = '') {
         $this->_title = 'VENUS.SKY';
-        $this->_static = [[], ["~/m/venus.js", "~/w/venus/ishtar.js"], ["~/m/venus.css"]];
+        $js = ["~/m/venus.js", "~/w/venus/ishtar.js", '~/w/venus/maxwell.js'];
+        $this->_static = [[], $js, ["~/m/venus.css"]];
         $this->d_last_page = '_venus';
         return [
             'fsize' => option(3, array_combine(m_venus::$fsize, m_venus::$fsize)),

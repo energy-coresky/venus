@@ -31,25 +31,116 @@
 
 #.shead
 <b>Syntax</b>: &nbsp;
-<label><input type="radio" name="syn" checked onchange="i$.t.hsort(this.checked)"@checked(1)> Pseudo</label>
-<label><input type="radio" name="syn" onchange="i$.t.hsort(this.checked)"@checked(0)> Classes</label>
+<label><input type="radio" name="syn" value="" checked onchange="i$.t.syn_pan(this.value)"@checked(!$caret)> Pseudo</label>
+<label><input type="radio" name="syn" value="1" onchange="i$.t.syn_pan(this.value)"@checked($caret)> Classes</label>
+<label><input type="radio" name="syn" value="2" onchange="i$.t.syn_pan(this.value)"@checked(0)> Test</label>
 #.syntax.shead //////////////////////////////////////////////////////////////////////////////
 #use(.shead as t_head)
-#use(.pleft as t_left)
-#use(`` as t_js)
-<table class="p-1 w-full" id="syntax">
+#use(.syn_left as t_left)
+#use(.syn_js as t_js)
+<table class="w-full" id="syntax"></table>
+<div hidden>
+<table>
 @loop($evar as $row)
-  <tr class="even">
-  <td class="border px-1">{{$row->name}}:</td>
-  <td class="border px-1">{{$row->grp}}</td>
-  <td class="border px-1">{{$row->tmemo}} &nbsp; <code>{{$row->css}}</code></td>
+  <tr class="">
+    <td class="border px-1">{{$row->name}}:</td>
+    <td class="border px-1">{{$row->grp}}</td>
+    <td class="border px-1">{{$row->tmemo}} &nbsp; <code>{{$row->css}}</code></td>
   </tr>
 ~loop
 </table>
-#.syntax.pleft
+</div>
+<div hidden>
+<table>
+@loop($caret as $prop => $ary)
+  <tr class="">
+    <td class="border px-1 w-2/12{{$color($ary[1], $prop, $ci)}}">
+      <a @href() class="del-t-btn">☒</a> {!$ci ?: $prop!}
+    </td>
+    <td class="border px-1 w-5/12">
+    @if($ary[1])
+      <select class="w-40">
+      @loop($ary[1] as $one)
+        <option@disabled($one==$prop)>{{$one}}</option>
+      ~loop
+      </select>
+    ~if
+    </td>
+    <td class="border px-1 w-5/12">
+    @if($st = count($ary[0]) > 7)<select class="w-40">~if
+    @loop($ary[0] as $one)
+      @if($st)<option@disabled($one==$prop)>~if{{$one}}@if($st)</option>~if
+    ~loop
+    @if($st)</select>~if
+    </td>
+  </tr>
+~loop
+</table>
+</div>
+<div hidden>
+<table>
+@loop($e_mw as $grp)
+  <tr class="border" style="background-color:#6f719b;">
+    <td class="uppercase text-white w-48 f9" style="padding:1px 15px">{{$grp->top}}</td>
+    <td class="f9 align-top">
+      <div class="absolute text-white f9" style="padding:1px 5px">ADD {!m_menu::$rar!}
+        <div class="absolute shadow-xl w-40 hidden" style="line-height:16px; padding:3px 0; z-index:33;">
+        @loop($grp->L2 as $row)
+          @if($row->sub)
+            <div class="flex relative px-2 w-full">
+              <div class="flex-grow">{!$row->menu!}</div>
+              <div style="position:relative; top:0px">{!m_menu::$rar!}</div>
+              <div class="absolute w-40 shadow-xl border-t hidden sub-menu">
+                @loop($row->sub as $menu)
+                  <a class="block px-2 whitespace-nowrap" @href()>{!$menu!}</a>
+                ~loop
+              </div>
+            </div>
+          @else
+            <a class="block px-2" @href(m$.css(this, {{$row->id}}))>{!$row->menu!}</a>
+          ~if
+        ~loop
+        </div>
+      </div>
+    </td>
+    <td class="uppercase w-48" style="padding:1px 0">
+      <a class="block text-white f9 f9-2" @href()>delete all</a>
+    </td>
+  </tr>
+  @loop($grp->cls as $row)
+    @inc(.syn_css)
+  ~loop
+~loop
+</table>
+</div>
+#.syntax.syn_left
 <label><input type="radio" checked onchange="i$.t.hsort(this.checked)"@checked(0)> ALL</label><hr class="m-1">
 @loop($grp as $one)<label><input type="radio" onchange="i$.t.hsort(this.checked)"@checked(0)> {{$one}}</label><br>~loop
-#.pleft
+#.syn_left.syn_js
+i$.t.syn_pan = function (v) {
+  var tbl = $('#syntax'), div = tbl.next()
+  if (v)
+    div = div.next()
+  if ('2' == v)
+    div = div.next()
+  tbl.html(div.find('table').html())
+}
+i$.t.syn_pan({{$caret ? 1 : 0}})
+#.syn_js.syn_css
+<tr class="border" style="">
+  <td class="" style="">test</td>
+  <td class="">
+    <select class="w-40">
+      @loop($row->opt as $opt)
+        <option>{{$opt}}</option>
+      ~loop
+    </select>
+  </td>
+  <td class="w-48 text-right" style="padding:1px 0">
+    <a @href() class="del-t-btn">☒</a>
+  </td>
+</tr>
+#.syn_css
 
 
 #.css //////////////////////////////////////////////////////////////////////////////

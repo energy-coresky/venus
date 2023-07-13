@@ -3,6 +3,7 @@
 class m_menu extends Model_m
 {
     static $rar = '<span style="font-family:Verdana;">►</span>';
+    static $dar = '<span style="font-family:Verdana;">▼</span>';
     static $pnt = '<span style="font-family:monospace;font-size:18px">✓</span>';
 
     static $types = [
@@ -57,19 +58,22 @@ class m_menu extends Model_m
         ];
     }
 
-    function _v_sourses($m) {
-        $list = function ($i) use ($m) {
-            if (!SKY::w('src'))
-                return $m->sqlf('@select name, $cc("$$.test(\':",id,"\')") from $_ where flag=%d', $i);
+    function _v_sourses($m, $selected) {
+        $list = function ($i) use ($m, $selected) {
             static $list;
             if (null == $list)
-                $list = call_user_func(['Plan', (SKY::w('plan') ? 'mem' : 'app') . "_b"], ['main', 'venus/*']);
+                $list = SKY::w('src')
+                    ? call_user_func(['Plan', (SKY::w('plan') ? 'mem' : 'app') . "_b"], ['main', 'venus/*'])
+                    : $m->sqlf('@select id, $cc(flag,"-",name) from $_ order by flag');
             $ary = [];
-            foreach ($list as $name) {
+            foreach ($list as $id => $name) {
                 $name = basename($name, '.html');
                 if ($i != $name[0])
                     continue;
-                $ary[substr($name, 2)] = "$$.test('~$name')";
+                $key = substr($name, 2);
+                if ($selected == $key)
+                    $key = "<b>$key</b>" . tag(self::$pnt, 'class="float-right"', 'span');
+                $ary[$key] = sprintf("$$.test('%s%s')", SKY::w('src') ? '~' : ':', SKY::w('src') ? $name : $id);
             }
             return $ary;
         };

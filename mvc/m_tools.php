@@ -14,6 +14,41 @@ class m_tools extends Model_m
         return $ary;
     }
 
+    function _syn_css() {
+        $id = $this->_3;
+        MVC::$layout = '';
+        $vs = new Vesper('', $mw = new Maxwell);
+        return ['row' => (object)[
+            'opt' => $mw->idx_id[$id],
+        ]];
+    }
+
+    function _syntax() {
+        $tw = new t_venus('tw');
+        $vs = new Vesper('', $mw = new Maxwell);
+        $mw->used_classes($vs, $ary = ($caret = trim($_POST['caret'] ?? '')) ? preg_split('/\s+/', $caret) : []);
+        return [
+           'caret' => $vs->caret($ary),
+            'grp' => $tw->sqlf('@select grp from $_ where tw_id=1 group by grp'),
+            'evar' => $tw->all(['tw_id=' => 1], '*', '&'),
+            'color' => function ($in, $color, &$ci) {
+                $ci = false;
+                if (!$in || !strpos($in[0], '&co'))
+                    return '';
+                $c = explode(':', $color); //ring-offset-&color
+                $c = explode('-', $c = array_pop($c));
+                array_shift($c);
+                if (1 == strlen($c[0]) || 'offset' == $c[0])
+                    array_shift($c);
+                $c = implode('-', [-1 => 'bg'] + $c);
+                $ci = tag($color, 'style="color:#fff;mix-blend-mode:difference"', 'span');
+                //return " $c text-" . substr($c, 3);
+                return " $c";
+            },
+            'e_mw' => $mw->index(),
+        ];
+    }
+
     function _tcolors() {
         '' === $this->y3[0] or $this->w_v3 = $this->y3[0];
         return [
@@ -53,14 +88,6 @@ class m_tools extends Model_m
 
     function _text() {
         return ['sizes' => Tailwind::$size];
-    }
-
-    function _syntax() {
-        $m = new t_venus('tw');
-        return [
-            'grp' => $m->sqlf('@select grp from $_ where tw_id=1 group by grp'),
-            'evar' => $m->all(['tw_id=' => 1], '*', '&'),
-        ];
     }
 
     function _unicode() {

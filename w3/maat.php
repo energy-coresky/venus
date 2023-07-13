@@ -81,7 +81,8 @@ class Maat
     }
 
     function &buildHTML(&$ary, $indent = '') {
-        $cr = ['class', 'id', 'src'];
+        //$cr = ['class', 'id', 'src'];
+        $cr = ['class' => 'm', 'id' => 'g', 'src' => 'z'];#r { color:red }#y { color:#b88 }
         $cx = ['action' => 'src', 'href' => 'src', 'for' => 'id'];
         $out = '';
         foreach ($ary as $data) {
@@ -100,8 +101,12 @@ class Maat
                 if (is_object($attr)) {
                     unset($attr->{'>'});
                     $join = [];
+                    $style = [false, false];
                     foreach ($attr as $k => $v) {
                         switch ($k) {
+                            case 'rel':
+                                $style[0] = 'stylesheet' == $v;
+                                break;
                             case 'id':
                                 if ('trace-t' == $v && is_array($data)) {
                                     $txt = $this->buildHTML($data);
@@ -111,7 +116,7 @@ class Maat
                                 break;
                             case 'class':
                                 if ('dev-data' == $v) {
-                                    //trace($data);
+                                    //json
                                     $data = ''; // crop inner
                                 }
                                 $this->cls[] = $v;
@@ -119,12 +124,21 @@ class Maat
                             case 'src': case 'href': case 'action':
                                 $cnt = $this->links["$node-$k"][$v] ?? 0;
                                 $this->links["$node-$k"][$v] = ++$cnt;
+                                $style[1] = 'link-href' == "$node-$k" ? $v : false;
                                 break;
                             #case '': $this->links[""][$v] = ; break;
                             #default: $this->links[""][$v] = ; break;
                         }
                         $x = $cx[$k] ?? $k;
-                        $join[] = $k . '="' . (in_array($x, $cr) ? "<span class=\"vs-$x\">$v</span>" : $v) . '"';
+                        $g = $cr[$x] ?? false;
+                        $join[] = $k . '="' . ($g ? "<$g>$v</$g>" : $v) . '"';
+                    }
+                    if ($style[0] && $style[1]) {
+                        $path = 'http' == substr($style[1], 0, 4) ? $style[1] : LINK . substr($style[1], strlen(PATH));
+                        $txt = get($path, '', false);
+                       //trace($txt);
+                        $txt = $this->buildCSS($txt);
+                        $this->code[] = [$txt, substr_count($txt, "\n"), $name = explode('?', basename($style[1]))[0]];
                     }
                     $out .= "&lt;$tag " . implode(' ', $join) . '&gt;';
                 } else {
@@ -199,9 +213,9 @@ class Maat
             if (!$hl || in_array($v[0], ['@', ':', '['])) {
                 $ary[] = $v;
             } elseif ('.' == $v[0]) {
-                $ary[] = '.<span class="vs-class">' . substr($v, 1) . '</span>';
+                $ary[] = '.<m>' . substr($v, 1) . '</m>';
             } elseif ('#' == $v[0]) {
-                $ary[] = '#<span class="vs-id">' . substr($v, 1) . '</span>';
+                $ary[] = '#<g>' . substr($v, 1) . '</g>';
             } else {
                 $ary[] = '<span class="vs-tag">' . "$v</span>";
             }

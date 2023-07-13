@@ -76,11 +76,12 @@ class t_settings extends Model_t
     function _syntax(&$u = null) {
         $this->menu = [
             'form' => 'Common',
-            '' => 'Search',
+            '.text' => 'Search',
             'values' => 'Values',
             'classes' => 'Classes',
         ];
-        $vesp = new Vesper;
+        $grp = '' === $this->y3[3] ? 'all' : $this->y3[3];
+        $vesp = new Vesper($grp);
         $ary = $vesp->list($_POST['n'] ?? '');
         sort($ary[0]);
         sort($ary[1]);
@@ -93,7 +94,6 @@ class t_settings extends Model_t
             $m = new t_venus('tw');
             if ('put' == $this->y3[0]) {
                 $_POST['!dt_u'] = '$now';
-                $_POST['css'] = '';
                 $id ? $m->update($_POST, $id) : ($id = $m->insert($_POST));
             } elseif ('open' == $this->y3[0] && $id) {
                 MVC::$layout = '';
@@ -102,24 +102,49 @@ class t_settings extends Model_t
             $this->form_data = $id ? $m->one($id) : [];
             if ($id && !$tw_id)
                 $this->ary['gen'] = (new Vesper)->genClass((object)$this->form_data);
-            $this->ary['list'] = $m->all(qp('tw_id=$. order by name', $tw_id));
+            //$this->ary['list'] = $m->all(qp('tw_id=$.', $tw_id));
+            $this->ary['list'] = $m->sqlf('@select id, name from $_ where tw_id=%d', $tw_id);
+            uasort($this->ary['list'], function ($a, $b) {
+                if ('-' == $a[0])
+                    $a = substr($a, 1);
+                if ('-' == $b[0])
+                    $b = substr($b, 1);
+                if ('@' == $a[0])
+                    $a = substr($a, 1);
+                if ('@' == $b[0])
+                    $b = substr($b, 1);
+                if ('#' == $a[0])
+                    $a = substr($a, 1);
+                if ('#' == $b[0])
+                    $b = substr($b, 1);
+                return strcmp($a, $b);
+            });
             $this->ary['section'] = $this->y3[2];
             $u = "put.0.classes.$id";//$tw_id
             return [
                 'tw_id' => $tw_id,
                 ['ID', 'ni', $id ?: 'New Item'],
-                'grp' => ['Group', 'select', array_combine($a = m_venus::$css_tpl_grp, $a)],
+                'grp' => ['Group', 'select', array_combine($a = Maxwell::$grp, $a)],
                 'name' => [$tw_id ? 'ValueName' : 'Name', '', 'style="width:50%"'],
                 'comp' => [$tw_id ? 'DefaultValue' : 'Composite', '', 'style="width:50%"'],
+                'css' => [$tw_id ? 'Comment' : 'Maxwell', '', 'style="width:50%"'],
                 'tpl' => ['Template', 'textarea_rs', 'style="width:98%" rows="21"'],
             ];
         }
-        $this->ary['section'] = 'Found:';
+        $this->ary['section'] = 'Found: ' . count($ary[0]);
         $this->ary['list'] = $ary[0];
         $this->ary['is_ok'] = function ($v) {
             return preg_match("/^[\w\-]+$/", $v);
         };
+        $list = [];
+        foreach ([-1 => 'all'] + Maxwell::$grp as $v) {
+            $act = $grp == $v ? 'background:blue;color:#fff;"' : '"';
+            $href = "ajax('settings&syntax=open.0..$v', box)";
+            $list[] = a($v, [$href], 'style="margin-left:2px; padding:0 4px;' . $act);
+        }
+        //<a href="javascript:;"  class="block s-menu" active="">Search</a>
         return [
+            ['Group', 'ni', implode('', $list)],
             's' => ['Search', '', 'style="width:50%"'],
         ];
     }

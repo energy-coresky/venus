@@ -42,7 +42,7 @@ $(function() {
           <div style="width:225px; left:160px;top:-5px;" hidden
               class="popup-sub absolute w-56 rounded-sm shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none">
             <div class="py-1" role="none">
-              @loop($a[1] as $name => $val)<a @href({!$val!}) class="menu">{{$name}}</a>~loop
+              @loop($a[1] as $name => $href)<a @href({!$href!}) class="menu">{!$name!}</a>~loop
             </div>
           </div>
           </div>
@@ -63,7 +63,7 @@ $(function() {
   <a @href($(this).parents('.tool').remove()) class="x">@svg(x)</a>
   @block(`` as t_head)
 </p>
-<div class="flex" style="height:@block(t_height)292px~block;">
+<div class="flex" style="max-height:@block(t_height)292px~block;">
   <div class="mbg whitespace-nowrap" style="width:50px; padding:5px 3px;">@block(`` as t_left)</div>
   <div class="overflow-auto@block(`` as w_body)">@inc(*)</div>@block(t_right)@use(` w-full` as w_body)~block
 </div>
@@ -85,7 +85,7 @@ $(function() {
 <head>{!Tailwind::css(false)!}@head
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>
-  $$.fn = '{{$page}}';
+  $$._fn = '{{$page}}'; m$.on = {{SKY::w('maxwell')}}; m$.group = {{SKY::w('group')}};
 </script>
 </head>
 <body class="h-screen" style="overflow:hidden">{- justify-center items-center  -}
@@ -147,9 +147,8 @@ $(function() {
   <div id="code-head" class="header fixed" style="height:45px;">
     <div class="pl-8" style="height:23px; align-items:center; display:flex; overflow:hidden; white-space:nowrap; border-bottom:1px solid #ccc">
       <label><input type="checkbox"@checked(SKY::w('vesper')) onchange="ajax('set&vesper='+(this.checked?1:0))"> &nbsp;Vesper</label>
-      <label><input type="checkbox" checked> &nbsp;Comments</label>
-      <label><input type="checkbox"> &nbsp;Re-format &lt;PRE&gt;</label>
-      <label><input type="checkbox"> &nbsp;Limit length of the lines</label>
+      <label><input type="checkbox"@checked(SKY::w('maxwell')) onchange="ajax('set&maxwell='+(m$.on = this.checked?1:0))"> &nbsp;Maxwell</label>
+      <label><input type="checkbox"@checked(SKY::w('group')) onchange="ajax('set&group='+(m$.group = this.checked?1:0))"> &nbsp;Group</label>
     </div>
     <div class="pl-8" style="height:22px; align-items:center; display:flex; overflow:hidden; white-space:nowrap;">
       <label><input type="radio" value="0" onchange="$$.set(this.value)" name="v-panel" checked> HTML</label>
@@ -157,11 +156,11 @@ $(function() {
   </div>
   <div id="code-body" class="flex" style="margin-top:45px;">
     <pre style="padding:0 1px; text-align:right; background-color:#f1f3f4; color:#9d174d; z-index:-10" class="fixed"></pre>
-    <pre style="padding-left:1px; margin-left:24px; border-left:0px solid #ccc; min-width:calc(100% - 24px); position:relative; z-index:-11;"
-      contenteditable="true"></pre>
+    <pre style="padding-left:1px; margin-left:24px; min-width:calc(100% - 24px); position:relative; z-index:-11;"
+      contenteditable="true" onmousedown="alert(11)"></pre>
   </div>
 </div>
-#.tail.pdaxt ------------------------------------------------------------------------------
+#.tail.pdaxt ------------------------------------------------------------------------------ m$.m_down(this)
 <span class="pdaxt">
   <a href="{{$page ?: LINK}}">S</a>
   <a @href(dev('_dev'))>D</a>
@@ -172,36 +171,6 @@ $(function() {
 #.pdaxt
 
 
-
-Colors
-
-Dimension
-  Width
-  Height
-  Padding
-  Margin
-  Negative Margin
-  Min Width
-  Max Width
-  Min Height
-  Max Height
-Text
-  Font Size
-  Font Weight
-  Letter Spacing
-  Line Height
-Border
-  Radius
-  Width
-Other
-  Screens
-  Shadows
-  Opacity
-  Transitions
-
-HTML Colors
-CSS Styles
-Unicode
 
 #.screen ////////////////////////// IMAGES ////////////////////////////////////////////
 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" hidden>

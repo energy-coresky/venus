@@ -3,13 +3,52 @@
 class Vesper
 {
     public $idx = [];
+    public $idx_e;//exact
+    public $idx_s;//similar
 
     private $values = [];
     private $defaults = [];
     private $composite = [];
+    private $color;
+    private $mw;
 
-    function __construct() {
-        $this->index();
+    function __construct($grp = '', ?Maxwell $mw = null) {
+        $this->mw = $mw ?? false;
+        $grp = !$grp || 'all' == $grp ? '' : " and grp='$grp'";
+        $this->index($grp);
+    }
+
+    function v_css($maat) {
+        $ary = $this->listCSS($maat->cls);
+        return $maat->buildCSS($ary, !SKY::w('vesper'));
+    }
+
+    function caret($ary) {
+        $this->idx_e = $this->idx_s = [];
+        $this->list();
+        $out = [];
+        foreach ($ary as $cls) {
+            $out[$cls] = [':' => [], [], [], []];
+            $pp =& $out[$cls];
+            $ps = explode(':', $cls);
+            $cls = array_pop($ps);
+            $pp[":"] = $ps;
+            $css = $this->listCSS([$cls])[0] ?? false;
+            if ($css && 3 == count($css)) {
+                $exact = 1 == count($css[1]) ? 1 : 0;
+                foreach ($css[1] as $css) {
+                    [$prop] = explode(':', $css, 2);
+                    if ($exact) {
+                        $pp[1] = array_unique($this->idx_e[$prop] ?? []);
+                    } elseif ($this->color) {
+                        $pp[1] = [$this->color];
+                    }
+                    $sum = array_merge($pp[0], $this->idx_e[$prop] ?? [], $this->idx_s[$prop] ?? []);
+                    $pp[0] = array_diff(array_unique($sum), $pp[1]);
+                }
+            }
+        }
+        return $out;
     }
 
     function list($search = '', $ary = [], $depth = 0) {
@@ -20,13 +59,21 @@ class Vesper
             if (is_num($k) || $depth > 99)
                 return;
             $x[$depth] = '_' == $k[0] ? substr($k, 1) : $k;
-            if (array_filter($v, 'is_string')) {
+            if ($css = array_filter($v, 'is_string')) {
                 $ary = array_slice($x, 0, 1 + $depth);
                 if (!$search || in_array($search, $ary)) {
-                    $out[] = implode('-', $ary);
+                    $out[] = $class = implode('-', $ary);
                     $words += array_filter(array_flip($ary), function ($key) {
                         return !in_array($key, range(0, 11), true);
                     }, ARRAY_FILTER_USE_KEY);
+                }
+                if (null !== $this->idx_e) {
+                    1 == count($css) ? ($pp =& $this->idx_e) : ($pp =& $this->idx_s);
+                    foreach ($css as $line) {
+                        [$prop] = explode(':', $line, 2);
+                        isset($pp[$prop]) or $pp[$prop] = [];
+                        $pp[$prop][] = $class;
+                    }
                 }
             }
             $this->list($search, $v, 1 + $depth);
@@ -34,12 +81,12 @@ class Vesper
         return [$out, array_keys($words)];
     }
 
-    function v_css($maat) {
+    function listCSS($ary) {
         $ms = m_venus::$media; // @media (prefers-color-scheme: dark)
         $md = [0, 640, 768, 1024, 1280, 1536]; // $this->values['=screens']
         $media = array_combine($ms, array_pad([], 6, []));
-        //trace(var_export($maat->cls, 1));
-        foreach ($maat->cls as $cls) {
+        //trace(var_export($ary, 1));
+        foreach ($ary as $cls) {
             $cls = trim($cls);
             if ('' === $cls)
                 continue;
@@ -54,7 +101,9 @@ class Vesper
                     return in_array($v, ['even', 'odd']) ? "nth-child($v)" : $v;
                 }, $ps);
                 $name = str_replace(',', '\\2c ', preg_replace("/([^\w\-,])/i", "\\\\$1", $name));
-                if ('placeholder-' == substr($name, 0, 12))
+                if (2 == $name[0])
+                    $name = '\\3' . $name;
+                if ('placeholder-' == substr($name, 0, 12))//////////
                     array_unshift($ps, ':placeholder');
                 $media[$sct ?: ''][".$name"] = [$one, $ps];
             }
@@ -72,7 +121,11 @@ class Vesper
                 [$one, $ps] = $yy;
                 if (in_array($one, ['group', 'dark']))
                     continue;
-                $css = $this->genCSS($one) or $css = ["/* not found */"];
+                $this->color = 0;
+                $css = $this->genCSS($one);
+                //$css or $css = ["/* not found */"];
+                if (!$css)
+                    continue;
                 $mul = false;
                 if ('@' == $css[0][0])
                     $this->multiple($css, $mul, $depth);
@@ -102,7 +155,7 @@ class Vesper
                 }
             }
         }
-        return $maat->buildCSS($ary, true);
+        return $ary;
     }
 
     function multiple(&$css, &$mul, $depth) {
@@ -182,7 +235,9 @@ class Vesper
                 }
             }
             if (isset($pp['&color']) && $last - $n < 2) {
-                return $this->color($div, $list[1 + $n] ?? '', $pp['&color']);
+                $this->color = implode('-', array_slice($list, 0, $n) + [-1 => '&color']);
+                //return $this->color($div, $list[1 + $n] ?? '', $pp['&color']);
+                return $this->color($div, $list[1 + $n] ?? '', array_filter($pp['&color'], 'is_string'));
             } elseif ($div && '[' == $div[0]) {
                 return $arbitrary([$div], $div, $div);
             } else {
@@ -370,38 +425,45 @@ class Vesper
         return str_replace(['&color', '&hex'], ["rgb($dec / $opacity)", $hex], $ary);
     }
 
-    function index() {
+    function index($grp) {
         $tw = new t_venus('tw');
-        $values = $tw->sqlf('@select name, tpl, comp from $_ where tw_id=2');
-        foreach ($values as $name => $ary) {
-            if ('' !== $ary[1])
-                $this->defaults[$name] = $ary[1];
+        $values = $tw->sqlf('#select name, tpl, comp from $_ where tw_id=2');
+        foreach ($values as $name => $row) {
+            if ('' !== $row->comp)
+                $this->defaults[$name] = $row->comp;
             $this->values[$name] = [];
             $n = '=' == $name[0] ? 2 : 3;
-            foreach (explode("\n", unl(trim($ary[0]))) as $item) {
+            foreach (explode("\n", unl(trim($row->tpl))) as $item) {
                 [$k, $v, $v2] = explode(' ', $item, $n) + [2 => false];
                 $this->values[$name][$k] = false === $v2 ? $v : [$v, $v2];
             }
         }
-        $rules = $tw->sqlf('@select name, tpl, comp from $_ where tw_id=0');
-        foreach ($rules as $key => $ary) {
+        $rules = $tw->sqlf('#select * from $_ where tw_id=0' . $grp);
+        foreach ($rules as $row) {
             $minus = false;
-            if ('-' == $key[0]) {
+            if ('-' == $row->name[0]) {
                 $minus = true;
-                $key = substr($key, 1);
+                $row->name = substr($row->name, 1);
             }
-            $lsTitle = count($titles = explode(' ', $key)) - 1;
-            $tpl = explode("\n", unl(trim($ary[0])));
+//trace($row->name);
+            if ($this->mw)
+                $this->mw->grp($row->grp, $row->css, $data);
+            $lsTitle = count($path = explode(' ', $row->name)) - 1;
+            $tpl = explode("\n", unl(trim($row->tpl)));
             $pp = [&$this->idx];
             $rs = [];
-            foreach ($titles as $it => $one) { # list of titles
+            $hash = false;
+            $var = 0;
+            foreach ($path as $it => $one) { # list of titles
                 $ats = [$one];
-                $hash = '#' == $one[0];
-                if ('@' == $one[0] || $hash) {
+                $at = '@' == $one[0];
+                $n = 0;
+                if ('#' == $one[0] || $at) {
+                    $var = $it;
                     $ats = [];
                     foreach (explode('|', array_shift($tpl)) as $tmp) {
                         $v = explode('=', $tmp, 2);
-                        if ($hash) {
+                        if ($hash = !$at) {
                             $rs[] = array_splice($tpl, 0, array_search('.' . $v[0], $tpl));
                             array_shift($tpl);
                         } else {
@@ -409,15 +471,14 @@ class Vesper
                         }
                         $ats[] = $v[0];
                     }
-                } elseif ('=' == $one[0] && $ary[1]) {
-                    $this->composite[$one] = explode(' ', $ary[1]);
+                } elseif ('=' == $one[0] && $row->comp) {
+                    $this->composite[$one] = explode(' ', $row->comp);
                 }
                 $p = [];
-                $n = 0;
-                foreach ($ats as $at) {
+                foreach ($ats as $ip => $at) {
                     $lsPart = count($atParts = explode('-', $at)) - 1;
                     foreach ($pp as &$_) {
-                        foreach ($atParts as $ip => $x) {
+                        foreach ($atParts as $ia => $x) {
                             $prev =& $_;
                             if ('' !== $x) {
                                 if (is_num($x))
@@ -425,11 +486,17 @@ class Vesper
                                 isset($_[$x]) or $_[$x] = [];
                                 $_ =& $_[$x];
                             }
-                            if ($ip == $lsPart) {
+                            if ($ia == $lsPart) {
                                 $p[] =& $_;
                                 if ($it == $lsTitle) {
+                                    if ($this->mw) {
+                                        $path[$var] = $ats[$ip];
+                                        $id = $this->mw->css($ip, $path, $data);
+                                    }
                                     $replaced = $hash ? $rs[$n++] : ($rs ? str_replace('{@}', $rs[$n++], $tpl) : $tpl);
-                                    '' === $x ? ($_ += $replaced) : ($_ = $replaced);
+                                    if ($this->mw)
+                                        $replaced += [99 => $id]; # add ID to main index
+                                    '' === $x ? ($_ += $replaced) : ($prev[$x] += $replaced);
                                     if ($default = $this->default($x))
                                         $prev += str_replace('{0}', $default, $_);
                                 }

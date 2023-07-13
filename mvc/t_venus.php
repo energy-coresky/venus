@@ -23,8 +23,8 @@ class t_venus extends Model_t
             'code' => $maat->code($html, (new Vesper)->v_css($maat)),
             'preflight' => $in->tw_native ? '' : $this->t_settings->preflight(),
             'links' => m_menu::v_links($maat->links),
-            'menu' => m_menu::v_sourses($this),
             'fn' => $this->get($in->fn, false, $tw),
+            'menu' => m_menu::v_sourses($this, $tw),
         ];
     }
 
@@ -33,11 +33,11 @@ class t_venus extends Model_t
         $pfx = $_fn[0];
         $fn = substr($_fn, 1);
         if (':' == $pfx) {
-            return $data ? $this->cell($fn, 'tmemo') : 'Venus: <b>' . $this->cell($fn, 'name') . '</b>';
+            return $data ? $this->cell($fn, 'tmemo') : 'Venus: <b>' . ($tw = $this->cell($fn, 'name')) . '</b>';
         } elseif ('~' == $pfx) {//Component  m_menu::$types
             if ($data)
                 return call_user_func(['Plan', (SKY::w('plan') ? 'mem' : 'app') . "_g"], ['main', "venus/$fn.html"]);
-            return "Application: <b>" . ucfirst(substr($fn, 2)) . '</b>';
+            return "Application: <b>" . ucfirst($tw = substr($fn, 2)) . '</b>';
         }
         $tw = '';
         preg_match('/^https?:/', $_fn) or $_fn = "https://$_fn";

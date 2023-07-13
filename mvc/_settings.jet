@@ -18,10 +18,10 @@ Empty for now
 #use(.tail)
 @if($section)
   <h1 class="uppercase">{{$section}}</h1>
-  <div class="absolute bottom-0 top-52 overflow-y-auto">
+  <div class="absolute bottom-0 top-52 overflow-x-hidden overflow-y-auto whitespace-nowrap" style="width:150px">
     @loop($list as $id => $row)
       @if($y_3[2])
-      <a class="block pl-1"@active(!$id) @href(i$.push(this, 'settings&{{$y_2}}=open.0.{{$y_3[2]}}.{{$id}}'))>{{$row->name}}</a>
+      <a class="block pl-1"@active(!$id) @href(i$.push(this, 'settings&{{$y_2}}=open.0.{{$y_3[2]}}.{{$id}}'))>{{$row}}</a>
       @else
         <a class="block pl-1" @href({!$is_ok($row) ? "i$.cls(this,'$row')" : "i$.samples(this,'$row')"!})>{{$row}}</a>
       ~if
@@ -60,7 +60,7 @@ Empty for now
       ~block
       @inc(*)
       </div>
-      <div style="width:calc((100% - {{$left_w}}px) / 2); position:relative" id="s-form">
+      <div style="width:calc((100% - {{$left_w}}px) / 2); position:relative;" id="s-form">
 #.form_only
         @if($y_3[1])
           <form method="post" id="ta-form" class="h-full px-2">
@@ -68,7 +68,7 @@ Empty for now
           </form>
         @else
           {!$form!}
-          <div class="absolute left-2 bottom-0 w-44 h-5/6 overflow-auto font-mono font-bold">
+          <div class="absolute left-2 bottom-0 top-52 w-44 overflow-auto font-mono font-bold">
           @loop($gen as $cls)
             <a class="block vs-class" @href(i$.cls(this,'{{$cls}}'))>{{$cls}}</a>
           ~loop
