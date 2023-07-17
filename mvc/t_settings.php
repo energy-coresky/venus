@@ -81,29 +81,24 @@ class t_settings extends Model_t
             'classes' => 'Classes',
         ];
         $grp = '' === $this->y3[3] ? 'all' : $this->y3[3];
-        $vesp = new Vesper($grp);
-        $ary = $vesp->list($_POST['n'] ?? '');
-        sort($ary[0]);
-        sort($ary[1]);
-        $this->ary['vlist'] = $ary[0];
-        $this->ary['vword'] = $ary[1];
+        $this->ary['vword'] = [];
 
         if (in_array($this->y3[2], ['classes', 'values'])) {
-            $tw_id = 'classes' == $this->y3[2] ? 0 : 2;
+            $type = 'classes' == $this->y3[2] ? 0 : 2;
             $id = $this->y3[3];
-            $m = new t_venus('tw');
+            $tw = new t_venus('tw');
             if ('put' == $this->y3[0]) {
                 $_POST['!dt_u'] = '$now';
-                $id ? $m->update($_POST, $id) : ($id = $m->insert($_POST));
+                $id ? $tw->update($_POST, $id) : ($id = $tw->insert($_POST));
             } elseif ('open' == $this->y3[0] && $id) {
                 MVC::$layout = '';
                 MVC::body("settings.form_only");
             }
-            $this->form_data = $id ? $m->one($id) : [];
-            if ($id && !$tw_id)
-                $this->ary['gen'] = (new Vesper)->genClass((object)$this->form_data);
-            //$this->ary['list'] = $m->all(qp('tw_id=$.', $tw_id));
-            $this->ary['list'] = $m->sqlf('@select id, name from $_ where tw_id=%d', $tw_id);
+            $this->form_data = $id ? $tw->one($id) : [];
+            if ($id && !$type)
+                $this->ary['gen'] = Maxwell::classes($id);
+            //$this->ary['list'] = $tw->all(qp('tw_id=$.', $type));
+            $this->ary['list'] = $tw->sqlf('@select id, name from $_ where tw_id=%d', $type);
             uasort($this->ary['list'], function ($a, $b) {
                 if ('-' == $a[0])
                     $a = substr($a, 1);
@@ -120,17 +115,23 @@ class t_settings extends Model_t
                 return strcmp($a, $b);
             });
             $this->ary['section'] = $this->y3[2];
-            $u = "put.0.classes.$id";//$tw_id
+            $u = "put.0.classes.$id";
             return [
-                'tw_id' => $tw_id,
+                'tw_id' => $type,
                 ['ID', 'ni', $id ?: 'New Item'],
                 'grp' => ['Group', 'select', array_combine($a = Maxwell::$grp, $a)],
-                'name' => [$tw_id ? 'ValueName' : 'Name', '', 'style="width:50%"'],
-                'comp' => [$tw_id ? 'DefaultValue' : 'Composite', '', 'style="width:50%"'],
-                'css' => [$tw_id ? 'Comment' : 'Maxwell', '', 'style="width:50%"'],
+                'name' => [$type ? 'ValueName' : 'Name', '', 'style="width:50%"'],
+                'comp' => [$type ? 'DefaultValue' : 'Composite', '', 'style="width:50%"'],
+                'css' => [$type ? 'Comment' : 'Maxwell', '', 'style="width:50%"'],
                 'tpl' => ['Template', 'textarea_rs', 'style="width:98%" rows="21"'],
             ];
         }
+        $vs = new Vesper($grp, $mw = new Maxwell);
+        $ary = $vs->list($_POST['n'] ?? '');
+        sort($ary[0]);
+        sort($ary[1]);
+        $this->ary['vlist'] = $ary[0];
+        $this->ary['vword'] = $ary[1];
         $this->ary['section'] = 'Found: ' . count($ary[0]);
         $this->ary['list'] = $ary[0];
         $this->ary['is_ok'] = function ($v) {

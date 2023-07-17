@@ -3,19 +3,18 @@
 class Vesper
 {
     public $idx = [];
+    public $last_color = '';
     public $idx_e;//exact
     public $idx_s;//similar
+    public $defaults = ['~num1' => '1px', '~num3' => '3px', '~nump' => '100%'];
 
-    private $values = [];
-    private $defaults = [];
-    private $composite = [];
+    private $values = ['^a' => ['auto' => 'auto']];
     private $color;
-    private $mw;
 
-    function __construct($grp = '', ?Maxwell $mw = null) {
-        $this->mw = $mw ?? false;
+    function __construct($grp = '', ?Maxwell $mw = null, &$id_base = null) {
         $grp = !$grp || 'all' == $grp ? '' : " and grp='$grp'";
-        $this->index($grp);
+        if ($list = $this->index($grp, $mw ?? false, $id_base ?? 0))
+            $id_base = $list;
     }
 
     function v_css($maat) {
@@ -81,11 +80,10 @@ class Vesper
         return [$out, array_keys($words)];
     }
 
-    function listCSS($ary) {
-        $ms = m_venus::$media; // @media (prefers-color-scheme: dark)
-        $md = [0, 640, 768, 1024, 1280, 1536]; // $this->values['=screens']
-        $media = array_combine($ms, array_pad([], 6, []));
-        //trace(var_export($ary, 1));
+    function listCSS($ary, &$id = null) {
+        $mkey = m_venus::$media; // @media (prefers-color-scheme: dark)
+        $mval = m_venus::media();
+        $media = array_combine($mkey, array_pad([], 6, []));
         foreach ($ary as $cls) {
             $cls = trim($cls);
             if ('' === $cls)
@@ -93,7 +91,7 @@ class Vesper
             foreach (preg_split('/\s+/', $cls) as $name) {
                 $ps = '[' == $name[0] ? [$name] : explode(':', $name);
                 $one = array_pop($ps);
-                if ($sct = array_intersect($ms, $ps)) {
+                if ($sct = array_intersect($mkey, $ps)) {
                     $ps = array_values(array_diff($ps, $sct));
                     $sct = pos($sct);
                 }
@@ -113,7 +111,7 @@ class Vesper
         $depth = 0;
         foreach ($media as $sct => $xx) {
             if ($xx && $sct) {
-                $px = $md[array_search($sct, $ms)];
+                $px = $mval[array_search($sct, $mkey)];
                 $ary[] = ["@media (min-width: {$px}px)", [], $depth = 1];
                 $pp =& $ary[count($ary) - 1][1];
             }
@@ -126,6 +124,8 @@ class Vesper
                 //$css or $css = ["/* not found */"];
                 if (!$css)
                     continue;
+                if (null !== $id)
+                    $id = array_pop($css);
                 $mul = false;
                 if ('@' == $css[0][0])
                     $this->multiple($css, $mul, $depth);
@@ -208,38 +208,28 @@ class Vesper
                 array_unshift($data, '-webkit-' . $data[0]);
             return str_replace($srch, $repl, $data);
         };
-        foreach ($list as $n => $div) {
-            $_ = is_num($div) ? '_' . $div : $div;
+        foreach ($list as $n => $x) {
+            $_ = is_num($x) ? '_' . $x : $x;
             if (isset($pp[$_])) {
                 $pp =& $pp[$_];
                 if ($last == $n)
-                    return '[' == $div[0] ? $arbitrary($pp, $div, $div) : array_filter($pp, 'is_string');
+                    return '[' == $x[0] ? $arbitrary($pp, $x, $x) : array_filter($pp, 'is_string');
                 continue;
             } elseif ($last == $n) {
                 foreach ($pp as $k => $v) {
                     $k = (string)$k;
-                    $or = '|' == $k[0];
-                    if (($or || '=' == $k[0]) && $this->value($k, $div, $cv)) {
-                        return $or
-                            ? str_replace(['{1}', '{0}'], [$cv[1], $cv[0]], array_filter($v, 'is_string'))
-                            : str_replace('{0}', $minus . $cv, array_filter($v, 'is_string'));
-                    } elseif ('~' == $k[0] && (strlen($div) < 2 || '#' != $div[1])) {
-                        $cv = '[' == $div[0] && ']' == $div[-1]
-                            ? $this->arbitrary($div)
-                            : call_user_func([$this, '_' . substr($k, 1, -1)], $div, $k[-1]);
-                        if (false !== $cv)
-                            return str_replace('{0}', $minus . $cv, array_filter($v, 'is_string'));
-                    } elseif ('[' == $k[0] && '[' == $div[0]) {
-                        return $arbitrary($v, $div, $k);
+                    if (in_array($k[0], ['^', '~']) && $this->value($k, $x, $cv)) {
+                        return str_replace('{0}', $minus . $cv, array_filter($v, 'is_string'));
+                    } elseif ('[' == $x[0] && '[' == $k[0]) {// '#' != $x[1]
+                        return $arbitrary($v, $x, $k);
                     }
                 }
             }
             if (isset($pp['&color']) && $last - $n < 2) {
                 $this->color = implode('-', array_slice($list, 0, $n) + [-1 => '&color']);
-                //return $this->color($div, $list[1 + $n] ?? '', $pp['&color']);
-                return $this->color($div, $list[1 + $n] ?? '', array_filter($pp['&color'], 'is_string'));
-            } elseif ($div && '[' == $div[0]) {
-                return $arbitrary([$div], $div, $div);
+                return $this->color($x, $list[1 + $n] ?? '', array_filter($pp['&color'], 'is_string'));
+            } elseif ($x && '[' == $x[0]) {
+                return $arbitrary([$x], $x, $x);
             } else {
                 return false;
             }
@@ -257,50 +247,16 @@ class Vesper
     function sample_values($name, $add_default = false) {
         if ('&color' == $name)
             return $this->color(0, 0, 0, true);
-        $ary = $add_default && $this->default($name) ? [''] : [];
-        if ('=' == $name[0] || '|' == $name[0]) {
-            if (isset($this->values[$name]))
-                return array_merge($ary, array_keys($this->values[$name]));
-            foreach ($this->composite[$name] as $name) {
-                if ('=' == $name[0])
+        $ary = $add_default && isset($this->defaults[$name]) ? [''] : [];
+        if ('^' == $name[0]) {
+            foreach (explode('+', $name) as $name) {
+                if ('^' == $name[0])
                     $ary = array_merge($ary, array_keys($this->values[$name]));
             }
         }
         if ('~' == $name[0])
-            $ary = array_merge($ary, call_user_func([$this, '_' . substr($name, 1, -1)], 0, $name[-1], true));
+            $ary = array_merge($ary, $this->num(0, $name[-1], true));
         return $ary;
-    }
-
-    function genClass($row) {
-        $ary = $out = [];
-        foreach (explode(' ', $row->name) as $i => $name) {
-            '-' != $name[0] or $name = substr($name, 1); # crop minus
-            $ary[$i] = [];
-            if ('@' == $name[0] || '#' == $name[0]) {
-                $r0 = explode("\n", unl(trim($row->tpl)))[0];
-                foreach (explode('|', $r0) as $v) {
-                    [$v] = explode('=', $v);
-                    $ary[$i][] = $v;
-                }
-            } elseif (in_array($name[0], ['=', '~', '|', '&'])) {
-                $ary[$i] = $this->sample_values($name, true);
-            } else {
-                $ary[$i][] = $name;
-            }
-        }
-        foreach ($ary as $i => $list) {
-            $tmp = [];
-            foreach ($list as $y) {
-                if ($i) foreach ($out as $line) {
-                    $tmp[] = $line . ('' === $y ? '' : "-$y");
-                } else {
-                    $out[] = $y;
-                }
-            }
-            if ($i)
-                $out = $tmp;
-        }
-        return $out;
     }
 
     function value($in, $val, &$cv) {
@@ -308,14 +264,9 @@ class Vesper
             $cv = $this->arbitrary($val);
             return true;
         }
-        if (isset($this->values[$in])) {
-            $cv = $this->values[$in];
-            $cv = $cv[$val] ?? false;
-            return false !== $cv;
-        }
-        foreach ($this->composite[$in] as $in) {
+        foreach (explode('+', $in) as $in) {
             if ('~' == $in[0]) {
-                $cv = call_user_func([$this, '_' . substr($in, 1, -1)], $val, $in[-1]);
+                $cv = $this->num($val, $in[-1]);
                 if (false !== $cv)
                     return true;
             } else {
@@ -328,29 +279,19 @@ class Vesper
         return false;
     }
 
-    function default($term) {
-        switch ($term) {
-            case '~num1': return '1px';
-            case '~num3': return '3px';
-            case '~nump': return '100%';
+    function num($in, $x, $samples = false) {
+        if ('f' == $x) { # fractions
+            if ($samples) {
+                $out = ['full'];
+                for ($i = 1; $i < 12; $out[] = "$i/12", $i++);
+                return $out;
+            }
+            if ('full' == $in)
+                return '100%';
+            if (!preg_match("~^(\d+)/(\d+)$~", $in, $m))
+                return false;
+            return round(100 * $m[1] / $m[2], 6) . '%';
         }
-        return $this->defaults[$term] ?? false;
-    }
-
-    function _fraction($v, $x, $samples = false) {
-        if ($samples) {
-            $out = ['full'];
-            for ($i = 1; $i < 12; $out[] = "$i/12", $i++);
-            return $out;
-        }
-        if ('full' == $v)
-            return '100%';
-        if (!preg_match("~^(\d+)/(\d+)$~", $v, $m))
-            return false;
-        return round(100 * $m[1] / $m[2], 6) . '%';
-    }
-
-    function _num($in, $x, $samples = false) {
         if ($samples) {
             $perc = array_map(function ($v) {
                 return $v . '%';
@@ -389,7 +330,7 @@ class Vesper
         $ino = is_numeric($ary[0]) ? array_shift($ary) : false;
         if ('[' == $color[0] && ']' == $color[-1]) # Arbitrary value
             //return str_replace('&color', $this->arbitrary($color), $ary);
-            $hex = $this->arbitrary($color);
+            $this->last_color = $hex = $this->arbitrary($color);
         $pal = HTML::$color_hex + $base;
         $var or $pal += ['none' => 'none'];
         $opacity = $tw_i = '';
@@ -409,7 +350,7 @@ class Vesper
         if (!isset($hex)) {
             if (!isset($pal[$color]))
                 return false;
-            $hex = '' === $tw_i ? $pal[$color] : $pal[$color][$tw_i];
+            $this->last_color = $hex = '' === $tw_i ? $pal[$color] : $pal[$color][$tw_i];
         }
         if ('#' != $hex[0] || !$var && false === $ino)
             return str_replace('&color', $hex, $ary);
@@ -425,41 +366,39 @@ class Vesper
         return str_replace(['&color', '&hex'], ["rgb($dec / $opacity)", $hex], $ary);
     }
 
-    function index($grp) {
+    function index($grp, $mw, $id_base) {
         $tw = new t_venus('tw');
         $values = $tw->sqlf('#select name, tpl, comp from $_ where tw_id=2');
         foreach ($values as $name => $row) {
             if ('' !== $row->comp)
                 $this->defaults[$name] = $row->comp;
             $this->values[$name] = [];
-            $n = '=' == $name[0] ? 2 : 3;
             foreach (explode("\n", unl(trim($row->tpl))) as $item) {
-                [$k, $v, $v2] = explode(' ', $item, $n) + [2 => false];
-                $this->values[$name][$k] = false === $v2 ? $v : [$v, $v2];
+                [$k, $v] = explode(' ', $item, 2);
+                $this->values[$name][$k] = $v;
             }
         }
-        $rules = $tw->sqlf('#select * from $_ where tw_id=0' . $grp);
+        $list = [];
+        $rules = $tw->sqlf('#select *,id as base_id from $_ where tw_id=0' . $grp);
         foreach ($rules as $row) {
-            $minus = false;
+            $row->minus = false;
             if ('-' == $row->name[0]) {
-                $minus = true;
+                $row->minus = true;
                 $row->name = substr($row->name, 1);
             }
-//trace($row->name);
-            if ($this->mw)
-                $this->mw->grp($row->grp, $row->css, $data);
+            if ($mw)
+                $mw->grp($row, $data);
             $lsTitle = count($path = explode(' ', $row->name)) - 1;
             $tpl = explode("\n", unl(trim($row->tpl)));
             $pp = [&$this->idx];
-            $rs = [];
+            $rs = $mem = [];
             $hash = false;
-            $var = 0;
+            $secAt = 0;
             foreach ($path as $it => $one) { # list of titles
                 $ats = [$one];
                 $at = '@' == $one[0];
                 $n = 0;
                 if ('#' == $one[0] || $at) {
-                    $var = $it;
                     $ats = [];
                     foreach (explode('|', array_shift($tpl)) as $tmp) {
                         $v = explode('=', $tmp, 2);
@@ -471,13 +410,28 @@ class Vesper
                         }
                         $ats[] = $v[0];
                     }
-                } elseif ('=' == $one[0] && $row->comp) {
-                    $this->composite[$one] = explode(' ', $row->comp);
+                    $var = $it;
+                    $mem = $ats;
                 }
                 $p = [];
-                foreach ($ats as $ip => $at) {
+                loop:
+                foreach ($ats as $m0 => $at) {
+                    if ($at && '@' == $at[0]) {
+                        $hash = false;
+                        $tpl = $rs[$n];
+                        $n = 0;
+                        $secAt = 1;
+                        $ats = $rs = [];
+                        foreach (explode('|', array_shift($tpl)) as $tmp) {
+                            $v = explode('=', $tmp, 2);
+                            $rs[] = $v[1] ?? $v[0];
+                            $ats[] = $v[0];
+                        }
+                        $mem = $ats;
+                        goto loop;
+                    }
                     $lsPart = count($atParts = explode('-', $at)) - 1;
-                    foreach ($pp as &$_) {
+                    foreach ($pp as $m1 => &$_) {
                         foreach ($atParts as $ia => $x) {
                             $prev =& $_;
                             if ('' !== $x) {
@@ -489,15 +443,18 @@ class Vesper
                             if ($ia == $lsPart) {
                                 $p[] =& $_;
                                 if ($it == $lsTitle) {
-                                    if ($this->mw) {
-                                        $path[$var] = $ats[$ip];
-                                        $id = $this->mw->css($ip, $path, $data);
+                                    if ($mw) {
+                                        if ($mem)
+                                            $path[$var] = $mem[$m0 + $m1];
+                                        $id = $mw->push($m0 + $m1 + $secAt, $path, $data, $this);
+                                        if ($id_base == $row->base_id)
+                                            $list[$id] = 0;
                                     }
                                     $replaced = $hash ? $rs[$n++] : ($rs ? str_replace('{@}', $rs[$n++], $tpl) : $tpl);
-                                    if ($this->mw)
-                                        $replaced += [99 => $id]; # add ID to main index
+                                    if ($mw)
+                                        $replaced += [99 => (string)$id]; # add ID to main index
                                     '' === $x ? ($_ += $replaced) : ($prev[$x] += $replaced);
-                                    if ($default = $this->default($x))
+                                    if ($default = $this->defaults[$x] ?? false)
                                         $prev += str_replace('{0}', $default, $_);
                                 }
                             }
@@ -508,5 +465,6 @@ class Vesper
             }
         }
         ksort($this->idx);
+        return array_keys($list);
     }
 }

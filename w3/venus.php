@@ -27,8 +27,8 @@ class Venus extends Console
     }
 
     /** Debug Vesper index */
-    function a_iv() {
-        $vs = new Vesper;
+    function a_iv($mw = 0) {
+        $vs = new Vesper('', $mw ? new Maxwell : null);
         print_r(json_encode($vs->idx, JSON_PRETTY_PRINT));
     }
 
@@ -52,9 +52,9 @@ class Venus extends Console
     }
 
     /** Debug Maxwell indexes */
-    function a_im($idx = 0) {
+    function a_im($i = 0) {
         new Vesper('', $mw = new Maxwell);
-        $mw->test($idx);
+        print_r($i ? $mw->ids : json_encode($mw->menu, JSON_PRETTY_PRINT));
     }
 
     /** Search (list) Vesper css classes */

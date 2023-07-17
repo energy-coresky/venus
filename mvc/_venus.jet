@@ -63,10 +63,11 @@ $(function() {
   <a @href($(this).parents('.tool').remove()) class="x">@svg(x)</a>
   @block(`` as t_head)
 </p>
-<div class="flex" style="max-height:@block(t_height)292px~block;">
-  <div class="mbg whitespace-nowrap" style="width:50px; padding:5px 3px;">@block(`` as t_left)</div>
-  <div class="overflow-auto@block(`` as w_body)">@inc(*)</div>@block(t_right)@use(` w-full` as w_body)~block
-</div>
+<div class="flex align-stretch" style="max-height:@block(t_height)292px~block;">
+  <div class="mbg t-left">@block(`` as t_left)</div>
+  <div class="overflow-auto@block(`` as w_body)">@inc(*)</div>
+  @block(t_right)@use(` flex-grow` as w_body)~block
+</div>@block(`` as t_body)
 <div class="t-head inline-flex" style="align-items:center; justify-content:space-between">
   <div class="ml-2 flex">
   @block(t_tail)

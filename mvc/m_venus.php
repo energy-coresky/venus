@@ -17,6 +17,14 @@ class m_venus extends Model_m
         return $ary;
     }
 
+    static function media() {
+        static $px = [];
+        if (!$px)
+            foreach (self::$media as $v)
+                $px[] = $v ? SKY::w($v) : 0;
+        return $px;
+    }
+
     static function files() {
         $list = array_map(function($v) {
             return basename($v);

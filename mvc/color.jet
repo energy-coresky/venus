@@ -75,7 +75,7 @@ Opacity<br>
   <option value="100" label="&nbsp;"></option>
 </datalist>
 </div>
-<table class="h-full" style="width:calc(100% - {{$sky->w_v3 ? 641 : 485}}px)" id="big-colors">
+<table class="flex-grow" style="" id="big-colors">
   @loop($_ < 3)<tr><td></td><td></td><td></td></tr>~loop
 </table>
 #.t_right.t_js
@@ -153,10 +153,7 @@ i$.palette()
 #.pjs
 
 
-
-.header, .t-head, .mbg {
-    background-color: ;
-}
 <label class="ml-3"><input type="radio" name="hsl"@checked(1) onchange="i$.palette()"> hue</label>
 <label><input type="radio" name="hsl"@checked(0) onchange="i$.palette()"> saturation</label>
 <label><input type="radio" name="hsl"@checked(0) onchange="i$.palette()"> lightness</label>
+

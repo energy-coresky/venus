@@ -223,7 +223,7 @@ pre:focus {
 #v-right .header { width: calc(100vw - 167px - var(--frame-w)); }
 #tail    .header { width: calc(133px + var(--frame-w)); }
 #v-right #code-body pre { min-height:calc(100vh - 90px); }
-#tail    #code-body pre { min-height:calc(100vh - 93px - var(--frame-h)); }
+#tail    #code-body pre { min-height:calc(100vh - 115px - var(--frame-h)); }
 .tool {
   border-bottom: var(--border);
 }
@@ -348,12 +348,14 @@ pre:focus {
   height: calc(20% - 42px);
 }
 .del-t-btn {
-  font-size: 14px;
-  background-color: #fff;
+  font-size: 17px;
   color: #333;
+  padding:2px 5px 3px 5px;
 }
 .del-t-btn:hover {
-  color: #00f;
+  color: #fff;
+  background-color: #1e90ff;
+  text-decoration:none;
 }
 
 .f9, .f9 span {
@@ -368,7 +370,6 @@ div.f9:hover, a.f9-2:hover {
 }
 div.f9:hover > div {
   display:inline-block;
-  top:0px;
   background-color: #fff;
   padding:3px;
 }
@@ -385,6 +386,30 @@ div.f9:hover > div {
   left: 115px;
   background-color: #fff;
   padding:3px 0;
+}
+.t-left {
+  width: 50px;
+  padding: 5px 3px;
+  white-space: nowrap;
+}
+.syn-code {
+  overflow: hidden;
+  flex-grow: 1;
+  width: 6rem;
+  height: 1.5rem; /* items-center */
+}
+.syn-code div {
+  text-overflow: ellipsis;
+}
+.syn-code:hover {
+  overflow: visible;
+}
+.syn-code:hover div {
+  padding:5px 8px;
+  background-color: #fef3c7;
+  position: sticky;
+  right: 35px;
+  z-index:100;
 }
 
 

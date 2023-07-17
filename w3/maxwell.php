@@ -2,24 +2,47 @@
 
 class Maxwell
 {
-    public $idx;
-    public $idx_id;
+    public $menu;
+    public $ids = [0];
     //public $idx_reverse;
 
     private $used;
 
     static $grp = ['text', 'box', 'border', 'background', 'flex-grid', 'effect', 'other'];
 
+    const ID_OPT = 1;
+
     function __construct() {
-        $this->idx = array_combine(self::$grp, array_pad([], 7, []));
-        $this->idx_id = [];
+        $this->menu = array_combine(self::$grp, array_pad([], 7, []));
     }
 
-    function grp($grp, $syn, &$data) {
-        if ($hash = '#' == $syn[0])
-            $syn = substr($syn, 1);
+    static function classes($id_base) {
+        $vs = new Vesper('', $mw = new self, $id_base);
+        $list = [];
+        foreach ($id_base as $id)
+            $list = array_merge($list, $mw->explode($id, $vs));
+        return $list;
+    }
+
+    function explode($id, $vs) {
+        $list = [];
+        foreach ($this->ids[$id][1] as $opt) {
+            if (preg_match("/^(.*?)([~&\^].*)$/", $opt, $m)) {
+                $opt = $vs->sample_values($m[2]);
+                $list = array_merge($list, array_map(function ($v) use ($m) {
+                    return $m[1] . $v;
+                }, $opt));
+            } else {
+                $list[] = $opt;
+            }
+        }
+        return $list;
+    }
+
+    function grp($row, &$data) {
+        $syn = ($hash = '#' == $row->css[0]) ? substr($row->css, 1) : $row->css;
         $cnt = count($ary = explode(' ', $syn, 2)) - 1;
-        $pp =& $this->idx[$grp];
+        $pp =& $this->menu[$row->grp];
         foreach ($ary as $n => $one) {
             is_num($one[0]) or $one = "6$one";
             if ($hash && $n == $cnt) {
@@ -29,95 +52,77 @@ class Maxwell
                 $pp =& $pp[$one];
             }
         }
-        $data = [&$pp, $hash];
+        $data = [&$pp, $hash, $row];
     }
 
-    function css($ip, $path, &$data) {
+    function push($iz, $path, &$data, $vs) {
         static $id;
+        [&$pp, $hash, $row] = $data;
 
-        //$ary
-        [&$pp, $hash] = $data;
-        //$cnt = count($ary) - 1;
-        if (!$ip || $hash) {
-            $id = count($this->idx_id); # new id
-            $this->idx_id[$id] = [];
+        if (!$iz || $hash) {
+            $id = count($this->ids); # new id
+            $this->ids[$id] = [$row->minus, [], $row->grp];
+        }
+        $path = array_filter($path, function ($v) {
+            return '' !== $v;
+        });
+        $list = $row->comp ? explode(' ', $row->comp) : [end($path)];
+        $cnt = count($list) - 1;
+        foreach ($list as $n => $one) {
+            array_pop($path);
+            $tmp = $path;
+            if ('^auto' == $one)
+                $one = 'auto';
+            array_push($path, $one);
+            $this->ids[$id][1][] = implode('-', $path);
+            if ($cnt == $n && isset($vs->defaults[$one]))
+                $this->ids[$id][1][] = implode('-', $tmp);
         }
         if ($hash) {
             $sort = $hash[0];
+            array_pop($path);
             $k = substr($hash, 1) . '-' . implode('-', $path);
-            $pp[$sort . trim($k, '-')] = [0];
+            $pp[$sort . trim($k, '-')] = $id;
         } else {
-            $this->idx_id[$id][] = implode('-', $path);
-            $pp[0] = $id;
+            $pp = $id;
         }
-
-     return $id;
-
-        $out = [];
-        $j = 0;
-        foreach ($ary as $i => $a) {
-            $out[$i] = array_shift($a);
-            if ($a)
-                $j = $i;
-        }
-        foreach ($ary[$j] as $v) {
-            $out[$j] = $v;
-            if ($hash) {
-                $sort = $hash[0];
-                $k = substr($hash, 1) . '-' . implode('-', array_slice($out, 0, $cnt));
-                $pp[$sort . trim($k, '-')] = [$out[$cnt]];
-            } else {
-                $this->idx_id[$cnt_opt][] = implode('-', $out);
-                $pp[0] = $cnt_opt;
-            }
-        }
+        return $id;
     }
 
-    function sub($sub, &$id) {
-        if (is_int(key($sub))) {
-            $id = $sub[0];
-            return false;
-        }
-        $id = 0;
-        return array_map(function ($v) {
-            return substr($v, 1);
-        }, array_keys($sub));
+    function row($id, $vs, &$grp, $css = false, $cls = false) {
+        static $maat;
+        $maat or $maat = new Maat;
+        [$meta, $opt, $grp] = $this->ids[$id];
+        $cls or $cls = $opt[0];
+        $ps = explode(':', $cls);
+        array_pop($ps);
+        $css or $css = $vs->listCSS([$cls], $id);
+        $mul = count($css) > 1;
+        $txt = $maat->buildCSS($css);
+        if (!$mul && '@' != $txt[0])
+            $txt = str_replace("\n  ", "\n", substr($txt, 3 + strpos($txt, "\n"), -2));
+        return (object)[
+            'bg' => $bg = strpos($meta, '&') ? $vs->last_color : '',
+            'cls' => $bg ? tag($cls, 'style="color:#fff;mix-blend-mode:difference"', 'span') : $cls,
+            'opt' => $opt,
+            'css' => tag($txt, ''),
+            'ps' => $ps,
+        ];
     }
 
-    function used_classes($vs, $classes = []) {
-        $this->used = [];
-        foreach ($classes as $cls) {
-            $ps = explode(':', $cls);
-            $cls = array_pop($ps);
-            [$css, $node, $last_node] = $vs->listCSS([$cls]);
-/*
-            $out[$cls] = [':' => [], [], [], []];
-            $pp =& $out[$cls];
-            $ps = explode(':', $cls);
-            $cls = array_pop($ps);
-            $pp[":"] = $ps;
-            $css = $this->listCSS([$cls])[0] ?? false;
-            if ($css && 3 == count($css)) {
-                $exact = 1 == count($css[1]) ? 1 : 0;
-                foreach ($css[1] as $css) {
-                    [$prop] = explode(':', $css, 2);
-                    if ($exact) {
-                        $pp[1] = array_unique($this->idx_e[$prop] ?? []);
-                    } elseif ($this->color) {
-                        $pp[1] = [$this->color];
-                    }
-                    $sum = array_merge($pp[0], $this->idx_e[$prop] ?? [], $this->idx_s[$prop] ?? []);
-                    $pp[0] = array_diff(array_unique($sum), $pp[1]);
-                }
-            }
-*/
+    function menu($vs, $ary) {
+        $used = [];
+        foreach ($ary as $cls) {
+            $id = 0;
+            $css = $vs->listCSS([$cls], $id);
+            if (!$id)
+                continue;
+            $row = $this->row($id, $vs, $grp, $css, $cls);
+            $used[$grp][] = $row;
         }
-    }
-
-    function index() {
-        return function ($i) {
+        return function ($i) use ($used) {
             return 7 == $i->__i ? false : [
-                'top' => $top = key($row = array_slice($this->idx, $i->__i, 1, true)),
+                'top' => $top = key($row = array_slice($this->menu, $i->__i, 1, true)),
                 'L2' => new eVar(function ($i) use (&$row) {
                     if (!$i->__i) {
                         $row = pos($row);
@@ -127,32 +132,15 @@ class Maxwell
                     }
                     $menu = substr(key($row), 1);
                     $sub = array_shift($row);
-                    ksort($sub);
+                    $id = is_array($sub) ? !ksort($sub) : $sub;
                     return [
                         'menu' => $menu,
-                        'sub' => $this->sub($sub, $id),
+                        'sub' => $sub,
                         'id' => $id,
                     ];
                 }),
-                'cls' => $this->used[$top] ?? [],
+                'cls' => $used[$top] ?? [],
             ];
         };
-    }
-
-    function test($idx) {
-        print_r($idx ? $this->idx_id : json_encode($this->idx, JSON_PRETTY_PRINT));
-      return;
-
-        $e = new eVar($this->index($vs));
-        foreach ($e as $grp) {
-            echo "$grp->name\n";
-            foreach ($grp->L2 as $row) {
-                echo "  $row->sub\n";
-                foreach ($row->res as $res) {
-                    $res = substr($res, 1);
-                    echo "    $res\n";
-                }
-            }
-        }
     }
 }
