@@ -121,8 +121,7 @@ class t_settings extends Model_t
                 ['ID', 'ni', $id ?: 'New Item'],
                 'grp' => ['Group', 'select', array_combine($a = Maxwell::$grp, $a)],
                 'name' => [$type ? 'ValueName' : 'Name', '', 'style="width:50%"'],
-                'comp' => [$type ? 'DefaultValue' : 'Composite', '', 'style="width:50%"'],
-                'css' => [$type ? 'Comment' : 'Maxwell', '', 'style="width:50%"'],
+                'css' => [$type ? 'DefaultValue' : 'Menu', '', 'style="width:50%"'],
                 'tpl' => ['Template', 'textarea_rs', 'style="width:98%" rows="21"'],
             ];
         }

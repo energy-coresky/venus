@@ -71,10 +71,10 @@ class venus_c extends Controller
     }
 
     function j_samples() {
-        $in = $_POST['n'];
+        $ary = explode('-', $_POST['n']);
         return [
-            'samples' => (new Vesper)->samples($in),
-            'pref' => $in,
+            'samples' => (new Vesper)->samples(array_pop($ary)),
+            'pref' => implode('-', $ary) . '-',
         ];
     }
 

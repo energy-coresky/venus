@@ -8,12 +8,14 @@ class Vesper
     public $idx_s;//similar
     public $defaults = ['~num1' => '1px', '~num3' => '3px', '~nump' => '100%'];
 
-    private $values = ['^a' => ['auto' => 'auto']];
+    private $values = ['^a' => ['auto' => 'auto'], '^spacing' => []];
     private $color;
 
     function __construct($grp = '', ?Maxwell $mw = null, &$id_base = null) {
         $grp = !$grp || 'all' == $grp ? '' : " and grp='$grp'";
-        if ($list = $this->index($grp, $mw ?? false, $id_base ?? 0))
+        $this->values['^'] =& $this->values['^spacing']; # set alias for ^spacing
+        $list = $this->index($grp, $mw ?? false, $id_base ?? 0);
+        if (null !== $id_base)
             $id_base = $list;
     }
 
@@ -124,6 +126,7 @@ class Vesper
                 //$css or $css = ["/* not found */"];
                 if (!$css)
                     continue;
+          //trace(print_r([$one,$css],1));
                 if (null !== $id)
                     $id = array_pop($css);
                 $mul = false;
@@ -220,7 +223,7 @@ class Vesper
                     $k = (string)$k;
                     if (in_array($k[0], ['^', '~']) && $this->value($k, $x, $cv)) {
                         return str_replace('{0}', $minus . $cv, array_filter($v, 'is_string'));
-                    } elseif ('[' == $x[0] && '[' == $k[0]) {// '#' != $x[1]
+                    } elseif ('[' == $x[0] && '[' == $k[0]) {
                         return $arbitrary($v, $x, $k);
                     }
                 }
@@ -237,30 +240,21 @@ class Vesper
         return false;
     }
 
-    function samples(&$in) {
-        $ary = explode('-', $in);
-        $name = array_pop($ary);
-        $in = implode('-', $ary) . '-';
-        return $this->sample_values($name);
-    }
-
-    function sample_values($name, $add_default = false) {
-        if ('&color' == $name)
+    function samples($last) {
+        if ('&color' == $last)
             return $this->color(0, 0, 0, true);
-        $ary = $add_default && isset($this->defaults[$name]) ? [''] : [];
-        if ('^' == $name[0]) {
-            foreach (explode('+', $name) as $name) {
-                if ('^' == $name[0])
-                    $ary = array_merge($ary, array_keys($this->values[$name]));
-            }
+        $ary = [];
+        foreach (explode('+', $last) as $last) {
+            if ('^' == $last[0])
+                $ary = array_merge($ary, array_keys($this->values[$last]));
         }
-        if ('~' == $name[0])
-            $ary = array_merge($ary, $this->num(0, $name[-1], true));
+        if ('~' == $last[0])
+            $ary = array_merge($ary, $this->num(0, $last[-1], true));
         return $ary;
     }
 
     function value($in, $val, &$cv) {
-        if ('[' == $val[0] && ']' == $val[-1]) {
+        if ('[' == $val[0] && ']' == $val[-1] && '#' != $val[1]) {
             $cv = $this->arbitrary($val);
             return true;
         }
@@ -325,15 +319,11 @@ class Vesper
                 'sky-300', 'silver', 'tan',
             ];
         }
+        $opacity = $dec = $tw_i = '';
         $point = '.' == $ary[0][0] ? array_shift($ary) : false;
-        $var = '--' == substr($ary[0], 0, 2) && count($ary) > 1 ? array_shift($ary) : false;
-        $ino = is_numeric($ary[0]) ? array_shift($ary) : false;
-        if ('[' == $color[0] && ']' == $color[-1]) # Arbitrary value
-            //return str_replace('&color', $this->arbitrary($color), $ary);
-            $this->last_color = $hex = $this->arbitrary($color);
-        $pal = HTML::$color_hex + $base;
-        $var or $pal += ['none' => 'none'];
-        $opacity = $tw_i = '';
+        if ($var = array_shift($ary))
+            $var = array_shift($ary);
+        $pal = $base + ['none' => 'none'] + HTML::$color_hex;
         if ('' !== $num) {
             if (!preg_match("~^(\d+)/?(\d*|\[[^\]]+\])$~", $num, $match))
                 return false;
@@ -347,32 +337,32 @@ class Vesper
                 return false;
             }
         }
-        if (!isset($hex)) {
+        if ('[' == $color[0] && ']' == $color[-1]) { # Arbitrary value
+            $this->last_color = $this->arbitrary($color);
+        } else {
             if (!isset($pal[$color]))
                 return false;
-            $this->last_color = $hex = '' === $tw_i ? $pal[$color] : $pal[$color][$tw_i];
+            $this->last_color = '' === $tw_i ? $pal[$color] : $pal[$color][$tw_i];
         }
-        if ('#' != $hex[0] || !$var && false === $ino)
-            return str_replace('&color', $hex, $ary);
-        if ('' === $opacity) {
-            $var && array_unshift($ary, "$var: 1");
-            $opacity = $var ? "var($var)" : $ino;
-        } else {
+        if ($hex = '#' == $this->last_color[0])
+            $dec = implode(' ', array_map('hexdec', str_split(substr($this->last_color, 1), 2)));
+        if ('' !== $opacity) {
             $opacity = '[' == $opacity[0] ? $this->arbitrary($opacity) : (int)$opacity / 100;
+        } elseif ($hex) {
+            $var && array_unshift($ary, "$var: 1");
+            $opacity = $var ? "var($var)" : 0;
         }
         if ($point)
             array_unshift($ary, $point);
-        $dec = implode(' ', array_map('hexdec', str_split(substr($hex, 1), 2)));
-        return str_replace(['&color', '&hex'], ["rgb($dec / $opacity)", $hex], $ary);
+        return str_replace(['&color', '&hex'], [$hex ? "rgb($dec / $opacity)" : $this->last_color, $this->last_color], $ary);
     }
 
     function index($grp, $mw, $id_base) {
         $tw = new t_venus('tw');
-        $values = $tw->sqlf('#select name, tpl, comp from $_ where tw_id=2');
+        $values = $tw->sqlf('#select name, tpl, css from $_ where tw_id=2');
         foreach ($values as $name => $row) {
-            if ('' !== $row->comp)
-                $this->defaults[$name] = $row->comp;
-            $this->values[$name] = [];
+            if ('' !== $row->css)
+                $this->defaults[$name] = $row->css;
             foreach (explode("\n", unl(trim($row->tpl))) as $item) {
                 [$k, $v] = explode(' ', $item, 2);
                 $this->values[$name][$k] = $v;
@@ -464,7 +454,7 @@ class Vesper
                 $pp = $p;
             }
         }
-        ksort($this->idx);
+       ksort($this->idx);
         return array_keys($list);
     }
 }

@@ -28,7 +28,7 @@ class Maxwell
         $list = [];
         foreach ($this->ids[$id][1] as $opt) {
             if (preg_match("/^(.*?)([~&\^].*)$/", $opt, $m)) {
-                $opt = $vs->sample_values($m[2]);
+                $opt = $vs->samples($m[2]);
                 $list = array_merge($list, array_map(function ($v) use ($m) {
                     return $m[1] . $v;
                 }, $opt));
@@ -66,12 +66,11 @@ class Maxwell
         $path = array_filter($path, function ($v) {
             return '' !== $v;
         });
-        $list = $row->comp ? explode(' ', $row->comp) : [end($path)];
-        $cnt = count($list) - 1;
+        $cnt = count($list = explode('+', end($path))) - 1;
         foreach ($list as $n => $one) {
             array_pop($path);
             $tmp = $path;
-            if ('^auto' == $one)
+            if ('^a' == $one)
                 $one = 'auto';
             array_push($path, $one);
             $this->ids[$id][1][] = implode('-', $path);
@@ -92,7 +91,7 @@ class Maxwell
     function row($id, $vs, &$grp, $css = false, $cls = false) {
         static $maat;
         $maat or $maat = new Maat;
-        [$meta, $opt, $grp] = $this->ids[$id];
+        [$minus, $opt, $grp] = $this->ids[$id];
         $cls or $cls = $opt[0];
         $ps = explode(':', $cls);
         array_pop($ps);
@@ -102,7 +101,7 @@ class Maxwell
         if (!$mul && '@' != $txt[0])
             $txt = str_replace("\n  ", "\n", substr($txt, 3 + strpos($txt, "\n"), -2));
         return (object)[
-            'bg' => $bg = strpos($meta, '&') ? $vs->last_color : '',
+            'bg' => $bg = strpos($opt[0], '&') ? $vs->last_color : '',
             'cls' => $bg ? tag($cls, 'style="color:#fff;mix-blend-mode:difference"', 'span') : $cls,
             'opt' => $opt,
             'css' => tag($txt, ''),

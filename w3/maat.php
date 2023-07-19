@@ -75,6 +75,7 @@ class Maat
     static function &css($css, $opt = []) {
         $maat = new Maat($opt);
         $new =& $maat->buildCSS($css);
+        //$new =& $maat->buildCSS($css, true);
         if ($maat->opt['test'])
             return $maat->test($css, $new);
         return $new;
