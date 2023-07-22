@@ -20,7 +20,7 @@ Empty for now
   <h1 class="uppercase">{{$section}}</h1>
   <div class="absolute bottom-0 top-52 overflow-x-hidden overflow-y-auto whitespace-nowrap" style="width:150px">
     @loop($list as $id => $row)
-      @if($y_3[2])
+      @if('browse' != $y_3[2])
       <a class="block pl-1"@active(!$id) @href(i$.push(this, 'settings&{{$y_2}}=open.0.{{$y_3[2]}}.{{$id}}'))>{{$row}}</a>
       @else
         <a class="block pl-1" @href({!$is_ok($row) ? "i$.cls(this,'$row')" : "i$.samples(this,'$row')"!})>{{$row}}</a>

@@ -61,7 +61,7 @@ class Maxwell
 
         if (!$iz || $hash) {
             $id = count($this->ids); # new id
-            $this->ids[$id] = [$row->minus, [], $row->grp];
+            $this->ids[$id] = [$row->minus, [], $row->grp, $row->id_base];
         }
         $path = array_filter($path, function ($v) {
             return '' !== $v;
@@ -91,7 +91,7 @@ class Maxwell
     function row($id, $vs, &$grp, $css = false, $cls = false) {
         static $maat;
         $maat or $maat = new Maat;
-        [$minus, $opt, $grp] = $this->ids[$id];
+        [$minus, $opt, $grp, $id_base] = $this->ids[$id];
         $cls or $cls = $opt[0];
         $ps = explode(':', $cls);
         array_pop($ps);
@@ -106,6 +106,7 @@ class Maxwell
             'opt' => $opt,
             'css' => tag($txt, ''),
             'ps' => $ps,
+            'id_base' => $id_base,
         ];
     }
 
@@ -122,6 +123,7 @@ class Maxwell
         return function ($i) use ($used) {
             return 7 == $i->__i ? false : [
                 'top' => $top = key($row = array_slice($this->menu, $i->__i, 1, true)),
+                'cls' => $used[$top] ?? [],
                 'L2' => new eVar(function ($i) use (&$row) {
                     if (!$i->__i) {
                         $row = pos($row);
@@ -138,7 +140,6 @@ class Maxwell
                         'id' => $id,
                     ];
                 }),
-                'cls' => $used[$top] ?? [],
             ];
         };
     }

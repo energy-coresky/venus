@@ -22,13 +22,14 @@ class Venus extends Console
 
     /** Parse css */
     function a_parse() {
-        $css = Plan::_g("assets/venus.css");
+        $css = Plan::_g("assets/z.css");
         echo Maat::css($css);
     }
 
     /** Debug Vesper index */
     function a_iv($mw = 0) {
         $vs = new Vesper('', $mw ? new Maxwell : null);
+        ksort($vs->idx);
         print_r(json_encode($vs->idx, JSON_PRETTY_PRINT));
     }
 

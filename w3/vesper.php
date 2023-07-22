@@ -1,6 +1,6 @@
 <?php
 
-class Vesper
+class Vesper /* Tailwind classes generator */
 {
     public $idx = [];
     public $last_color = '';
@@ -338,23 +338,24 @@ class Vesper
             }
         }
         if ('[' == $color[0] && ']' == $color[-1]) { # Arbitrary value
-            $this->last_color = $this->arbitrary($color);
+            $hex = $this->last_color = $this->arbitrary($color);
         } else {
             if (!isset($pal[$color]))
                 return false;
-            $this->last_color = '' === $tw_i ? $pal[$color] : $pal[$color][$tw_i];
+            $hex = $this->last_color = '' === $tw_i ? $pal[$color] : $pal[$color][$tw_i];
         }
-        if ($hex = '#' == $this->last_color[0])
+        if ($hc = '#' == $this->last_color[0])
             $dec = implode(' ', array_map('hexdec', str_split(substr($this->last_color, 1), 2)));
         if ('' !== $opacity) {
             $opacity = '[' == $opacity[0] ? $this->arbitrary($opacity) : (int)$opacity / 100;
-        } elseif ($hex) {
+            $hex = "rgb($dec / $opacity)";
+        } elseif ($hc) {
             $var && array_unshift($ary, "$var: 1");
             $opacity = $var ? "var($var)" : 0;
         }
         if ($point)
             array_unshift($ary, $point);
-        return str_replace(['&color', '&hex'], [$hex ? "rgb($dec / $opacity)" : $this->last_color, $this->last_color], $ary);
+        return str_replace(['&color', '&hex'], [$hc ? "rgb($dec / $opacity)" : $this->last_color, $hex], $ary);
     }
 
     function index($grp, $mw, $id_base) {
@@ -369,7 +370,7 @@ class Vesper
             }
         }
         $list = [];
-        $rules = $tw->sqlf('#select *,id as base_id from $_ where tw_id=0' . $grp);
+        $rules = $tw->sqlf('#select *,id as id_base from $_ where tw_id=0' . $grp);
         foreach ($rules as $row) {
             $row->minus = false;
             if ('-' == $row->name[0]) {
@@ -437,7 +438,7 @@ class Vesper
                                         if ($mem)
                                             $path[$var] = $mem[$m0 + $m1];
                                         $id = $mw->push($m0 + $m1 + $secAt, $path, $data, $this);
-                                        if ($id_base == $row->base_id)
+                                        if ($id_base == $row->id_base)
                                             $list[$id] = 0;
                                     }
                                     $replaced = $hash ? $rs[$n++] : ($rs ? str_replace('{@}', $rs[$n++], $tpl) : $tpl);
@@ -454,7 +455,6 @@ class Vesper
                 $pp = $p;
             }
         }
-       ksort($this->idx);
         return array_keys($list);
     }
 }

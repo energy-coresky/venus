@@ -8,7 +8,7 @@ class venus_c extends Controller
     function head_y($action) {
         'a_ware' == $action or MVC::$layout = '';
         $this->t_venus->head_y();
-        $this->y3 = explode('.', $this->_3, 5) + ['', '', '', '', ''];
+        $this->y3 = explode('.', $this->_3 ?: 'open', 5) + [1 => 0, 'form', '', ''];
         return ['y_2' => $this->_2, 'y_3' => $this->y3];
     }
 
@@ -50,11 +50,9 @@ class venus_c extends Controller
             $json = unjson(file_get_contents('php://input'));
             json($this->t_venus->maat($json));
         } else { # step 0
-            $url = 'https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp';
-          //$url = 'https://cdn.tailwindcss.com';
             json([
                 'html' => $this->t_venus->get($this->_3, true, $tw),
-                'tw' => $tw ? '<script src="' . $url . '"></script><script>tailwind.config={darkMode:\'class\'}</script>' : $tw,
+                'tw' => !$tw ? $tw : $this->t_venus->tailwind(),
             ]);
         }
     }

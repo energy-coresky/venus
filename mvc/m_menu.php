@@ -81,6 +81,7 @@ class m_menu extends Model_m
             ['Add new component', '', 'Alt + N'],
             ['Delete current', '', 'Alt + D'],
             ['Links', m_venus::files(), self::$rar],
+            ['History', $this->t_venus->history(), self::$rar],
             '',
             ['Venus sourses', 'ajax("set&src=0")', SKY::w('src') ? '' : self::$pnt],
             ['Application sourses', 'ajax("set&src=1")', SKY::w('src') ? self::$pnt : ''],

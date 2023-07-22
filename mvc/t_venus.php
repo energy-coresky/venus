@@ -28,16 +28,45 @@ class t_venus extends Model_t
         ];
     }
 
+    function tailwind() {
+        [$t] = m_venus::ghost($this->head_y(), 'syntax');
+        $ary = [];
+        foreach (['forms', 'typography', 'aspect', 'ln_clamp'] as $plug) {
+            if ($t["tw_$plug"])
+                $ary[] = 'aspect' == $plug ? 'aspect-ratio' : ('ln_clamp' == $plug ? 'line-clamp' : $plug);
+        }
+        $q = $ary ? '?plugins=' . implode(',', $ary) : '';
+        return js(["https://cdn.tailwindcss.com$q"]) . js($t['tw_config']) . tag($t['tw_css'], 'type="text/tailwindcss"', 'style');
+    }
+
+    function history($fn = null) {
+        $ary = unserialize(SKY::w('hy_src'));
+        if (null === $fn) {
+            $out = [];
+            foreach ($ary as $k => $v)
+                $out[$v] = '$$.test(\'' . "$k')";
+            return $out;
+        } else {
+            $ary = [$fn => $this->get($fn, false, $tw)] + $ary;
+            SKY::w('hy_src', serialize(array_slice($ary, 0, 19, true)));
+        }
+    }
+
     function get($_fn, $data, &$tw) {
         $tw = !SKY::w('vesper');
+        if ($data)
+            $this->history($_fn);
         $pfx = $_fn[0];
-        $fn = substr($_fn, 1);
-        if (':' == $pfx) {
-            return $data ? $this->cell($fn, 'tmemo') : 'Venus: <b>' . ($tw = $this->cell($fn, 'name')) . '</b>';
-        } elseif ('~' == $pfx) {//Component  m_menu::$types
+        $id = substr($_fn, 1);
+        if ('!' == $pfx) {
+            $s = $this->sql('+select !! from $_tw where id=$+', $data ? 'tmemo' : 'name', $id);
+            return $data ? ($s ?? '<i class="text-7xl">TODO</i>') : "Usage: <b>$s</b>";
+        } elseif (':' == $pfx) {
+            return $data ? $this->cell($id, 'tmemo') : 'Venus: <b>' . ($tw = $this->cell($id, 'name')) . '</b>';
+        } elseif ('~' == $pfx) {
             if ($data)
-                return call_user_func(['Plan', (SKY::w('plan') ? 'mem' : 'app') . "_g"], ['main', "venus/$fn.html"]);
-            return "Application: <b>" . ucfirst($tw = substr($fn, 2)) . '</b>';
+                return call_user_func(['Plan', (SKY::w('plan') ? 'mem' : 'app') . "_g"], ['main', "venus/$id.html"]);
+            return "Application: <b>" . ucfirst($tw = substr($id, 2)) . '</b>';
         }
         $tw = '';
         preg_match('/^https?:/', $_fn) or $_fn = "https://$_fn";
@@ -45,7 +74,9 @@ class t_venus extends Model_t
     }
 
     function put($fn, $data = null) {
-        if (':' == $fn[0]) {
+        if ('!' == $fn[0]) {
+            $this->sqlf('update $_tw set tmemo=%s where id=%d', $data, substr($fn, 1));
+        } elseif (':' == $fn[0]) {
             $this->update(['tmemo' => $data], substr($fn, 1));
         } elseif ('~' == $fn[0]) {
             call_user_func(['Plan', (SKY::w('plan') ? 'mem' : 'app') . "_p"], ['main', "venus/" . substr($fn, 1) . '.html'], $data);

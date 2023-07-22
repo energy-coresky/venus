@@ -29,7 +29,7 @@ var i$ = {
         });
     },
     word: function(word) {
-        ajax('settings&syntax=open.0.', {n:word}, box)
+        ajax('settings&syntax=open.0.browse', {n:word}, box)
     },
     cls: function(el, name) {
         $(el).parent().find('a').removeClass('active');
