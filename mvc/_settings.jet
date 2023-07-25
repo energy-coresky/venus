@@ -14,6 +14,16 @@ Empty for now
 ~loop
 #.samples
 
+#.vss //////////////////////////////////////////////////////////////////////////////
+<fieldset class="border mx-3 px-3"><legend class="px-3">{{$section}}, version {{$y_3[2]}}</legend>
+  <textarea class="w-full h-96" name="ta">{{$ta}}</textarea>
+  <dl>
+    <dt></dt>
+    <dd><input type="button" value="Save" class="btn-blue" onclick="ajax('settings&vss=put.{{$y_3[1]}}.{{$y_3[2]}}', $('#f1').serialize(), 'f1')"></dd>
+  </dl>
+</fieldset>
+#.vss
+
 #.syntax //////////////////////////////////////////////////////////////////////////////
 #use(.tail)
 @if($section)
@@ -53,7 +63,7 @@ Empty for now
     <div class="flex h-4/5">
       <div style="width:{{$left_w}}px" class="relative">
       @block(left)
-          <h1>Настройки</h1>
+          <h1>SETTINGS</h1>
           @loop($menu as $k => $name)
             <a @href(ajax('settings&{{$y_2}}=open.0.{{$k}}', box)) class="block s-menu"@active($k == $y_3[2])>{{$name}}</a>
           ~loop
@@ -76,7 +86,7 @@ Empty for now
         ~if
 #.form_only
       </div>
-      <div style="width:calc((100% - {{$left_w}}px) / 2)" class="p-2 overflow-auto">
+      <div style="width:calc((100% - {{$left_w}}px) / 2)" class="p-2 overflow-auto pad">
         {!Display::md($txt)!}
       </div>
     </div>

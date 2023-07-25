@@ -9,6 +9,7 @@ class t_settings extends Model_t
     private $menu = [];
     private $ary = ['section' => '', 'gen' => []];
     private $form_data = [];
+    private $ttl = [1 => 'User-1', 'Preflight', 'Forms', 'User-2', 'Variables', '<b>Generated CSS</b>', 'User-3'];
 
     function head_y() {
         if ($this->dd)
@@ -17,13 +18,25 @@ class t_settings extends Model_t
         if ('all' == $this->_2) {
             $this->t =& $this->t_venus->w;
         } else {
-            $this->t =& m_venus::ghost($dd, $this->_2);
+            $this->t =& $this->cfg($this->_2, $dd);
         }
         return $dd;
     }
 
+    function &cfg($name = 'syntax', $dd = false) {
+        static $ary, $mem = '';
+        $mem == $name or $ary =& m_venus::ghost($dd ?: $this->dd, $mem = $name);
+        return $ary;
+    }
+
     function preflight() {
-        return unl($this->sqlf('+select txt from $_ where id=100'));
+        $out = '';
+        $cfg =& $this->cfg();
+        for ($s = 1; $s < 6; $s++) {
+            if ($v = $cfg[0]['vr_' . $s])
+                $out .= $this->rw($s, $v);
+        }
+        return $out;
     }
 
     function clk($u) {
@@ -73,16 +86,47 @@ class t_settings extends Model_t
         ];
     }
 
-    function setup() {
-        $ttl = ['User-1', 'Preflight', 'Forms', 'User-2', 'Variables', 'Generated', 'User-3'];
+    function rw($s, $v, $save = false) {
+        static $data, $mem = -1;
+        if ($mem != $v) {
+            $mem = $v;
+            $data = explode("~.~", unl($this->sqlf('+select txt from $_ where id=%d', 200 + $v)));
+        }
+        if (false !== $save) {
+            $data[$s - 1] = $save;
+            $this->sqlf('update $_ set txt=%s where id=%d', implode("\n~.~\n", $data), 200 + $v);
+        }
+        return trim($data[$s - 1]);
+    }
+
+    function _vss(&$u = null) {
+        MVC::$layout = '';
+        [, $s, $v] = $this->y3;
+        $this->ary['ta'] = $this->rw($s, $v, $_POST['ta'] ?? false);
+        $this->ary['section'] = $this->ttl[$s];
+        return [];
+    }
+
+    function general() {
         $ary = [50 => '<fieldset class="border mx-3"><legend class="px-3">Vesper settings</legend>'];
-        foreach ($ttl as $i => $name) {
-            $ary += [51 + $i => [$name, [
-                'vr' . $i => ['', 'number', 'class="w-12"', 1],
-                ['&nbsp; ' . a('edit', ['alert']), 'li', ''],
+        $dig = [1 => '❶', '❷', '❸', '❹', '❺', '❻', '❼'];
+        
+        foreach ($this->ttl as $i => $name) {
+            $v = $this->form_data[$k = 'vr_' . $i];
+            $gen = 6 == $i;
+            $desc = $gen ? tag('based on parsing', 'for="vr-6"', 'label') : ($v ? a("edit $name, version $v", ["ajax('settings&vss=open.$i.$v', {}, 'f1')"]) : 'Section OFF');
+            $ary += [51 + $i => [$name . ' ' . tag($dig[$i], '', $v ? 'g' : 'r'), [
+                $k => $gen ? ['', 'chk', 'id="vr-6"'] : ['', 'number', 'class="w-12" min="0" max="8"', 1],
+                ['&nbsp; ' . $desc, 'li', ''],
             ]]];
         }
         return [
+            '<fieldset class="border mx-3"><legend class="px-3">General</legend>',
+            ['Root font-size', [
+                'font_sz' => ['', 'number', 'class="w-12" min="8" max="22"', 16],
+                ['&nbsp; (default to 16px)', 'li'],
+            ]],
+            '</fieldset>',
             '<fieldset class="border mx-3"><legend class="px-3">Tailwind CDN settings</legend>',
             'tw_forms' => ['Tailwind forms', 'chk'],
             'tw_typography' => ['Tailwind typography', 'chk'],
@@ -96,7 +140,7 @@ class t_settings extends Model_t
 
     function syntax() {
         if ('form' == $this->y3[2])
-            return $this->setup();
+            return $this->general();
         $grp = '' === $this->y3[3] ? 'all' : $this->y3[3];
         $vs = new Vesper($grp, $mw = new Maxwell);
         $ary = $vs->list($_POST['n'] ?? '');
@@ -115,7 +159,6 @@ class t_settings extends Model_t
             $href = "ajax('settings&syntax=open.0.browse.$v', box)";
             $list[] = a($v, [$href], 'style="margin-left:2px; padding:0 4px;' . $act);
         }
-        //<a href="javascript:;"  class="block s-menu" active="">Search</a>
         return [
             ['Group', 'ni', implode('', $list)],
             's' => ['Search', '', 'style="width:50%"'],
@@ -131,6 +174,11 @@ class t_settings extends Model_t
         ];
         $this->ary['vword'] = [];
         $type = 'values' == $this->y3[2] ? 2 : 0;
+        $last = unserialize(SKY::t('last_y3'));
+        if (!$this->y3[2])
+            MVC::$_y['y_3'] = $this->y3 = $last;
+        if ('open' == $this->y3[0])
+            SKY::t('last_y3', serialize($this->y3));
         if (!$type && 'classes' != $this->y3[2])
             return $this->syntax();
 
@@ -141,6 +189,7 @@ class t_settings extends Model_t
             $id ? $tw->update($_POST, $id) : ($id = $tw->insert($_POST));
         } elseif ('open' == $this->y3[0] && $id) {
             MVC::$layout = '';
+            SKY::t('last_y3', serialize($last));
             MVC::body("settings.form_only");
         }
         $this->form_data = $id ? $tw->one($id) : [];
@@ -160,7 +209,7 @@ class t_settings extends Model_t
             'tw_id' => $type,
             ['ID', 'ni', $id ?: 'New Item'],
             'grp' => ['Group', 'select', array_combine($a = Maxwell::$grp, $a)],
-            'name' => [$type ? 'ValueName' : 'Name', '', 'style="width:50%"'],
+            'name' => [$type ? 'ValueName' : 'MetaName', '', 'style="width:50%"'],
             'css' => [$type ? 'DefaultValue' : 'Menu', '', 'style="width:50%"'],
             'tpl' => ['Template', 'textarea_rs', 'style="width:98%" rows="21"'],
         ];

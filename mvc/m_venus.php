@@ -6,9 +6,6 @@ class m_venus extends Model_m
     static $css = ['Elements', 'Properties', 'Types', 'Functions', 'Pseudo-classes', 'Pseudo-elements', 'At-rules'];
     static $media = ['', 'sm', 'md', 'lg', 'xl', '2xl']; # 640 768 1024 1280 1536
 
-#$at_rules.
-#You can also browse key CSS concepts and a list of selectors organized by type. 
-#Also included is a brief DOM-CSS / CSSOM reference.
     static function &ghost($dd, $name = 'all', $char = '') {
         $char = 'all' == $name ? 'w' : 't';
         list($id, $txt, $cfg) = $dd->sqlf('-select id, txt, cfg from $_memory where name=%s', $name);
@@ -40,6 +37,26 @@ class m_venus extends Model_m
     static function css($p) {
         $m = new t_venus('css');
         return $m->sqlf('@select name,txt from $_ where css_id=%d', $p);
+    }
+
+    static function self() {
+        $t = new t_settings;
+        for ($out = '', $s = 1; $s < 6; $s++)
+            $out .= $t->rw($s, 0) . "\n";
+        echo $out . "\n\n";
+
+        $path = Plan::_obj(0)->path;
+        $ary = glob("$path/assets/*.js");
+        $ary = array_merge($ary, glob("$path/w3/*.php"));
+        $ary = array_merge($ary, glob("$path/mvc/*.php"));
+        $ary = array_merge($ary, glob("$path/mvc/*.jet"));
+        $maat = new Maat;
+        foreach ($ary as $fn) {
+            $in = file_get_contents($fn);
+            $maat->parse_js($in);
+        }
+        echo (new Vesper)->v_css($maat);
+//print_r($maat->cls);
     }
 
     function v2_ary() {

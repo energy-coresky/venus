@@ -8,7 +8,7 @@ class venus_c extends Controller
     function head_y($action) {
         'a_ware' == $action or MVC::$layout = '';
         $this->t_venus->head_y();
-        $this->y3 = explode('.', $this->_3 ?: 'open', 5) + [1 => 0, 'form', '', ''];
+        $this->y3 = explode('.', $this->_3 ?: 'open', 5) + [1 => 0, '', '', ''];
         return ['y_2' => $this->_2, 'y_3' => $this->y3];
     }
 
@@ -36,7 +36,7 @@ class venus_c extends Controller
     function empty_a($page = '') {
         $this->_title = 'VENUS.SKY';
         $js = ["~/m/venus.js", "~/w/venus/ishtar.js", '~/w/venus/maxwell.js'];
-        $this->_static = [[], $js, ["~/m/venus.css"]];
+        $this->_static = [[], $js, ["~/w/venus/vesper.css", "~/m/venus.css"]];
         $this->d_last_page = '_venus';
         return [
             'fsize' => option(3, array_combine(m_venus::$fsize, m_venus::$fsize)),
@@ -64,7 +64,7 @@ class venus_c extends Controller
 
     function j_cls() {
         $maat = new Maat;
-        $maat->cls = [$_POST['n']];
+        $maat->add_class($_POST['n']);
         echo pre((new Vesper)->v_css($maat), '');
     }
 

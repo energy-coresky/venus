@@ -34,7 +34,7 @@ class Vesper /* Tailwind classes generator */
             $ps = explode(':', $cls);
             $cls = array_pop($ps);
             $pp[":"] = $ps;
-            $css = $this->listCSS([$cls])[0] ?? false;
+            $css = $this->listCSS([$cls => 1])[0] ?? false;
             if ($css && 3 == count($css)) {
                 $exact = 1 == count($css[1]) ? 1 : 0;
                 foreach ($css[1] as $css) {
@@ -86,27 +86,24 @@ class Vesper /* Tailwind classes generator */
         $mkey = m_venus::$media; // @media (prefers-color-scheme: dark)
         $mval = m_venus::media();
         $media = array_combine($mkey, array_pad([], 6, []));
-        foreach ($ary as $cls) {
-            $cls = trim($cls);
-            if ('' === $cls)
+        foreach ($ary as $name => $marker) {
+            if (1 != $marker || is_num($name))
                 continue;
-            foreach (preg_split('/\s+/', $cls) as $name) {
-                $ps = '[' == $name[0] ? [$name] : explode(':', $name);
-                $one = array_pop($ps);
-                if ($sct = array_intersect($mkey, $ps)) {
-                    $ps = array_values(array_diff($ps, $sct));
-                    $sct = pos($sct);
-                }
-                $ps = array_map(function ($v) {
-                    return in_array($v, ['even', 'odd']) ? "nth-child($v)" : $v;
-                }, $ps);
-                $name = str_replace(',', '\\2c ', preg_replace("/([^\w\-,])/i", "\\\\$1", $name));
-                if (2 == $name[0])
-                    $name = '\\3' . $name;
-                if ('placeholder-' == substr($name, 0, 12))//////////
-                    array_unshift($ps, ':placeholder');
-                $media[$sct ?: ''][".$name"] = [$one, $ps];
+            $ps = '[' == $name[0] ? [$name] : explode(':', $name);
+            $one = array_pop($ps);
+            if ($sct = array_intersect($mkey, $ps)) {
+                $ps = array_values(array_diff($ps, $sct));
+                $sct = pos($sct);
             }
+            $ps = array_map(function ($v) {
+                return in_array($v, ['even', 'odd']) ? "nth-child($v)" : $v;
+            }, $ps);
+            $name = str_replace(',', '\\2c ', preg_replace("/([^\w\-,])/i", "\\\\$1", $name));
+            if (2 == $name[0])
+                $name = '\\3' . $name;
+            if ('placeholder-' == substr($name, 0, 12))//////////
+                array_unshift($ps, ':placeholder');
+            $media[$sct ?: ''][".$name"] = [$one, $ps];
         }
         $ary = [];
         $pp =& $ary;

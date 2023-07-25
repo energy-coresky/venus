@@ -81,9 +81,9 @@ $(function() {
 #.tool
 
 
-#.empty.page ////////////////////////// THE LAYOUT ////////////////////////////////////////
+#.empty.page ////////////////////////// THE LAYOUT ////////////////////////////////////////  {!Tailwind::css(false)!}
 <!DOCTYPE html><html>
-<head>{!Tailwind::css(false)!}@head
+<head>@head
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script>
   $$._fn = '{{$page}}'; m$.on = {{SKY::w('maxwell')}}; m$.group = {{SKY::w('group')}};

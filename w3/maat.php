@@ -23,6 +23,47 @@ class Maat
         ini_set('memory_limit', '1024M');
     }
 
+    static function js($js) {
+        $maat = new Maat;
+        $maat->parse_js($js);
+        print_r($maat->cls);
+    }
+
+    static function &css($css, $opt = []) {
+        $maat = new Maat($opt);
+       $maat->add_space = true;
+        $new =& $maat->buildCSS($css);
+        //$new =& $maat->buildCSS($css, true);
+        if ($maat->opt['test'])
+            return $maat->test($css, $new);
+        return $new;
+    }
+
+    function add_raw($str) {
+        if (false !== strpos($str, 'class=') && preg_match("/class=['\"]([^'\"]+)['\"]/", $str, $m)) {
+            $str = $m[1];
+        }
+        $this->add_class($str);
+    }
+
+    function add_class($classes) {
+        $test = function ($x, $y) {
+            if ('-' == $y || ':' == $y)
+                return true;
+            if ('-' == $x || '2' == $x || '[' == $x && ']' == $y) # 2xl:
+                return false;
+            $n = ord($x);
+            return $n > 0x7A || $n < 0x61;
+        };
+        foreach (preg_split('/\s+/', trim($classes)) as $v) {
+            if ('' === $v || $test($v[0], $v[-1]) || isset($this->cls[$v]))
+                continue;
+            if ('[' == $v[0] && !preg_match("/^\[[\-a-z]+:/", $v))
+                continue;
+            $this->cls[$v] = 1; # 1 - need to generate
+        }
+    }
+
     function tw_native($css, $m) {
         $preflight = '::backdrop';
         $ary =& $this->parse_css($css, $preflight);
@@ -72,15 +113,6 @@ class Maat
         return $this->code;
     }
 
-    static function &css($css, $opt = []) {
-        $maat = new Maat($opt);
-        $new =& $maat->buildCSS($css);
-        //$new =& $maat->buildCSS($css, true);
-        if ($maat->opt['test'])
-            return $maat->test($css, $new);
-        return $new;
-    }
-
     function &buildHTML(&$ary, $indent = '') {
         //$cr = ['class', 'id', 'src'];
         $cr = ['class' => 'm', 'id' => 'g', 'src' => 'z'];#r { color:red }#y { color:#b88 }
@@ -120,7 +152,7 @@ class Maat
                                     //json
                                     $data = ''; // crop inner
                                 }
-                                $this->cls[] = $v;
+                                $this->add_class($v);
                                 break;
                             case 'src': case 'href': case 'action':
                                 $cnt = $this->links["$node-$k"][$v] ?? 0;
@@ -170,8 +202,8 @@ class Maat
         return $out;
     }
 
-    function buildJS($str) {
-        return $str;
+    function buildJS($in) {
+        return $this->parse_js($in);
     }
 
     function &buildCSS(&$ary, $sort = false, $plus = 0) {
@@ -254,6 +286,22 @@ class Maat
     }
 
     function parse_js($in) {
+        //$s = preg_replace("~(#+)~", "$1\n", '<?php ' . unl($in));
+        $s = '<?php ' . unl($in);
+        foreach (token_get_all($s) as $k => $token) {
+            $id = $str = $token;
+            if (is_array($token)) {
+                list($id, $str) = $token;
+                switch ($id) {
+                    case T_CONSTANT_ENCAPSED_STRING:
+                        $str = substr($str, 1, -1);
+                    case T_ENCAPSED_AND_WHITESPACE:
+                        $this->add_raw($str);
+                        break;
+                }
+            }
+        }
+        return $in;
     }
 
     function &parse_css(&$in, &$split = null, $plus = 0) {

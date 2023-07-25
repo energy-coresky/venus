@@ -41,10 +41,6 @@ hr {
 #opa-m option {
   padding: 0;
 }
-select {
-  padding-top: 0;
-  padding-bottom: 0;
-}
 a:hover {
   color: #005ddd;
   text-decoration: underline;
@@ -312,10 +308,38 @@ pre:focus {
   padding-left: 3px;
 }
 #f1 input[type=text], #f1 input[type=number], #f1 textarea {
-  padding: 0 2px;
-  margin: 2px 0;
   font-family: monospace;
 }
+#f1 input[type=text], #f1 input[type=number], #f1 textarea, select {
+  padding: 0 3px;
+  margin: 2px 0;
+  border-color: rgb(209 213 219 / 1);
+  --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
+[type='text']:focus, [type='number']:focus, select:focus, textarea:focus {
+  border-color: #a5b4fc !important;
+  --tw-ring-opacity: 0.5;
+  --tw-ring-shadow: 0 0 0 4px rgb(199 210 254 / var(--tw-ring-opacity));
+  box-shadow: var(--tw-ring-shadow);
+  animation: ring 0.1s linear;
+}
+@property --tw-ring-opacity {
+  syntax:'<number>';
+  initial-value: 0;
+  inherits: false;
+}
+@keyframes ring {
+  from {
+    --tw-ring-opacity: 0;
+  }
+  to {
+    --tw-ring-opacity: 0.5;
+  }
+}
+
 #f1 dl {
   display: flex;
 }
@@ -411,5 +435,45 @@ div.f9:hover > div {
   right: 35px;
   z-index:100;
 }
+
+.pad > p {
+  margin: 1em 0;
+}
+.pad > pre {
+  background-color: #fef9c3;
+  padding:5px 8px;
+}
+.pad > ul {
+  list-style-type: disc;
+  list-style-position: inside;
+}
+.pad > ul > li {
+  margin: 0.4em 0;
+  padding: 0;
+}
+
+
+
+h1 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  --tw-text-opacity: 1;
+  color: rgba(37, 99, 235, var(--tw-text-opacity));
+}
+
+h2 {
+  font-size: 1.25rem;
+  line-height: 1.5rem;
+  margin: 1rem 0;
+  color: rgb(219 39 119);
+}
+
+
+
+
+
+
+
+
 
 

@@ -95,7 +95,7 @@ class Maxwell
         $cls or $cls = $opt[0];
         $ps = explode(':', $cls);
         array_pop($ps);
-        $css or $css = $vs->listCSS([$cls], $id);
+        $css or $css = $vs->listCSS([$cls => 1], $id);
         $mul = count($css) > 1;
         $txt = $maat->buildCSS($css);
         if (!$mul && '@' != $txt[0])
@@ -114,7 +114,7 @@ class Maxwell
         $used = [];
         foreach ($ary as $cls) {
             $id = 0;
-            $css = $vs->listCSS([$cls], $id);
+            $css = $vs->listCSS([$cls => 1], $id);
             if (!$id)
                 continue;
             $row = $this->row($id, $vs, $grp, $css, $cls);
