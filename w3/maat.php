@@ -1,5 +1,9 @@
 <?php
 
+/** Parse CSS to array, generate CSS from array,
+    parse mix files for Vesper (Tailwind) CSS classes
+    generate HTML from array
+    find difference in Vesper vs Tailwind-CDN generation */
 class Maat
 {
     private $formats = ['rich', 'no-empty', 'compact', 'min-zed'];
@@ -14,6 +18,7 @@ class Maat
    private $add_space = false;
 
     public $cls = [];
+    public $js = [];
     public $links = [];
 
     function __construct($opt = []) {
@@ -21,12 +26,6 @@ class Maat
         $this->pad = str_pad('', $this->tab = SKY::w('tab_html') ?: 2);
         $this->opt = $opt + $this->opt;
         ini_set('memory_limit', '1024M');
-    }
-
-    static function js($js) {
-        $maat = new Maat;
-        $maat->parse_js($js);
-        print_r($maat->cls);
     }
 
     static function &css($css, $opt = []) {
@@ -46,6 +45,10 @@ class Maat
         $this->add_class($str);
     }
 
+    function add_js($js) {
+        $this->js[explode('-', $js)[0]] = 1; # 1 - need to generate
+    }
+
     function add_class($classes) {
         $test = function ($x, $y) {
             if ('-' == $y || ':' == $y)
@@ -55,7 +58,8 @@ class Maat
             $n = ord($x);
             return $n > 0x7A || $n < 0x61;
         };
-        foreach (preg_split('/\s+/', trim($classes)) as $v) {
+        is_array($classes) or $classes = preg_split('/\s+/', trim($classes));
+        foreach ($classes as $v) {
             if ('' === $v || $test($v[0], $v[-1]) || isset($this->cls[$v]))
                 continue;
             if ('[' == $v[0] && !preg_match("/^\[[\-a-z]+:/", $v))
@@ -68,8 +72,8 @@ class Maat
         $preflight = '::backdrop';
         $ary =& $this->parse_css($css, $preflight);
        $this->add_space = true;
-        $this->code[] = [$css = $this->buildCSS($preflight), substr_count($css, "\n"), 'Preflight'];
-        $this->code[] = [$this->buildCSS($ary, true), -1, 'TailwindCSS'];
+        $this->code[] = [$css = $this->buildCSS($preflight), substr_count($css, "\n"), 'Preflight', 0];
+        $this->code[] = [$this->buildCSS($ary, true), -1, 'TailwindCSS', 0];
        $this->add_space = false;
         #if (trim(strip_tags($css)) != $m->t_settings->preflight())
          #   trace('preflight differ!', true);
@@ -96,26 +100,29 @@ class Maat
        $ok or $size = -$size;
    }
 
-    function code($html, $v_css) {
-       $n = substr_count($v_css, "\n");
+    function code($html, $jet, $fn) {
+        [$v_css, $v_js] = (new Vesper)->v_css($this);
+        $n = substr_count($v_css, "\n");
        if ($this->code && 'Preflight' == $this->code[0][2]) {
            $tw_css =& $this->code[1];
            $diff = Diff::parse($v_css, $tw_css[0]);
            $this->diff($diff, $v_css, $n);
            $this->diff($diff, $tw_css[0], $tw_css[1]);
        }
-        $this->code[] = [$v_css, abs($n), $n < 0 ? '<r>VesperCSS</r>' : 'VesperCSS'];
+        $this->code = array_merge($this->code, $jet);
+        if ($v_js)
+            $this->code[] = [$v_js, substr_count($v_js, "\n"), 'VesperJS', 0];
+        $this->code[] = [$v_css, abs($n), $n < 0 ? '<r>VesperCSS</r>' : 'VesperCSS', 0];
         $tpl = '<label><input type="radio" value="%s" onchange="$$.set(this.value)" name="v-panel"> %s</label>';
         $s = '';
         foreach ($this->code as $i => $x)
             $s .= sprintf($tpl, $i + 1, $x[2]);
-        array_unshift($this->code, [$html, substr_count($html, "\n"), sprintf($tpl, '0" checked="', 'HTML') . $s]);
+        array_unshift($this->code, [$html, substr_count($html, "\n"), sprintf($tpl, '0" checked="', 'HTML') . $s, $jet ? 0 : $fn]);
         return $this->code;
     }
 
     function &buildHTML(&$ary, $indent = '') {
-        //$cr = ['class', 'id', 'src'];
-        $cr = ['class' => 'm', 'id' => 'g', 'src' => 'z'];#r { color:red }#y { color:#b88 }
+        $cr = ['class' => 'm', 'id' => 'g', 'src' => 'z', 'js' => 'r'];#r { color:red }#y { color:#b88 }
         $cx = ['action' => 'src', 'href' => 'src', 'for' => 'id'];
         $out = '';
         foreach ($ary as $data) {
@@ -123,7 +130,7 @@ class Maat
             [$attr, $data] = $data;
             $out .= $indent;
             switch ($node = is_object($attr) ? $attr->{'>'} : $attr) {
-            case '#text':// #cdata-section #document #document-fragment
+            case '#text': # #cdata-section #document #document-fragment
                 $out .= $data . "\n";
                 continue 2;
             case '#comment':
@@ -147,6 +154,9 @@ class Maat
                                     $data = tag('Trace-T', 'class="red_label"', 'span');
                                 }
                                 break;
+                            case 'js':
+                                $this->add_js($v);
+                                break;
                             case 'class':
                                 if ('dev-data' == $v) {
                                     //json
@@ -169,7 +179,6 @@ class Maat
                     if ($style[0] && $style[1]) {
                         $path = 'http' == substr($style[1], 0, 4) ? $style[1] : LINK . substr($style[1], strlen(PATH));
                         $txt = get($path, '', false);
-                       //trace($txt);
                         $txt = $this->buildCSS($txt);
                         $this->code[] = [$txt, substr_count($txt, "\n"), $name = explode('?', basename($style[1]))[0]];
                     }
@@ -286,9 +295,8 @@ class Maat
     }
 
     function parse_js($in) {
-        //$s = preg_replace("~(#+)~", "$1\n", '<?php ' . unl($in));
-        $s = '<?php ' . unl($in);
-        foreach (token_get_all($s) as $k => $token) {
+        $str = '<?php ' . unl($in);
+        foreach (token_get_all($str) as $k => $token) {
             $id = $str = $token;
             if (is_array($token)) {
                 list($id, $str) = $token;

@@ -7,7 +7,7 @@ var i$ = {
             tool = $(tool).parents('.tool:first')[0].id.slice(2);
         if ('boolean' == typeof p3)
             p3 = p3 ? 1 : 0;
-        p3 = 'undefined' == typeof p3 ? '' : '=' + p3;
+        p3 = 'undefined' == typeof p3 ? '' : '=.' + p3;
         ajax('tool&' + tool + p3, post || {}, function(r) {
             var t = $($$.div ? '#tail' : '#v-right');
             t.find('#t-' + tool).remove();

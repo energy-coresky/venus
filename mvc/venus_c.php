@@ -8,16 +8,12 @@ class venus_c extends Controller
     function head_y($action) {
         'a_ware' == $action or MVC::$layout = '';
         $this->t_venus->head_y();
-        $this->y3 = explode('.', $this->_3 ?: 'open', 5) + [1 => 0, '', '', ''];
+        $this->y3 = explode('.', $this->_3 ?: 'open', 5) + [1 => '', '', '', ''];
         return ['y_2' => $this->_2, 'y_3' => $this->y3];
     }
 
     function tail_y() {
         return MVC::$layout && !$this->fly ? parent::tail_y() : null;
-    }
-
-    function a_tailwind() {
-        Tailwind::css('venus' != $this->_2, false);
     }
 
     function jet_c() {
@@ -26,6 +22,9 @@ class venus_c extends Controller
         });
         Jet::directive('quot', function($arg) {
             return "<?php echo str_replace('\"', '&quot;', ob_get_clean()) ?>";
+        });
+        Jet::directive('_inc', function($arg) {
+            return $this->t_venus->_inc(substr($arg, 1));
         });
     }
 
@@ -51,8 +50,9 @@ class venus_c extends Controller
             json($this->t_venus->maat($json));
         } else { # step 0
             json([
-                'html' => $this->t_venus->get($this->_3, true, $tw),
+                'html' => $this->t_venus->jet($this->_3, $tw),
                 'tw' => !$tw ? $tw : $this->t_venus->tailwind(),
+                'jet' => $this->t_venus->jet ?: false,
             ]);
         }
     }
@@ -65,7 +65,7 @@ class venus_c extends Controller
     function j_cls() {
         $maat = new Maat;
         $maat->add_class($_POST['n']);
-        echo pre((new Vesper)->v_css($maat), '');
+        echo pre((new Vesper)->v_css($maat)[0], '');
     }
 
     function j_samples() {
@@ -77,9 +77,9 @@ class venus_c extends Controller
     }
 
     function j_save() {
-        $html = preg_replace("~<(br\s*/?|div)>~is", "\n", $_POST['html']);
+        $html = preg_replace("~<(br\s*/?|/?div)>~is", "\n", $_POST['html']);
         $html = html_entity_decode(strip_tags($html));
-        return $this->t_venus->put($_POST['fn'], $html);
+        return $this->t_venus->put($_POST['fn'], trim($html));
     }
 
     function j_menu() {

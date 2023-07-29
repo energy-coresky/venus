@@ -58,6 +58,15 @@ class m_menu extends Model_m
         ];
     }
 
+    function files() {
+        $list = [];
+        $list[] = LINK;
+        $list[] = 'https://coresky.net/';
+        return array_combine($list, array_map(function($v) {
+            return "$$.test('$v')";
+        }, $list));
+    }
+
     function _v_sourses($m, $selected) {
         $list = function ($i) use ($m, $selected) {
             static $list;
@@ -80,7 +89,7 @@ class m_menu extends Model_m
         $out = [
             ['Add new component', '', 'Alt + N'],
             ['Delete current', '', 'Alt + D'],
-            ['Links', m_venus::files(), self::$rar],
+            ['Links', $this->files(), self::$rar],
             ['History', $this->t_venus->history(), self::$rar],
             '',
             ['Venus sourses', 'ajax("set&src=0")', SKY::w('src') ? '' : self::$pnt],

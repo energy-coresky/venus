@@ -3,7 +3,9 @@
 class t_venus extends Model_t
 {
     protected $table = 'preset';
+
     public $w;
+    public $jet = [];
 
     function head_y() {
         static $dd;
@@ -20,12 +22,24 @@ class t_venus extends Model_t
             $maat->tw_native($in->tw_native, $this);
         $html = trim($maat->buildHTML($in->tree));
         return [
-            'code' => $maat->code($html, (new Vesper)->v_css($maat)),
+            'code' => $maat->code($html, $this->templates($in->jet), $in->fn),
             'preflight' => $in->tw_native ? '' : $this->t_settings->preflight(),
             'links' => m_menu::v_links($maat->links),
             'fn' => $this->get($in->fn, false, $tw),
             'menu' => m_menu::v_sourses($this, $tw),
         ];
+    }
+
+    function templates($ary) {
+        if (!$ary)
+            return [];
+        $out = [];
+        foreach ($ary as $fn => $type) {
+            $s = $this->get($fn, 'nh', $tw);
+            $html = 'jet' == $type ? Display::jet($s, '', true) : html($s);
+            $out[] = [$html, substr_count($s, "\n"), $type . $fn, $fn];
+        }
+        return $out;
     }
 
     function tailwind() {
@@ -52,12 +66,26 @@ class t_venus extends Model_t
         }
     }
 
-    function get($_fn, $data, &$tw) {
+    function _inc($fn) {
+        $s = $this->get($fn, 'nh', $tw);
+        $this->jet += [$fn => '#.jet' == substr($s, 0, 5) ? 'jet' : 'html'];
+        return $s;
+    }
+
+    function jet($fn, &$tw) {
+        $s = $this->get($fn, true, $tw);
+        if ('#.jet' != substr($s, 0, 5))
+            return $s;
+        $this->jet = [$fn => 'jet'];
+        return Jet::inline($s);
+    }
+
+    function get($fn, $data, &$tw) {
         $tw = !SKY::w('vesper');
-        if ($data)
-            $this->history($_fn);
-        $pfx = $_fn[0];
-        $id = substr($_fn, 1);
+        if ($data && 'nh' !== $data)
+            $this->history($fn);
+        $pfx = $fn[0];
+        $id = substr($fn, 1);
         if ('!' == $pfx) {
             $s = $this->sql('+select !! from $_tw where id=$+', $data ? 'tmemo' : 'name', $id);
             return $data ? ($s ?? '<i class="text-7xl">TODO</i>') : "Usage: <b>$s</b>";
@@ -69,8 +97,8 @@ class t_venus extends Model_t
             return "Application: <b>" . ucfirst($tw = substr($id, 2)) . '</b>';
         }
         $tw = '';
-        preg_match('/^https?:/', $_fn) or $_fn = "https://$_fn";
-        return $data ? get($_fn, '', false) : "URL: <b>$_fn</b>"; //file_get_contents
+        preg_match('/^https?:/', $fn) or $fn = "https://$fn";
+        return $data ? get($fn, '', false) : "URL: <b>$fn</b>"; //file_get_contents
     }
 
     function put($fn, $data = null) {

@@ -1,6 +1,6 @@
 <?php
 
-class Vesper /* Tailwind classes generator */
+class Vesper /* Tailwind++ generator */
 {
     public $idx = [];
     public $last_color = '';
@@ -10,18 +10,21 @@ class Vesper /* Tailwind classes generator */
 
     private $values = ['^a' => ['auto' => 'auto'], '^spacing' => []];
     private $color;
+    private $grace;
 
     function __construct($grp = '', ?Maxwell $mw = null, &$id_base = null) {
         $grp = !$grp || 'all' == $grp ? '' : " and grp='$grp'";
         $this->values['^'] =& $this->values['^spacing']; # set alias for ^spacing
+        $this->grace = Grace::instance();
         $list = $this->index($grp, $mw ?? false, $id_base ?? 0);
         if (null !== $id_base)
             $id_base = $list;
     }
 
     function v_css($maat) {
+        $js = $maat->js ? $this->grace->buildJS($maat) : '';
         $ary = $this->listCSS($maat->cls);
-        return $maat->buildCSS($ary, !SKY::w('vesper'));
+        return [$maat->buildCSS($ary, !SKY::w('vesper')), $js];
     }
 
     function caret($ary) {
@@ -359,6 +362,10 @@ class Vesper /* Tailwind classes generator */
         $tw = new t_venus('tw');
         $values = $tw->sqlf('#select name, tpl, css from $_ where tw_id=2');
         foreach ($values as $name => $row) {
+            if ('^' != $name[0]) {
+                $this->grace->index($name, $row);
+                continue;
+            }
             if ('' !== $row->css)
                 $this->defaults[$name] = $row->css;
             foreach (explode("\n", unl(trim($row->tpl))) as $item) {

@@ -52,11 +52,12 @@ class t_settings extends Model_t
         $pre = ['', 'ni', '<pre id="s-bottom-form" class="p-2 bg-yellow-200 mt-4" style="width:98%" hidden></pre>'];
         $this->form_data = $this->t[0];
         if ($form = $this->{"_$name"}($u))
-            $form += [99 => ['Go', 'button', 'class="btn-blue" onclick="' . $this->clk($u ?? 'save.0') . '"'], $pre];
+            $form += [99 => ['Go', 'button', 'name="x" class="btn-blue" onclick="' . $this->clk($u ?? 'save.0') . '"'], $pre];
         return $this->ary + [
             'form' => Form::A($this->form_data, $form),
             'title' => 'all' == $name ? 'Venus' : ucfirst($name),
-            'color' => 'all' == $name ? 'pink' : 'blue',
+            'bg_color' => 'all' == $name ? 'bg-pink-200' : 'bg-blue-200',
+            'tx_color' => 'all' == $name ? 'text-pink-200' : 'text-blue-200',
             'txt' => $this->t[1],
             'left_w' => $this->menu ? 150 : 0,
             'menu' => $this->menu,

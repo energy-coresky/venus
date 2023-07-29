@@ -1,5 +1,8 @@
 <?php
 
+/** Generate Vesper CSS menu for Syntax Utility
+    Find friend CSS classes for single class or $id_base
+*/
 class Maxwell
 {
     public $menu;
@@ -14,6 +17,14 @@ class Maxwell
 
     function __construct() {
         $this->menu = array_combine(self::$grp, array_pad([], 7, []));
+    }
+
+    static function friends($cls) {
+        $vs = new Vesper('', $mw = new self);
+        $id = 0;
+        $css = $vs->listCSS([$cls => 1], $id);
+        $row = $mw->row($id, $vs, $grp, $cls, $css);
+        return $row->opt;
     }
 
     static function classes($id_base) {
@@ -88,7 +99,7 @@ class Maxwell
         return $id;
     }
 
-    function row($id, $vs, &$grp, $css = false, $cls = false) {
+    function row($id, $vs, &$grp, $cls = false, $css = false) {
         static $maat;
         $maat or $maat = new Maat;
         [$minus, $opt, $grp, $id_base] = $this->ids[$id];
@@ -117,7 +128,7 @@ class Maxwell
             $css = $vs->listCSS([$cls => 1], $id);
             if (!$id)
                 continue;
-            $row = $this->row($id, $vs, $grp, $css, $cls);
+            $row = $this->row($id, $vs, $grp, $cls, $css);
             $used[$grp][] = $row;
         }
         return function ($i) use ($used) {

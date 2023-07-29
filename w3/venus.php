@@ -20,16 +20,29 @@ class Venus extends Console
         Maat::css($css, ['test' => true]);
     }
 
+    /** Parse vesper.css */
+    function a_vesper() {
+        $maat = new Maat;
+        $css = (new m_venus)->vesper($maat);
+        print_r($maat->cls);
+    }
+
     /** Generate vesper.css itself */
     function a_self() {
         m_venus::self();
     }
 
+    /** Test mix parser */
+    function a_js() {
+        $maat = new Maat;
+        $maat->parse_js(Plan::_g("mvc/_venus.jet"));
+        print_r($maat->cls);
+    }
+
     /** Parse css */
     function a_parse() {
-        $s = Plan::_g("assets/venus.js");
-        //echo Maat::css($s);
-        echo Maat::js($s);
+        $s = Plan::_g("assets/venus.css");
+        echo Maat::css($s);
     }
 
     /** Debug Vesper index */
@@ -39,11 +52,11 @@ class Venus extends Console
         print_r(json_encode($vs->idx, JSON_PRETTY_PRINT));
     }
 
-    /** Generate Vesper(Tailwind) classes */
+    /** Test Vesper(Tailwind) classes */
     function a_tw($in = null) {
         $maat = new Maat;
-        $maat->add($in ?? 'text-red-500 inline-flex');
-        echo (new Vesper)->v_css($maat);
+        $maat->add_class($in ?? 'fixed flex');
+        echo implode("\n", (new Vesper)->v_css($maat));
     }
 
 

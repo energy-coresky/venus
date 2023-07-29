@@ -179,12 +179,12 @@ Icons set: &nbsp; <select onchange="i$.ip=0;i$.load(this,'0.' + this.value)">
   <label><input type="radio" name="f" value="4"> Line Height</label>
   <label><input type="radio" name="f" value="5"> Opacity</label>
 #._thead._text
-<html><head>{!Tailwind::css()!}</head>
+<html><head>{! $css !}</head>
 <body>
   <div>
   @loop($sizes as $size)
-    <p class="text-{{$size}}">
-      <u class="text-sm">{{$size}}:</u> The quick@if($_ < 10) brown fox~if@if($_ < 7) jumped over the lazy dog~if.
+    <p class="{{$size}}">
+      <u class="text-sm">{{substr($size,5)}}:</u> The quick@if($_ < 10) brown fox~if@if($_ < 7) jumped over the lazy dog~if.
     </p>
     @if(8 == $_)</div><div style="display:none">~if
   ~loop

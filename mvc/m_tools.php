@@ -33,13 +33,13 @@ class m_tools extends Model_m
     }
 
     function _tcolors() {
-        '' === $this->y3[0] or $this->w_v3 = $this->y3[0];
+        '' === $this->y3[1] or $this->w_v3 = $this->y3[1];
         return [
             'v3' => Tailwind::$color3,
-            'list' => $list = Tailwind::$color2,
+            'list' => $list = Tailwind::v2(),//$color2,
             'c' => [$c = count($list), floor($c / 2)],
             'menus' => m_menu::v_history() . m_menu::other_col(),
-            'v2_ary' => $this->m_venus->v2_ary(),
+            'v2_ary' => m_venus::$v2_ary,
             'rename' => ['amber' => 'yellow', 'emerald' => 'green', 'violet' => 'purple'],
         ];
     }
@@ -70,7 +70,12 @@ class m_tools extends Model_m
     }
 
     function _text() {
-        return ['sizes' => Tailwind::$size];
+        $maat = new Maat;
+        $maat->add_class($sizes = Maxwell::friends('text-base'));
+        return [
+            'sizes' => $sizes,
+            'css' => css(['~/w/venus/vesper.css']) . css((new Vesper)->v_css($maat)[0]),
+        ];
     }
 
     function _unicode() {

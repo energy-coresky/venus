@@ -109,13 +109,13 @@ var $$ = {
         Vls('main', s + ",'" + ary.join(" ") + "'");
     },
     save: function() {
+        if (!$$.fn_save)
+            return alert('Not saved');
         $$.Vmain();
         ajax('save', {
             html: $('#code-body pre:eq(1)').html(),
-            fn: $$.fn
-        }, function(r) {
-            
-        });
+            fn: $$.fn_save
+        }, function(r) {});
     },
     m_move: function(e) {
         var w = this == document;
@@ -195,10 +195,10 @@ var $$ = {
                 default:
                     if (-1 == el.outerHTML.indexOf('><'))
                         data = 0; // Void element
-                    let inner = el.innerHTML.trim()             /////
-                    if (!el.hasChildNodes() || '' === inner)    /////
-                        break;                              /////
-                    data = $$.tree(inner);                  /////
+                    let inner = el.innerHTML.trim()
+                    if (!el.hasChildNodes() || '' === inner)
+                        break;
+                    data = $$.tree(inner);
                     if (1 == data.length && '#text' == data[0][0])
                         data = data[0][1];
             }
@@ -212,9 +212,10 @@ var $$ = {
     },
     _fn: sky.home,
     fn: '',
+    fn_save: 0,
     r: {},
     test: function(fn) {
-        $$.r.tw = '';
+        $$.r.tw = $$.r.jet = '';
         if (fn)
             $$.fn = fn;
         ajax('src&0=' + $$.fn, function(r) {
@@ -237,12 +238,15 @@ var $$ = {
                 return;
             }
         }
-        let src = {tree: $$.parsed, fn:$$.fn, tw_native: tw};
+        let src = {tree: $$.parsed, fn:$$.fn, tw_native: tw, jet: $$.r.jet};
         sky.json('src&1=' + $$.fn, src, function(r) {
             $$.code = r.code;
-            var vesper_css = $$.set(r.code.length - 1, r.preflight);
-            if (false === $$.r.tw) // Vesper only
-                $$.$f.attr('srcdoc', '<style>' + vesper_css + '</style>' + $$.r.html);
+            var vesper = '<style>' + $$.set(r.code.length - 1, r.preflight) + '</style>';
+            if (false === $$.r.tw) { // Vesper only
+                if ('VesperJS' == r.code[r.code.length - 2][2])
+                    vesper += '<script>' + r.code[r.code.length - 2][0] + '</script>';
+                $$.$f.attr('srcdoc', vesper + $$.r.html);
+            }
             $$.set(0);
             $('#code-head div:eq(1)').html(r.code[0][2]); // set radio list
             $('#v-sourse').html(r.fn + '&nbsp;▼').next().replaceWith(r.menu); // set menu
@@ -252,6 +256,7 @@ var $$ = {
     set: function(n, css) {
         var lines = "  1\n", code = $$.code[parseInt(n)], cnt = 1 + code[1],
             pad = cnt > 9999 ? '35px' : (cnt > 999 ? '29px' : '23px');
+        $$.fn_save = code[3];
         for (var i = 2; i <= cnt; i++)
             lines += i + "\n";
         var el = $('#code-body pre:eq(0)').html(lines).next().html(code[0])
@@ -385,3 +390,4 @@ body{
         $$.menu('t')
     }
 });
+
