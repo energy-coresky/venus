@@ -46,7 +46,16 @@ class Maat
     }
 
     function add_js($js) {
-        $this->js[explode('-', $js)[0]] = 1; # 1 - need to generate
+        is_array($js) or $js = preg_split('/\s+/', trim($js));
+        $res = [];
+        foreach ($js as $v)
+            strpos($v, ':') and $res[] = $v;
+        foreach ($js as $v) {
+            if (strpos($v, ':'))
+                continue;
+            $v = explode('-', $v)[0];
+            $this->js[$v] = array_merge($res, $this->js[$v] ?? []);
+        }
     }
 
     function add_class($classes) {
@@ -122,7 +131,7 @@ class Maat
     }
 
     function &buildHTML(&$ary, $indent = '') {
-        $cr = ['class' => 'm', 'id' => 'g', 'src' => 'z', 'js' => 'r'];#r { color:red }#y { color:#b88 }
+        $cr = ['class' => 'm', 'id' => 'g', 'src' => 'z', 'js' => 'j'];#r { color:red }#y { color:#b88 }
         $cx = ['action' => 'src', 'href' => 'src', 'for' => 'id'];
         $out = '';
         foreach ($ary as $data) {
@@ -134,7 +143,7 @@ class Maat
                 $out .= $data . "\n";
                 continue 2;
             case '#comment':
-                $out .= "<span class=\"vs-com\">&lt;!-- $data --&gt;</span>\n";
+                $out .= "<span style=\"color:#885\">&lt;!-- $data --&gt;</span>\n";
                 continue 2;
             default:
                 $tag = "<span class=\"vs-tag\">$node</span>";
@@ -143,6 +152,7 @@ class Maat
                     $join = [];
                     $style = [false, false];
                     foreach ($attr as $k => $v) {
+                        $y = false;
                         switch ($k) {
                             case 'rel':
                                 $style[0] = 'stylesheet' == $v;
@@ -169,10 +179,11 @@ class Maat
                                 $this->links["$node-$k"][$v] = ++$cnt;
                                 $style[1] = 'link-href' == "$node-$k" ? $v : false;
                                 break;
-                            #case '': $this->links[""][$v] = ; break;
-                            #default: $this->links[""][$v] = ; break;
+                            default:
+                                'on' == substr($k, 0, 2) && ($y = 'js');
+                                break;
                         }
-                        $x = $cx[$k] ?? $k;
+                        $x = $y ?: $cx[$k] ?? $k;
                         $g = $cr[$x] ?? false;
                         $join[] = $k . '="' . ($g ? "<$g>$v</$g>" : $v) . '"';
                     }

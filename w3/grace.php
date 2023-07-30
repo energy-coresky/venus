@@ -28,7 +28,7 @@ class Grace /* Vesper JS generator */
         $tpl = $out;
     }
 
-    function json($tpl, $name, $maat) {
+    function json($tpl, $name, $maat, $ps) {
         $js = [];
         foreach ($tpl as $prop => $ary) {
             $x = [];
@@ -37,6 +37,13 @@ class Grace /* Vesper JS generator */
                 $i = array_shift($a);
                 $maat->add_class($a);
                 $x[$i] = $a;
+                foreach ($ps as $one) {
+                    [$pfx, $key] = explode(':', $one);
+                    if ('sar' == $pfx) { # search-and-replace
+                        [$search, $replace] = explode('=', $key);
+                        $maat->add_class(str_replace($search, $replace, $a));
+                    }
+                }
             }
             $js["$name-$prop"] = $x;
         }
@@ -47,14 +54,14 @@ class Grace /* Vesper JS generator */
         $out = $this->code[0];
         do {
             $name = key($maat->js);
-            $v = pos($maat->js);
+            $ps = pos($maat->js);
             [$pas, $tpl] = $this->idx[$name];
             $this->tpl($tpl);
             $code = implode("\n  ", $tpl[''] ?? ['']);
             if ($code2 = $tpl['.'] ?? '')
                 $code2 = eval("return <<<DOC\n{$this->code[2]}\nDOC;");
             unset($tpl[''], $tpl['.']);
-            $code .= "\n  " . $this->json($tpl, $name, $maat) . $code2;
+            $code .= "\n  " . $this->json($tpl, $name, $maat, $ps) . $code2;
             $out .= eval("return <<<DOC\n{$this->code[1]}\nDOC;");
         } while (false !== next($maat->js));
         return "$out";
@@ -69,13 +76,29 @@ class Grace /* Vesper JS generator */
 __halt_compiler();
 
 var sky = {v: {
+  _cls: function(el, ary, add, sar) {
+    for (let cls of ary) {
+      for (let [s, r] of sar)
+        cls = cls.replace(s, r);
+      add ? el.classList.add(cls) : el.classList.remove(cls)
+    }
+  },
+  _sar: function(js) {
+    var out = [], all = js.split(' ');
+    for (let one of all) {
+        a = one.split(':');
+        if (a.length > 1 && 'sar' == a[0])
+            out.push(a[1].split('='))
+    }
+    return out;
+  },
   _to: function(el, $js, $$, add) {
     for (let name in $js) {
       if (!$js[name][$$])
-          continue;
-      let node = name == el.getAttribute('js') ? el : el.querySelector(`[js=${name}]`);
-      for (let cls of $js[name][$$])
-        add ? node.classList.add(cls) : node.classList.remove(cls)
+        continue;
+      let js = el.getAttribute('js'), set = js ? js.split(' ') : [];
+      let ary = $js[name][$$], node = set.includes(name) ? el : el.querySelector(`[js~=${name}]`);
+      node && sky.v._cls(node, ary, add, name == node.getAttribute('js') ? [] : sky.v._sar(node.getAttribute('js')))
     }
   },
   _fr: function(el, $js, $$) {
