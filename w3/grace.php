@@ -17,15 +17,24 @@ class Grace /* Vesper JS generator */
         return $grace ?? ($grace = new self);
     }
 
-    function tpl(&$tpl) {
+    function prepare(&$tpl, &$ps) {
         $tpl = explode("\n", $tpl);
-        $list = explode('|', array_shift($tpl));
         $out = [];
-        foreach ($list as $one) {
+        foreach (explode('|', array_shift($tpl)) as $one) {
             $out[$one] = array_splice($tpl, 0, array_search(".$one", $tpl));
             array_shift($tpl);
         }
         $tpl = $out;
+        $out = [];
+        $prev = 'null';
+        foreach ($ps as $one) {
+            if ('end:hidden' == $one)
+                $prev = "'twin'";
+            [$pfx, $val] = explode(':', $one);
+            $out[$pfx] = array_merge([$val], $out[$pfx] ?? []);
+        }
+        $ps = $out;
+        return $prev;
     }
 
     function json($tpl, $name, $maat, $ps) {
@@ -37,107 +46,59 @@ class Grace /* Vesper JS generator */
                 $i = array_shift($a);
                 $maat->add_class($a);
                 $x[$i] = $a;
-                foreach ($ps as $one) {
-                    [$pfx, $key] = explode(':', $one);
-                    if ('sar' == $pfx) { # search-and-replace
-                        [$search, $replace] = explode('=', $key);
-                        $maat->add_class(str_replace($search, $replace, $a));
-                    }
+                foreach (($ps['sar'] ?? []) as $one) {
+                    [$search, $replace] = explode('=', $one);
+                    $maat->add_class(str_replace($search, $replace, $a));
                 }
             }
             $js["$name-$prop"] = $x;
         }
-        return 'let $js = ' . json_encode($js);
+        return '    let $js = ' . json_encode($js);
+    }
+
+    function tpl($n, $ary) {
+        $search = array_map(function ($k) {
+            return "%$k%";
+        }, array_keys($ary));
+        return str_replace($search, array_values($ary), $this->code[$n]);
     }
 
     function buildJS($maat) {
-        $out = $this->code[0];
+        $out = '';
+        $vars = ['name', 'pas', 'code'];
+        $listen = function ($end) {
+            return $end ? ('hidden' == $end[0] ? "{end: 'hidden'}" : '{}') : 'false';
+        };
         do {
             $name = key($maat->js);
             $ps = pos($maat->js);
             [$pas, $tpl] = $this->idx[$name];
-            $this->tpl($tpl);
-            $code = implode("\n  ", $tpl[''] ?? ['']);
-            if ($code2 = $tpl['.'] ?? '')
-                $code2 = eval("return <<<DOC\n{$this->code[2]}\nDOC;");
+            $prev = $this->prepare($tpl, $ps);
+            $user = "\n    " . implode("\n    ", $tpl[''] ?? ['']);
+            $code = "let prev = $prev, listen = " . $listen($ps['end'] ?? false) . ";\n";
             unset($tpl[''], $tpl['.']);
-            $code .= "\n  " . $this->json($tpl, $name, $maat, $ps) . $code2;
-            $out .= eval("return <<<DOC\n{$this->code[1]}\nDOC;");
+            $code .= $this->json($tpl, $name, $maat, $ps);
+            $code .= $user;
+            $out .= $this->tpl(0, compact($vars));
         } while (false !== next($maat->js));
         return "$out";
     }
 
     function index($name, $row) {
-        [$name, $pas] = explode(' ', $name, 2);
+        [$name, $pas] = explode(' ', $name, 2) + [1 => '()'];
         $this->idx[$name] = [$pas, unl(trim($row->tpl))];
     }
 }
 
 __halt_compiler();
 
-var sky = {v: {
-  _cls: function(el, ary, add, sar) {
-    for (let cls of ary) {
-      for (let [s, r] of sar)
-        cls = cls.replace(s, r);
-      add ? el.classList.add(cls) : el.classList.remove(cls)
-    }
-  },
-  _sar: function(js) {
-    var out = [], all = js.split(' ');
-    for (let one of all) {
-        a = one.split(':');
-        if (a.length > 1 && 'sar' == a[0])
-            out.push(a[1].split('='))
-    }
-    return out;
-  },
-  _to: function(el, $js, $$, add) {
-    for (let name in $js) {
-      if (!$js[name][$$])
-        continue;
-      let js = el.getAttribute('js'), set = js ? js.split(' ') : [];
-      let ary = $js[name][$$], node = set.includes(name) ? el : el.querySelector(`[js~=${name}]`);
-      node && sky.v._cls(node, ary, add, name == node.getAttribute('js') ? [] : sky.v._sar(node.getAttribute('js')))
-    }
-  },
-  _fr: function(el, $js, $$) {
-    sky.v._to(el, $js, $$ + '_', 1)
-    setTimeout(function() {
-      sky.v._to(el, $js, $$ + '_', 0)
-      let prev = $$ ? 0 : 1
-      sky.v._to(el, $js, prev, 0)
-      sky.v._to(el, $js, $$, 1)
-    }, 7);
-  },
-  _set: function(el, $js, type, func) {
-    sky.v._end[type] = 2
-    for (let name in $js) {
-      let node = name == el.getAttribute('js') ? el : el.querySelector(`[js=${name}]`);
-      node.addEventListener("transitionend", func, true);
-    }
-  },
-  _end: {}
-}}
-~~
-sky.v.$name = function$pas {
-  $code
-  sky.v._fr(el, \$js, \$$);
+gv.%name% = function%pas% {
+    %code%
+    gv.start(el, $js, $$, listen, prev);
 };
 ~~
-  if (sky.v._end['$name']) {
-    sky.v._end['$name'] = $$ + 1
-  } else {
-    sky.v._set(el, \$js, '$name', function () {
-      let $$ = sky.v._end['$name'] - 1;
-      $code2[0]
-    })
-  }
-~~
-el.addEventListener("transitionend", updateTransition, true);
-document.getElementById("foo");
-let articleParagraphs = document.querySelectorAll('article > p');
 
+~~
 
 
 

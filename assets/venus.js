@@ -244,7 +244,7 @@ var $$ = {
             var vesper = '<style>' + $$.set(r.code.length - 1, r.preflight) + '</style>';
             if (false === $$.r.tw) { // Vesper only
                 if ('VesperJS' == r.code[r.code.length - 2][2])
-                    vesper += '<script>' + r.code[r.code.length - 2][0] + '</script>';
+                    vesper += '<script>' + r.grace + r.code[r.code.length - 2][0] + '</script>';
                 $$.$f.attr('srcdoc', vesper + $$.r.html);
             }
             $$.set(0);

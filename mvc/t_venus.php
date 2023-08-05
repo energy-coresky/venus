@@ -27,6 +27,7 @@ class t_venus extends Model_t
             'links' => m_menu::v_links($maat->links),
             'fn' => $this->get($in->fn, false, $tw),
             'menu' => m_menu::v_sourses($this, $tw),
+            'grace' => file_get_contents(__DIR__ . '/../assets/grace.js'),
         ];
     }
 

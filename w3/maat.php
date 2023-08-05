@@ -69,6 +69,8 @@ class Maat
         };
         is_array($classes) or $classes = preg_split('/\s+/', trim($classes));
         foreach ($classes as $v) {
+            if ($v && '!' == $v[0])
+                $v = substr($v, 1);
             if ('' === $v || $test($v[0], $v[-1]) || isset($this->cls[$v]))
                 continue;
             if ('[' == $v[0] && !preg_match("/^\[[\-a-z]+:/", $v))
