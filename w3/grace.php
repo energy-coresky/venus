@@ -1,6 +1,6 @@
 <?php
 
-class Grace /* Vesper JS generator */
+class Grace  /* Vesper JS generator */
 {
     public $idx = [];
 

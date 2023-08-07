@@ -1,5 +1,6 @@
 
 var gv = {
+
     gv: [],
     cls: function(el, ary, add, sar) {
         for (let cls of ary) {
@@ -23,23 +24,23 @@ var gv = {
         return out;
     },
     test: function(js, name, ary) {
-		let set = js.split(' '), re = new RegExp('^' + name);
-		for (let one of set) {
+        let set = js.split(' '), re = new RegExp('^' + name);
+        for (let one of set) {
             if (one.match(re))
                 return ary ? set : one;
         }
-		return false;
+        return false;
     },
     findAll: function(el, name) {
-		let one, out = [], js = el.getAttribute('js');
+        let one, out = [], js = el.getAttribute('js');
         if (js && (one = gv.test(js, name)))
             out.push([el, one]);
         if (set = el.querySelectorAll('[js*=' + name.replace(/([^_a-z\-\d])/g, '\\$1') + ']')) {
             [...set].forEach(el => {
                 out.push([el, gv.test(el.getAttribute('js'), name)]);
             });
-		}
-		return out;
+        }
+        return out;
     },
     find: function(el, name) {
         let js = el.getAttribute('js'), set;
@@ -79,7 +80,7 @@ var gv = {
             for (let one in listen) {
                 if ('end' === one) {
                     let all = gv.findAll(el, 'end:');
-					for (let end of all) {
+                    for (let end of all) {
                         if ('end:hidden' === end[1]) {
                             gv.gv[id].hidden = true;
                             listen[one] = () => {
@@ -87,12 +88,12 @@ var gv = {
                             };
                         }
                         end[0].addEventListener('transitionend', (e) => {
-							e.stopPropagation();
+                            e.stopPropagation();
                             let id = el.getAttribute('gv'), $$ = gv.gv[id].state;
                             if ($$ != gv.gv[id].prev)
                                 listen[one](gv.gv[id].prev = $$, end[0])
                         }, false);
-					}
+                    }
                 } else if ('click' === one) {
                     document.addEventListener('click', listen[one], true);
                 }
