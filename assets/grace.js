@@ -1,6 +1,7 @@
 
 var gv = {
     gv: [],
+
     cls: function(el, ary, add, sar) {
         for (let cls of ary) {
             if ('!' == cls.charAt(0)) {

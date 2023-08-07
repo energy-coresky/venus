@@ -2,6 +2,7 @@
 
 class Grace /* Vesper JS generator */
 {
+
     public $idx = [];
 
     private $code;
