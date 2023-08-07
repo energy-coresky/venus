@@ -22,16 +22,30 @@ var gv = {
         }
         return out;
     },
-    find: function(el, name) {
-        let js = el.getAttribute('js')
-        if (js) {
-            let set = js.split(' '), re = new RegExp(`^${name}`);
-            for (let one of set) {
-                if (one.match(re)) // set.includes(name)
-                    return [el, set];
-            }
+    test: function(js, name, ary) {
+		let set = js.split(' '), re = new RegExp('^' + name);
+		for (let one of set) {
+            if (one.match(re))
+                return ary ? set : one;
         }
-        if (el = el.querySelector('[js*=' + name.replace(/([^_a-z\-])/g, '\\$1') + ']'))
+		return false;
+    },
+    findAll: function(el, name) {
+		let one, out = [], js = el.getAttribute('js');
+        if (js && (one = gv.test(js, name)))
+            out.push([el, one]);
+        if (set = el.querySelectorAll('[js*=' + name.replace(/([^_a-z\-\d])/g, '\\$1') + ']')) {
+            [...set].forEach(el => {
+                out.push([el, gv.test(el.getAttribute('js'), name)]);
+            });
+		}
+		return out;
+    },
+    find: function(el, name) {
+        let js = el.getAttribute('js'), set;
+        if (js && (set = gv.test(js, name, true)))
+            return [el, set];
+        if (el = el.querySelector('[js*=' + name.replace(/([^_a-z\-\d])/g, '\\$1') + ']'))
             return gv.find(el, name)
         return false;
     },
@@ -64,20 +78,23 @@ var gv = {
             gv.gv[id] = {state: $$, prev: 9999, hidden:false}
             for (let one in listen) {
                 if ('end' === one) {
-                    let ps = gv.find(el, 'end:'), end = gv.ps(ps[1], 'end');
-                    if ('hidden' === end[0]) {
-                        gv.gv[id].hidden = true;
-                        listen[one] = function () {
-                            gv.gv[id].state || el.classList.add('hidden');
-                        };
-                    }
-                    ps[0].addEventListener('transitionend', function() {
-                        let id = el.getAttribute('gv'), $$ = gv.gv[id].state;//  alert(`id=${id} $$=${$$} last_state=${last_state} `)
-                        if ($$ != gv.gv[id].prev)
-                            listen[one](gv.gv[id].prev = $$)
-                    }, false);
+                    let all = gv.findAll(el, 'end:');
+					for (let end of all) {
+                        if ('end:hidden' === end[1]) {
+                            gv.gv[id].hidden = true;
+                            listen[one] = () => {
+                                gv.gv[id].state || el.classList.add('hidden');
+                            };
+                        }
+                        end[0].addEventListener('transitionend', (e) => {
+							e.stopPropagation();
+                            let id = el.getAttribute('gv'), $$ = gv.gv[id].state;
+                            if ($$ != gv.gv[id].prev)
+                                listen[one](gv.gv[id].prev = $$, end[0])
+                        }, false);
+					}
                 } else if ('click' === one) {
-                    document.addEventListener('click', listen[one], false);
+                    document.addEventListener('click', listen[one], true);
                 }
             }
         }

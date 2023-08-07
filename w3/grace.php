@@ -72,14 +72,16 @@ class Grace /* Vesper JS generator */
         do {
             $name = key($maat->js);
             $ps = pos($maat->js);
-            [$pas, $tpl] = $this->idx[$name];
-            $prev = $this->prepare($tpl, $ps);
-            $user = "\n    " . implode("\n    ", $tpl[''] ?? ['']);
-            $code = "let prev = $prev, listen = " . $listen($ps['end'] ?? false) . ";\n";
-            unset($tpl[''], $tpl['.']);
-            $code .= $this->json($tpl, $name, $maat, $ps);
-            $code .= $user;
-            $out .= $this->tpl(0, compact($vars));
+            if (isset($this->idx[$name])) {
+                [$pas, $tpl] = $this->idx[$name];
+                $prev = $this->prepare($tpl, $ps);
+                $user = "\n    " . implode("\n    ", $tpl[''] ?? ['']);
+                $code = "let prev = $prev, listen = " . $listen($ps['end'] ?? false) . ";\n";
+                unset($tpl[''], $tpl['.']);
+                $code .= $this->json($tpl, $name, $maat, $ps);
+                $code .= $user;
+                $out .= $this->tpl(0, compact($vars));
+            }
         } while (false !== next($maat->js));
         return "$out";
     }
