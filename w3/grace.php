@@ -71,6 +71,8 @@ class Grace /* Vesper JS generator */
         };
         do {
             $name = key($maat->js);
+            if (!isset($this->idx[$name]))
+                continue;
             $ps = pos($maat->js);
             [$pas, $tpl] = $this->idx[$name];
             $prev = $this->prepare($tpl, $ps);
