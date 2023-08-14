@@ -174,13 +174,13 @@ class t_settings extends Model_t
             'classes' => 'Classes',
         ];
         $this->ary['vword'] = [];
-        $type = 'values' == $this->y3[2] ? 2 : 0;
         $last = unserialize(SKY::t('last_y3'));
         if (!$this->y3[2])
             MVC::$_y['y_3'] = $this->y3 = $last;
         if ('open' == $this->y3[0])
             SKY::t('last_y3', serialize($this->y3));
-        if (!$type && 'classes' != $this->y3[2])
+        $values = 'values' == $this->y3[2] ? 2 : 0;
+        if (!$values && 'classes' != $this->y3[2])
             return $this->syntax();
 
         $id = $this->y3[3];
@@ -194,9 +194,9 @@ class t_settings extends Model_t
             MVC::body("settings.form_only");
         }
         $this->form_data = $id ? $tw->one($id) : [];
-        if ($id && !$type)
+        if ($id && !$values)
             $this->ary['gen'] = Maxwell::classes($id);
-        $this->ary['list'] = $tw->sqlf('@select id, name from $_ where tw_id=%d', $type);
+        $this->ary['list'] = $tw->sqlf('@select id, name from $_ where tw_id=%d', $values);
         uasort($this->ary['list'], function ($a, $b) {
             '-' != $a[0] or $a = substr($a, 1);
             '-' != $b[0] or $b = substr($b, 1);
@@ -207,11 +207,11 @@ class t_settings extends Model_t
         $this->ary['section'] = $this->y3[2];
         $u = "put.0.classes.$id";
         return [
-            'tw_id' => $type,
+            'tw_id' => $values,
             ['ID', 'ni', $id ?: 'New Item'],
             'grp' => ['Group', 'select', array_combine($a = Maxwell::$grp, $a)],
-            'name' => [$type ? 'ValueName' : 'MetaName', '', 'style="width:50%"'],
-            'css' => [$type ? 'DefaultValue' : 'Menu', '', 'style="width:50%"'],
+            'name' => [$values ? 'ValueName' : 'MetaName', '', 'style="width:50%"'],
+            'css' => [$values ? 'DefaultValue' : 'Menu', '', 'style="width:50%"'],
             'tpl' => ['Template', 'textarea_rs', 'style="width:98%" rows="21"'],
         ];
     }

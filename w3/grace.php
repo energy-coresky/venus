@@ -2,15 +2,9 @@
 
 class Grace /* Vesper JS generator */
 {
-
     public $idx = [];
 
-    private $code;
-
     function __construct() {
-        fseek($fp = fopen(__FILE__, 'r'), __COMPILER_HALT_OFFSET__);
-        $this->code = explode('~~', trim(stream_get_contents($fp)));
-        fclose($fp);
     }
 
     static function instance() {
@@ -57,13 +51,6 @@ class Grace /* Vesper JS generator */
         return '    let $js = ' . json_encode($js);
     }
 
-    function tpl($n, $ary) {
-        $search = array_map(function ($k) {
-            return "%$k%";
-        }, array_keys($ary));
-        return str_replace($search, array_values($ary), $this->code[$n]);
-    }
-
     function buildJS($maat) {
         $out = '';
         $vars = ['name', 'pas', 'code'];
@@ -83,10 +70,15 @@ class Grace /* Vesper JS generator */
                 unset($tpl[''], $tpl['.']);
                 $code .= $this->json($tpl, $name, $maat, $ps);
                 $code .= $user;
-                $out .= $this->tpl(0, compact($vars));
+                $out .= <<<DOC
+gv.$name = function$pas {
+    $code
+    gv.start(el, \$js, $$, listen, prev);
+};\n
+DOC;
             }
         } while (false !== next($maat->js));
-        return "$out";
+        return $out;
     }
 
     function index($name, $row) {
@@ -94,16 +86,3 @@ class Grace /* Vesper JS generator */
         $this->idx[$name] = [$pas, unl(trim($row->tpl))];
     }
 }
-
-__halt_compiler();
-
-gv.%name% = function%pas% {
-    %code%
-    gv.start(el, $js, $$, listen, prev);
-};
-~~
-
-~~
-
-
-

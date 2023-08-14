@@ -1,6 +1,5 @@
 var gv = {
     gv: [],
-
     cls: function(el, ary, add, sar) {
         for (let cls of ary) {
             if ('!' == cls.charAt(0)) {
@@ -10,7 +9,7 @@ var gv = {
             }
             if (sar) for (let [s, r] of sar)
                 cls = cls.replace(s, r);
-            add ? el.classList.add(cls) : el.classList.remove(cls)
+            add ? el.classList.add(cls) : el.classList.remove(cls);
         }
     },
     ps: function(all, filt) {
@@ -18,7 +17,7 @@ var gv = {
         for (let one of all) {
             a = one.split(':');
             if (a.length > 1 && ps == a[0])
-                out.push('sar' == ps ? a[1].split('=') : a[1])
+                out.push('sar' == ps ? a[1].split('=') : a[1]);
         }
         return out;
     },
@@ -102,14 +101,11 @@ var gv = {
     },
     clone: function(src, cnt) {
         let str = 'string' == typeof src;
-        let ary = str ? document.querySelectorAll('.star') : src;
+        let ary = str ? document.querySelectorAll(src) : src;
         [...ary].forEach(el => {
             for (let i = 0; i < cnt; i++)
                 el.insertAdjacentHTML('afterend', el.outerHTML);
         });
-    },
-    all: {
-        
     },
     initFunc: false,
     init: function() {
