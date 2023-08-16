@@ -78,9 +78,6 @@ class m_venus extends Model_m
                     'Create SVG' => "ajax('settings&icons=new', box)",
                     'Unicode' => "i$.load('unicode')",
                 ],
-         #       'Alpine.js' => [
-         #           '2do' => "i$.load('tcolors')",
-         #       ],
             ],
             'm' => [
                 'Chaos & Order' => [

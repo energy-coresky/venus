@@ -128,8 +128,26 @@ class Maat
         $s = '';
         foreach ($this->code as $i => $x)
             $s .= sprintf($tpl, $i + 1, $x[2]);
-        array_unshift($this->code, [$html, substr_count($html, "\n"), sprintf($tpl, '0" checked="', 'HTML') . $s, $jet ? 0 : $fn]);
+        if ($jet || !in_array($fn[0], ['!', ':', '~']))
+            $fn = 0;
+        array_unshift($this->code, [$html, substr_count($html, "\n"), sprintf($tpl, '0" checked="', 'HTML') . $s, $fn]);
         return $this->code;
+    }
+
+    function jets($trace) {
+        $fun = function ($s) {
+            return explode('.', $s)[0] . '.jet';
+        };
+        for ($list = []; preg_match("/(TOP|SUB)\-VIEW: (\d+) (\S+) (\S+)(.*)/s", $trace, $m); ) {
+            $trace = $m[5];
+            [$layout, $boby] = explode('^', $m[4]);
+            '' === $layout[0] or $list[$fun('_' == $layout[0] ? $layout : "y_$layout")] = 1;
+            '' === $boby[1] or $list[$fun('_' . $boby)] = 1;
+        }
+        foreach ($list as $fn => $_) {
+            $s = Plan::view_g(['main', $fn]);
+            $this->code[] = [Display::jet($s, '', true), substr_count($s, "\n"), $fn, $fn];
+        }
     }
 
     function &buildHTML(&$ary, $indent = '') {
@@ -161,7 +179,7 @@ class Maat
                                 break;
                             case 'id':
                                 if ('trace-t' == $v && is_array($data)) {
-                                    $txt = $this->buildHTML($data);
+                                    $this->jets($txt = $this->buildHTML($data));
                                     $this->code[] = [$txt, substr_count($txt, "\n"), 'Trace-T'];
                                     $data = tag('Trace-T', 'class="red_label"', 'span');
                                 }

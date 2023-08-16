@@ -79,7 +79,7 @@ class venus_c extends Controller
     function j_save() {
         $html = preg_replace("~<(br\s*/?|/?div)>~is", "\n", $_POST['html']);
         $html = html_entity_decode(strip_tags($html));
-        return $this->t_venus->put($_POST['fn'], trim($html));
+        return $this->t_venus->put($_POST['fn'], $html);
     }
 
     function j_menu() {

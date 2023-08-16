@@ -104,11 +104,13 @@ class t_venus extends Model_t
 
     function put($fn, $data = null) {
         if ('!' == $fn[0]) {
-            $this->sqlf('update $_tw set tmemo=%s where id=%d', $data, substr($fn, 1));
+            $this->sqlf('update $_tw set tmemo=%s where id=%d', trim($data), substr($fn, 1));
         } elseif (':' == $fn[0]) {
-            $this->update(['tmemo' => $data], substr($fn, 1));
+            $this->update(['tmemo' => trim($data)], substr($fn, 1));
         } elseif ('~' == $fn[0]) {
-            call_user_func(['Plan', (SKY::w('plan') ? 'mem' : 'app') . "_p"], ['main', "venus/" . substr($fn, 1) . '.html'], $data);
+            call_user_func(['Plan', (SKY::w('plan') ? 'mem' : 'app') . "_p"], ['main', "venus/" . substr($fn, 1) . '.html'], trim($data));
+        } elseif ('.jet' == substr($fn, -4)) {
+            Plan::view_p(['main', $fn], $data);
         }
         return true;
     }

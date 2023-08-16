@@ -115,7 +115,9 @@ var $$ = {
         ajax('save', {
             html: $('#code-body pre:eq(1)').html(),
             fn: $$.fn_save
-        }, function(r) {});
+        }, function(r) {
+            $$.test();
+        });
     },
     m_move: function(e) {
         var w = this == document;
