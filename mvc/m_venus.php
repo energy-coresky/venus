@@ -56,8 +56,16 @@ class m_venus extends Model_m
             $in = file_get_contents($fn);
             $maat->parse_js($in);
         }
-        echo (new Vesper)->v_css($maat)[0];
+        echo (new Vesper)->bag($maat)[0];
 //print_r($maat->cls);
+    }
+
+    static function addform() {
+        return Form::A([], [
+            'src' => ['Source', 'radio', ['Venus', 'Application']],
+            'type' => ['Type', 'select', m_menu::$types],
+            'name' => ['Name', '', 'style="width:100%"'],
+        ]);
     }
 
     static function menu() {

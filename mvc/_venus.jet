@@ -28,7 +28,7 @@ $(function() {
 #.samples
 
 #.popup_menu //////////////////////////////////////////////////////////////////////////////
-<div class="absolute inline-block z-10" id="{{$id}}">
+<div class="absolute inline-block z-90" id="{{$id}}">
   <div style="width:225px;" hidden
        class="popup-menu absolute w-56 rounded-sm shadow-lg bg-white ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 focus:outline-none">
     <div class="py-1" role="none">
@@ -98,7 +98,7 @@ $(function() {
     ~loop
     <a href="{{LINK}}" class="vs-ic mr-3">@svg(home)</a>
     <a @href($(this).find('svg').toggle()) class="vs-ic">@inc(.moonsun)</a>
-    <a @href($(this).find('svg').show()) class="vs-ic ml-3">@svg(fileplus)</a>
+    <a @href(gv.modal('#modal-popup',1)) class="vs-ic ml-3">@svg(fileplus)</a>
     <a class="menu-btn f2" @href($$.save())>Save - F2</a>
     <a class="menu-btn f4" @href($$.test())>Load - F4</a>
     <a class="menu-btn f6" @href(alert())>Swap - F6</a>
@@ -159,6 +159,7 @@ $(function() {
       contenteditable="true" onmousedown="alert(11)"></pre>
   </div>
 </div>
+@inc(.modal)
 #.tail.pdaxt ------------------------------------------------------------------------------ m$.m_down(this)
 <span class="pdaxt">
   <a href="{{$page ?: LINK}}">S</a>
@@ -203,3 +204,31 @@ $(function() {
   <path d="M14 7.5a1 1 0 1 0-2 0 1 1 0 0 0 2 0z"></path>
 </svg>
 #.mobile
+
+#.modal
+<div class="relative z-100 hidden" id="modal-popup">
+  <div js="modal-bg end:hidden" class="fixed inset-0 bg-gray-500/75 transition-opacity"></div>
+  <div class="fixed inset-0 z-100 overflow-y-auto">
+    <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+      <div js="modal-window" class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+        <div class="bg-white px-4 pb-4 pt-5">
+          <h3 class="text-2xl font-semibold leading-6 text-gray-900 text-center">Add new script</h3>
+          <div class="mt-2">{!$form!}</div>
+        </div>
+        <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+          <button type="button" class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 sm:ml-3 sm:w-auto">Save</button>
+          <button onclick="gv.modal('#modal-popup',0)" type="button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+gv.modal = function(el, $$) {
+    let prev = 'twin', listen = {end: 'hidden'};
+    let $js = {"modal-bg":{"0":["ease-in","duration-200","opacity-0"],"1":["ease-out","duration-300","opacity-100"],"1_":["opacity-0"]},"modal-window":{"0":["ease-in","duration-200","opacity-0","translate-y-4","sm:translate-y-0","sm:scale-95"],"1":["ease-out","duration-300","opacity-100","translate-y-0","sm:scale-100"],"1_":["opacity-0","translate-y-4","sm:translate-y-0","sm:scale-95"]}}
+    el = document.querySelector(el)
+    gv.start(el, $js, $$, listen, prev);
+};
+</script>
+#.modal

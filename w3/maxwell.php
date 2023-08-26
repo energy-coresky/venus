@@ -51,6 +51,9 @@ class Maxwell
     }
 
     function grp($row, &$data) {
+        static $noname = 1;
+        if (!$row->css)
+            $row->css = '9no-name-' . $noname++;
         $syn = ($hash = '#' == $row->css[0]) ? substr($row->css, 1) : $row->css;
         $cnt = count($ary = explode(' ', $syn, 2)) - 1;
         $pp =& $this->menu[$row->grp];

@@ -20,6 +20,7 @@ class Maat
     public $cls = [];
     public $js = [];
     public $links = [];
+    public $tag = [];
 
     function __construct($opt = []) {
         trace('new Maat');
@@ -69,7 +70,7 @@ class Maat
         };
         is_array($classes) or $classes = preg_split('/\s+/', trim($classes));
         foreach ($classes as $v) {
-            if ($v && '!' == $v[0])
+            if ($v && ('!' == $v[0] || ':' == $v[0]))
                 $v = substr($v, 1);
             if ('' === $v || $test($v[0], $v[-1]) || isset($this->cls[$v]))
                 continue;
@@ -111,8 +112,8 @@ class Maat
        $ok or $size = -$size;
    }
 
-    function code($html, $jet, $fn) {
-        [$v_css, $v_js] = (new Vesper)->v_css($this);
+    function code($html, $jet, $in) {
+        [$v_css, $v_tpl, $v_js] = (new Vesper)->bag($this);
         $n = substr_count($v_css, "\n");
        if ($this->code && 'Preflight' == $this->code[0][2]) {
            $tw_css =& $this->code[1];
@@ -121,16 +122,21 @@ class Maat
            $this->diff($diff, $tw_css[0], $tw_css[1]);
        }
         $this->code = array_merge($this->code, $jet);
+        if ($v_tpl)
+            $this->code[] = [$v_tpl, substr_count($v_tpl, "\n"), 'VesperTPL', 0];
         if ($v_js)
             $this->code[] = [$v_js, substr_count($v_js, "\n"), 'VesperJS', 0];
         $this->code[] = [$v_css, abs($n), $n < 0 ? '<r>VesperCSS</r>' : 'VesperCSS', 0];
-        $tpl = '<label><input type="radio" value="%s" onchange="$$.set(this.value)" name="v-panel"> %s</label>';
+        $tpl = '<label><input%s type="radio" value="%s" onchange="$$.set(this.value)" name="v-panel"> %s</label>';
         $s = '';
+        if ($in->act > count($this->code))
+            $in->act = 0;
         foreach ($this->code as $i => $x)
-            $s .= sprintf($tpl, $i + 1, $x[2]);
-        if ($jet || !in_array($fn[0], ['!', ':', '~']))
-            $fn = 0;
-        array_unshift($this->code, [$html, substr_count($html, "\n"), sprintf($tpl, '0" checked="', 'HTML') . $s, $fn]);
+            $s .= sprintf($tpl, $i + 1 == $in->act ? ' checked' : '', $i + 1, $x[3] ? "<b>$x[2]</b>" : $x[2]);
+        if ($jet || !in_array($in->fn[0], ['!', ':', '~']))
+            $in->fn = 0;
+        $s = sprintf($tpl, $in->act ? '' : ' checked', 0, $in->fn ? '<b>HTML</b>' : 'HTML') . $s;
+        array_unshift($this->code, [$html, substr_count($html, "\n"), $s, $in->fn]);
         return $this->code;
     }
 
@@ -146,7 +152,7 @@ class Maat
         }
         foreach ($list as $fn => $_) {
             $s = Plan::view_g(['main', $fn]);
-            $this->code[] = [Display::jet($s, '', true), substr_count($s, "\n"), $fn, $fn];
+            $this->code[] = [Display::jet($s, '', true, true), substr_count($s, "\n"), $fn, $fn];
         }
     }
 
@@ -166,6 +172,9 @@ class Maat
                 $out .= "<span style=\"color:#885\">&lt;!-- $data --&gt;</span>\n";
                 continue 2;
             default:
+                if ('ve-' == substr($node, 0, 3)) {
+                    isset($this->tag[$node]) or $this->tag[$node] = 1; # 1 - need to generate
+                }
                 $tag = "<span class=\"vs-tag\">$node</span>";
                 if (is_object($attr)) {
                     unset($attr->{'>'});
@@ -180,7 +189,7 @@ class Maat
                             case 'id':
                                 if ('trace-t' == $v && is_array($data)) {
                                     $this->jets($txt = $this->buildHTML($data));
-                                    $this->code[] = [$txt, substr_count($txt, "\n"), 'Trace-T'];
+                                    $this->code[] = [$txt, substr_count($txt, "\n"), 'Trace-T', 0];
                                     $data = tag('Trace-T', 'class="red_label"', 'span');
                                 }
                                 break;
@@ -211,7 +220,7 @@ class Maat
                         $path = 'http' == substr($style[1], 0, 4) ? $style[1] : LINK . substr($style[1], strlen(PATH));
                         $txt = get($path, '', false);
                         $txt = $this->buildCSS($txt);
-                        $this->code[] = [$txt, substr_count($txt, "\n"), $name = explode('?', basename($style[1]))[0]];
+                        $this->code[] = [$txt, substr_count($txt, "\n"), $name = explode('?', basename($style[1]))[0], 0];
                     }
                     $out .= "&lt;$tag " . implode(' ', $join) . '&gt;';
                 } else {
@@ -226,7 +235,7 @@ class Maat
                     $is_js = 'script' == $node;
                     $txt = trim($is_js ? $this->buildJS($data) : $this->buildCSS($data));
                     if (strlen($data) > SKY::w('char_len')) {
-                        $this->code[] = [$txt, substr_count($txt, "\n"), $name = ($is_js ? 'JS' : 'CSS') . count($this->code)];
+                        $this->code[] = [$txt, substr_count($txt, "\n"), $name = ($is_js ? 'JS' : 'CSS') . count($this->code), 0];
                         $out .= tag($name, 'class="red_label"', 'span');
                     } else {
                         $out .= "\n" . $txt . "\n";
@@ -327,17 +336,30 @@ class Maat
 
     function parse_js($in) {
         $str = '<?php ' . unl($in);
+        $js = false;
         foreach (token_get_all($str) as $k => $token) {
             $id = $str = $token;
             if (is_array($token)) {
                 list($id, $str) = $token;
                 switch ($id) {
+                    case T_WHITESPACE:
+                        continue 2;
                     case T_CONSTANT_ENCAPSED_STRING:
                         $str = substr($str, 1, -1);
+                        if ($js) {
+                            $js = false;
+                            $this->add_js($str);
+                            break;
+                        }
                     case T_ENCAPSED_AND_WHITESPACE:
                         $this->add_raw($str);
                         break;
+                    case T_STRING:
+                        $js = 'js' == $str;
+                        break;
                 }
+            } elseif ('=' != $str) {
+                $js = false;
             }
         }
         return $in;

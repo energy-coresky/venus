@@ -56,7 +56,7 @@ class Venus extends Console
     function a_tw($in = null) {
         $maat = new Maat;
         $maat->add_class($in ?? 'fixed flex');
-        echo implode("\n", (new Vesper)->v_css($maat));
+        echo implode("\n", (new Vesper)->bag($maat));
     }
 
 

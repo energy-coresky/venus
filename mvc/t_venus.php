@@ -22,11 +22,11 @@ class t_venus extends Model_t
             $maat->tw_native($in->tw_native, $this);
         $html = trim($maat->buildHTML($in->tree));
         return [
-            'code' => $maat->code($html, $this->templates($in->jet), $in->fn),
-            'preflight' => $in->tw_native ? '' : $this->t_settings->preflight(),
-            'links' => m_menu::v_links($maat->links),
             'fn' => $this->get($in->fn, false, $tw),
             'menu' => m_menu::v_sourses($this, $tw),
+            'code' => $maat->code($html, $this->templates($in->jet), $in),
+            'preflight' => $in->tw_native ? '' : $this->t_settings->preflight(),
+            'links' => m_menu::v_links($maat->links),
             'grace' => file_get_contents(__DIR__ . '/../assets/grace.js'),
         ];
     }
@@ -37,7 +37,7 @@ class t_venus extends Model_t
         $out = [];
         foreach ($ary as $fn => $type) {
             $s = $this->get($fn, 'nh', $tw);
-            $html = 'jet' == $type ? Display::jet($s, '', true) : html($s);
+            $html = 'jet' == $type ? Display::jet($s, '', true, true) : html($s);
             $out[] = [$html, substr_count($s, "\n"), $type . $fn, $fn];
         }
         return $out;

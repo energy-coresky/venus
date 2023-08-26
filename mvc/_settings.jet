@@ -26,12 +26,12 @@ Empty for now
 
 #.syntax //////////////////////////////////////////////////////////////////////////////
 #use(.tail)
-@if($section)
+@if($section && !$y_3[1])
   <h1 class="uppercase">{{$section}}</h1>
   <div class="absolute bottom-0 top-52 overflow-x-hidden overflow-y-auto whitespace-nowrap" style="width:150px">
     @loop($list as $id => $row)
       @if('browse' != $y_3[2])
-      <a class="block pl-1"@active(!$id) @href(i$.push(this, 'settings&{{$y_2}}=open.0.{{$y_3[2]}}.{{$id}}'))>{{$row}}</a>
+      <a n="{{$id}}" class="block pl-1"@active(!$id) @href(i$.push(this, 'settings&{{$y_2}}=open.0.{{$y_3[2]}}.{{$id}}'))>{{$row}}</a>
       @else
         <a class="block pl-1" @href({!$is_ok($row) ? "i$.cls(this,'$row')" : "i$.samples(this,'$row')"!})>{{$row}}</a>
       ~if
@@ -39,9 +39,11 @@ Empty for now
   </div>
 ~if
 #.syntax.tail
+@if(!$y_3[1])
 @loop($vword as $word)
   <a @href(i$.word('{{$word}}'))>{{$word}}</a>
 ~loop
+~if
 #.tail
 
 #.layout
@@ -93,4 +95,10 @@ Empty for now
     <div id="s-tail" class="overflow-auto p-1">@block(`tail` as tail)</div>
   </div>
 </div>
+@if($auto)
+<script>
+  i$.auto = true;
+  $('[n={{$auto}}]').click();
+</script>
+~if
 #.layout

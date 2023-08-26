@@ -1,3 +1,4 @@
+
 var gv = {
     gv: [],
     cls: function(el, ary, add, sar) {
@@ -12,14 +13,8 @@ var gv = {
             add ? el.classList.add(cls) : el.classList.remove(cls);
         }
     },
-    ps: function(all, filt) {
-        let out = [], ps = filt || 'sar';
-        for (let one of all) {
-            a = one.split(':');
-            if (a.length > 1 && ps == a[0])
-                out.push('sar' == ps ? a[1].split('=') : a[1]);
-        }
-        return out;
+    sar: function(all) {
+        return all.filter(one => 'sar:' === one.substr(0, 4)).map(one => one.substr(4).split('='));
     },
     test: function(js, name, ary) {
         let set = js.split(' '), re = new RegExp('^' + name);
@@ -53,14 +48,14 @@ var gv = {
             if (!$js[name][$$])
                 continue;
             let node = gv.find(el, name);
-            node && gv.cls(node[0], $js[name][$$], add, 1 == node[1].length ? false : gv.ps(node[1]));
+            node && gv.cls(node[0], $js[name][$$], add, 1 == node[1].length ? false : gv.sar(node[1]));
         }
     },
     start: function(el, $js, $$, listen, prev) {
         if (listen)
             gv.listen(el, $$, listen);
         gv.to(el, $js, $$ + '_', 1);
-        setTimeout(function() {
+        setTimeout(() => {
             gv.to(el, $js, $$ + '_', 0);
             gv.to(el, $js, $$, 1);
             null === prev || gv.to(el, $js, 'twin' === prev ? (1 - $$) : prev, 0);
@@ -107,13 +102,21 @@ var gv = {
                 el.insertAdjacentHTML('afterend', el.outerHTML);
         });
     },
+    customEl: function(name, callback) {
+        customElements.define(name, class extends HTMLElement {
+            connectedCallback() {
+                const template = document.getElementById(name).content;
+                const shadow = this.attachShadow({mode: 'open'});
+                shadow.appendChild(template.cloneNode(true));
+                const sheet = new CSSStyleSheet();
+                sheet.replace(document.querySelector('style').innerHTML);
+                shadow.adoptedStyleSheets = [sheet];
+                callback && callback(this);
+            }
+        });
+    },
     initFunc: false,
-    init: function() {
-        if (gv.initFunc)
-            gv.initFunc();
-    }
+    init: e => gv.initFunc && gv.initFunc(e)
 };
 
-document.querySelector('html').addEventListener('load', function() {
-    gv.init();
-}, true);
+window.addEventListener('DOMContentLoaded', gv.init, true);

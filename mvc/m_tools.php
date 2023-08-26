@@ -74,7 +74,7 @@ class m_tools extends Model_m
         $maat->add_class($sizes = Maxwell::friends('text-base'));
         return [
             'sizes' => $sizes,
-            'css' => css(['~/w/venus/vesper.css']) . css((new Vesper)->v_css($maat)[0]),
+            'css' => css(['~/w/venus/vesper.css']) . css((new Vesper)->bag($maat)[0]),
         ];
     }
 

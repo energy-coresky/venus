@@ -173,10 +173,13 @@ class t_settings extends Model_t
             'values' => 'Values',
             'classes' => 'Classes',
         ];
+        if (!$this->y3[2] && !$this->y3[1]) {
+            $last = unserialize(SKY::t('last_y3')) + [3 => 0];
+            MVC::$_y['y_3'] = $this->y3 = array_slice($last, 0, 3) + [3 => 0];
+            $auto = $last[3] ?? 0;
+        }
         $this->ary['vword'] = [];
-        $last = unserialize(SKY::t('last_y3'));
-        if (!$this->y3[2])
-            MVC::$_y['y_3'] = $this->y3 = $last;
+        $this->ary['auto'] = $auto ?? false;
         if ('open' == $this->y3[0])
             SKY::t('last_y3', serialize($this->y3));
         $values = 'values' == $this->y3[2] ? 2 : 0;
@@ -190,7 +193,6 @@ class t_settings extends Model_t
             $id ? $tw->update($_POST, $id) : ($id = $tw->insert($_POST));
         } elseif ('open' == $this->y3[0] && $id) {
             MVC::$layout = '';
-            SKY::t('last_y3', serialize($last));
             MVC::body("settings.form_only");
         }
         $this->form_data = $id ? $tw->one($id) : [];

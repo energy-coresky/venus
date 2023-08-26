@@ -14,11 +14,14 @@ var i$ = {
             t.prepend(r);
         });
     },
+    auto: true,
     push: function(el, s) {
         $(el).parent().find('a').removeClass('active');
         $(el).addClass('active');
         ajax(s, function(r) {
-            $('#s-form').html(r)
+            $('#s-form').html(r);
+            i$.auto && el.scrollIntoView({block: "center"});
+            i$.auto = false;
         });
     },
     samples: function(el, cls) {

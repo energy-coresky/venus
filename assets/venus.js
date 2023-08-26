@@ -198,7 +198,10 @@ var $$ = {
                     if (-1 == el.outerHTML.indexOf('><'))
                         data = 0; // Void element
                     let inner = el.innerHTML.trim()
-                    if (!el.hasChildNodes() || '' === inner)
+    if ('#' == name.charAt(0))
+        alert(inner)
+                    //if (!el.hasChildNodes() || '' === inner)
+                    if ('' === inner)
                         break;
                     data = $$.tree(inner);
                     if (1 == data.length && '#text' == data[0][0])
@@ -215,6 +218,7 @@ var $$ = {
     _fn: sky.home,
     fn: '',
     fn_save: 0,
+    tab_n: 0,
     r: {},
     test: function(fn) {
         $$.r.tw = $$.r.jet = '';
@@ -240,25 +244,30 @@ var $$ = {
                 return;
             }
         }
-        let src = {tree: $$.parsed, fn:$$.fn, tw_native: tw, jet: $$.r.jet};
+        let src = {tree:$$.parsed, fn:$$.fn, tw_native:tw, jet:$$.r.jet, act: $$.tab_n};
         sky.json('src&1=' + $$.fn, src, function(r) {
             $$.code = r.code;
             var vesper = '<style>' + $$.set(r.code.length - 1, r.preflight) + '</style>';
             if (false === $$.r.tw) { // Vesper only
                 if ('VesperJS' == r.code[r.code.length - 2][2])
                     vesper += '<script>' + r.grace + r.code[r.code.length - 2][0] + '</script>';
+                if (r.code.length > 3 && 'VesperTPL' == r.code[r.code.length - 3][2]) {
+                    vesper += r.code[r.code.length - 3][0];
+                    r.code[r.code.length - 3][0] = r.code[r.code.length - 3][0].replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                }
                 $$.$f.attr('srcdoc', vesper + $$.r.html);
             }
-            $$.set(0);
             $('#code-head div:eq(1)').html(r.code[0][2]); // set radio list
             $('#v-sourse').html(r.fn + '&nbsp;▼').next().replaceWith(r.menu); // set menu
             $('#v_links').replaceWith(r.links); // set menu
+            $$.set($$.tab_n < $$.code.length ? $$.tab_n : 0);
         });
     },
     set: function(n, css) {
-        var lines = "  1\n", code = $$.code[parseInt(n)], cnt = 1 + code[1],
+        var lines = "  1\n", code = $$.code[n = parseInt(n)], cnt = 1 + code[1],
             pad = cnt > 9999 ? '35px' : (cnt > 999 ? '29px' : '23px');
         $$.fn_save = code[3];
+        css || ($$.tab_n = n);
         for (var i = 2; i <= cnt; i++)
             lines += i + "\n";
         var el = $('#code-body pre:eq(0)').html(lines).next().html(code[0])

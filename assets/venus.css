@@ -203,7 +203,7 @@ pre:focus {
   position: relative;
   right: -14px;
   bottom: calc(-100% - 24px);
-  z-index: 90;
+  z-index: 80;
 }
 
 .header, .t-head, .mbg {

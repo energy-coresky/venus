@@ -34,13 +34,14 @@ class venus_c extends Controller
 
     function empty_a($page = '') {
         $this->_title = 'VENUS.SKY';
-        $js = ["~/m/venus.js", "~/w/venus/ishtar.js", '~/w/venus/maxwell.js'];
+        $js = ["~/m/venus.js", "~/w/venus/ishtar.js", '~/w/venus/maxwell.js', '~/w/venus/grace.js'];
         $this->_static = [[], $js, ["~/w/venus/vesper.css", "~/m/venus.css"]];
         $this->d_last_page = '_venus';
         return [
             'fsize' => option(3, array_combine(m_venus::$fsize, m_venus::$fsize)),
             'reg' => '/^<?\w[^>]*[^\/]$/',
             'page' => $page,
+            'form' => m_venus::addform(),
         ];
     }
 
@@ -65,7 +66,7 @@ class venus_c extends Controller
     function j_cls() {
         $maat = new Maat;
         $maat->add_class($_POST['n']);
-        echo pre((new Vesper)->v_css($maat)[0], '');
+        echo pre((new Vesper)->bag($maat)[0], '');
     }
 
     function j_samples() {

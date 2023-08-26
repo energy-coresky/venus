@@ -21,10 +21,12 @@ class Vesper /* Tailwind++ generator */
             $id_base = $list;
     }
 
-    function v_css($maat) {
-        $js = $maat->js ? $this->grace->buildJS($maat) : '';
+    function bag($maat) {
+        $ve = [];
+        $tpl = $maat->tag ? $this->grace->buildVE($maat, $ve) : ''; # run this first
+        $js = $ve || $maat->js ? $this->grace->buildJS($maat, $ve) : '';
         $ary = $this->listCSS($maat->cls);
-        return [$maat->buildCSS($ary, !SKY::w('vesper')), $js];
+        return [$maat->buildCSS($ary, !SKY::w('vesper')), $tpl, $js];
     }
 
     function caret($ary) {
@@ -90,6 +92,8 @@ class Vesper /* Tailwind++ generator */
         $mval = m_venus::media();
         $media = array_combine($mkey, array_pad([], 6, []));
         foreach ($ary as $name => $marker) {
+            #if (':' == $name[0])
+             #   $name = substr($name, 1);
             if (1 != $marker || is_num($name))
                 continue;
             $ps = '[' == $name[0] ? [$name] : explode(':', $name);
@@ -144,7 +148,7 @@ class Vesper /* Tailwind++ generator */
                     if ('group' == $fst[0] && count($fst) > 1) {
                         $name = ".group:$fst[1] $name";
                     } else {
-                        $name .= ':' . implode(':', $ps);
+                        $name .= ':' . implode(':', array_reverse($ps));
                     }
                 }
                 if ($dark)
