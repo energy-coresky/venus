@@ -128,7 +128,7 @@ pre:focus {
   top: 27px;
   height: calc(100vh - 44px);
   cursor: w-resize;
-  z-index: 100;
+  z-index: 85;
 }
 #main {
   min-width: 640px;

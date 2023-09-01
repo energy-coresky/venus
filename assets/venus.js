@@ -108,6 +108,12 @@ var $$ = {
         });
         Vls('main', s + ",'" + ary.join(" ") + "'");
     },
+    add: function(obj) {
+        gv.modal('#modal-popup', 0);
+        ajax('add', obj, function(r) {
+            '-' == r || $$.test(r);
+        });
+    },
     save: function() {
         if (!$$.fn_save)
             return alert('Not saved');
@@ -290,7 +296,7 @@ var $$ = {
                 var fire = show ? el.next().find('.popup-sub:first')[0] : false,
                     top = el.parent().parent();
                 top.find('.popup-sub').each(function() {
-                    $$.ddm(0, this, fire === this)
+                    $$.ddm('all', this, fire === this)
                 });
                 return top.find('.menu').each(function() {
                     fire && this === el[0] ? el.attr('hover', 1) : this.removeAttribute('hover');
@@ -311,8 +317,8 @@ var $$ = {
                 el = $(el).css({left:xy.left, top:26 + xy.top}).find('.popup-menu')[0];
                 $(el).find('[hover]').removeAttr('hover');
             default:
-                var hidden = 'none' === $(el).css('display');
-                if (el.hasAttribute('running') || hidden && !show || !hidden && show)
+                var hidden = 'none' === $(el).css('display'), running = el.hasAttribute('running');
+                if (hidden && !show || !hidden && show || running && 'all' != mode)
                     return;
                 $(el).show().attr('running', 1).removeClass(show ? 'hide-a1' : 'show-a1').addClass(show ? 'show-a1' : 'hide-a1');
         }

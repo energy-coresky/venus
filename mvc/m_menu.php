@@ -8,12 +8,14 @@ class m_menu extends Model_m
 
     static $types = [
         'Components',
-        'Buttons',
-        'Alerts',
+        'Forms',
+        'Layouts',
+        'Menus',
+        'Other Components',
+        'Inputes',
+        'Blocks',
+        'Sets',
         'Tooltips',
-        'Switches',
-        'Popovers',
-        'Progress',
         'Other tiny HTML', //Spinners
     ];
 
@@ -98,7 +100,7 @@ class m_menu extends Model_m
         ];
         foreach (m_menu::$types as $i => $type) {
             $out = array_merge($out, [[$type, ($ary = $list($i)) ?: '', count($ary) . ' ' . self::$rar]]);
-            $i or $out = array_merge($out, ['']);
+            '4' != $i or $out = array_merge($out, ['']);
         }
         return $out;
     }

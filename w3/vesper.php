@@ -126,11 +126,8 @@ class Vesper /* Tailwind++ generator */
                 if (in_array($one, ['group', 'dark']))
                     continue;
                 $this->color = 0;
-                $css = $this->genCSS($one);
-                //$css or $css = ["/* not found */"];
-                if (!$css)
+                if (!$css = $this->genCSS($one))
                     continue;
-          //trace(print_r([$one,$css],1));
                 if (null !== $id)
                     $id = array_pop($css);
                 $mul = false;
@@ -344,6 +341,8 @@ class Vesper /* Tailwind++ generator */
         if ('[' == $color[0] && ']' == $color[-1]) { # Arbitrary value
             $hex = $this->last_color = $this->arbitrary($color);
         } else {
+            if (strpos($color, '/'))
+                [$color, $opacity] = explode('/', $color);
             if (!isset($pal[$color]))
                 return false;
             $hex = $this->last_color = '' === $tw_i ? $pal[$color] : $pal[$color][$tw_i];

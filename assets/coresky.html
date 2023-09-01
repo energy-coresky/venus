@@ -1,0 +1,977 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+*, ::after, ::before {
+  box-sizing: border-box;
+  border-width: 0;
+  border-style: solid;
+  border-color: #e5e7eb;
+}
+::after, ::before {
+  --tw-content: '';
+}
+html {
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  -moz-tab-size: 4;
+  tab-size: 4;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-feature-settings: normal;
+  font-variation-settings: normal;
+}
+body {
+  margin: 0;
+  line-height: inherit;
+}
+hr {
+  height: 0;
+  color: inherit;
+  border-top-width: 1px;
+}
+abbr:where([title]) {
+  -webkit-text-decoration: underline dotted;
+  text-decoration: underline dotted;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+a {
+  color: inherit;
+  text-decoration: inherit;
+}
+b, strong {
+  font-weight: bolder;
+}
+code, kbd, pre, samp {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 1em;
+}
+small {
+  font-size: 80%;
+}
+sub, sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+sub {
+  bottom: -.25em;
+}
+sup {
+  top: -.5em;
+}
+table {
+  text-indent: 0;
+  border-color: inherit;
+  border-collapse: collapse;
+}
+button, input, optgroup, select, textarea {
+  font-family: inherit;
+  font-feature-settings: inherit;
+  font-variation-settings: inherit;
+  font-size: 100%;
+  font-weight: inherit;
+  line-height: inherit;
+  color: inherit;
+  margin: 0;
+  padding: 0;
+}
+button, select {
+  text-transform: none;
+}
+[type=button], [type=reset], [type=submit], button {
+  -webkit-appearance: button;
+  background-color: transparent;
+  background-image: none;
+}
+:-moz-focusring {
+  outline: auto;
+}
+:-moz-ui-invalid {
+  box-shadow: none;
+}
+progress {
+  vertical-align: baseline;
+}
+::-webkit-inner-spin-button, ::-webkit-outer-spin-button {
+  height: auto;
+}
+[type=search] {
+  -webkit-appearance: textfield;
+  outline-offset: -2px;
+}
+::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+::-webkit-file-upload-button {
+  -webkit-appearance: button;
+  font: inherit;
+}
+summary {
+  display: list-item;
+}
+blockquote, dd, dl, figure, h1, h2, h3, h4, h5, h6, hr, p, pre {
+  margin: 0;
+}
+fieldset {
+  margin: 0;
+  padding: 0;
+}
+legend {
+  padding: 0;
+}
+menu, ol, ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+dialog {
+  padding: 0;
+}
+textarea {
+  resize: vertical;
+}
+input::placeholder, textarea::placeholder {
+  opacity: 1;
+  color: #9ca3af;
+}
+[role=button], button {
+  cursor: pointer;
+}
+:disabled {
+  cursor: default;
+}
+audio, canvas, embed, iframe, img, object, svg, video {
+  display: block;
+  vertical-align: middle;
+}
+img, video {
+  max-width: 100%;
+  height: auto;
+}
+[hidden] {
+  display: none;
+}
+*, ::before, ::after {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x: ;
+  --tw-pan-y: ;
+  --tw-pinch-zoom: ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position: ;
+  --tw-gradient-via-position: ;
+  --tw-gradient-to-position: ;
+  --tw-ordinal: ;
+  --tw-slashed-zero: ;
+  --tw-numeric-figure: ;
+  --tw-numeric-spacing: ;
+  --tw-numeric-fraction: ;
+  --tw-ring-inset: ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur: ;
+  --tw-brightness: ;
+  --tw-contrast: ;
+  --tw-grayscale: ;
+  --tw-hue-rotate: ;
+  --tw-invert: ;
+  --tw-saturate: ;
+  --tw-sepia: ;
+  --tw-drop-shadow: ;
+  --tw-backdrop-blur: ;
+  --tw-backdrop-brightness: ;
+  --tw-backdrop-contrast: ;
+  --tw-backdrop-grayscale: ;
+  --tw-backdrop-hue-rotate: ;
+  --tw-backdrop-invert: ;
+  --tw-backdrop-opacity: ;
+  --tw-backdrop-saturate: ;
+  --tw-backdrop-sepia: ;
+}
+::backdrop {
+  --tw-border-spacing-x: 0;
+  --tw-border-spacing-y: 0;
+  --tw-translate-x: 0;
+  --tw-translate-y: 0;
+  --tw-rotate: 0;
+  --tw-skew-x: 0;
+  --tw-skew-y: 0;
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  --tw-pan-x: ;
+  --tw-pan-y: ;
+  --tw-pinch-zoom: ;
+  --tw-scroll-snap-strictness: proximity;
+  --tw-gradient-from-position: ;
+  --tw-gradient-via-position: ;
+  --tw-gradient-to-position: ;
+  --tw-ordinal: ;
+  --tw-slashed-zero: ;
+  --tw-numeric-figure: ;
+  --tw-numeric-spacing: ;
+  --tw-numeric-fraction: ;
+  --tw-ring-inset: ;
+  --tw-ring-offset-width: 0px;
+  --tw-ring-offset-color: #fff;
+  --tw-ring-color: rgb(59 130 246 / 0.5);
+  --tw-ring-offset-shadow: 0 0 #0000;
+  --tw-ring-shadow: 0 0 #0000;
+  --tw-shadow: 0 0 #0000;
+  --tw-shadow-colored: 0 0 #0000;
+  --tw-blur: ;
+  --tw-brightness: ;
+  --tw-contrast: ;
+  --tw-grayscale: ;
+  --tw-hue-rotate: ;
+  --tw-invert: ;
+  --tw-saturate: ;
+  --tw-sepia: ;
+  --tw-drop-shadow: ;
+  --tw-backdrop-blur: ;
+  --tw-backdrop-brightness: ;
+  --tw-backdrop-contrast: ;
+  --tw-backdrop-grayscale: ;
+  --tw-backdrop-hue-rotate: ;
+  --tw-backdrop-invert: ;
+  --tw-backdrop-opacity: ;
+  --tw-backdrop-saturate: ;
+  --tw-backdrop-sepia: ;
+}
+.h-screen {
+  height: 100vh;
+}
+.overflow-hidden {
+  overflow: hidden;
+}
+.w-screen {
+  width: 100vw;
+}
+.absolute {
+  position: absolute;
+}
+.text-7xl {
+  font-size: 4.5rem;
+  line-height: 1;
+}
+.p-3 {
+  padding: 0.75rem;
+}
+.bg-yellow-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(254 240 138 / var(--tw-bg-opacity));
+}
+.text-yellow-700 {
+  --tw-text-opacity: 1;
+  color: rgb(161 98 7 / var(--tw-text-opacity));
+}
+.flex {
+  display: flex;
+}
+.text-center {
+  text-align: center;
+}
+.items-center {
+  align-items: center;
+}
+.blur-md {
+  --tw-blur: blur(12px);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+.bg-sky-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(186 230 253 / var(--tw-bg-opacity));
+}
+.text-sky-700 {
+  --tw-text-opacity: 1;
+  color: rgb(3 105 161 / var(--tw-text-opacity));
+}
+.left-full {
+  left: 100%;
+}
+.text-sky-300 {
+  --tw-text-opacity: 1;
+  color: rgb(125 211 252 / var(--tw-text-opacity));
+}
+.h-1\/3 {
+  height: 33.333333%;
+}
+.font-black {
+  font-weight: 900;
+}
+.bg-sky-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(12 74 110 / var(--tw-bg-opacity));
+}
+.bg-sky-800 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(7 89 133 / var(--tw-bg-opacity));
+}
+.bg-sky-700 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(3 105 161 / var(--tw-bg-opacity));
+}
+.text-yellow-300 {
+  --tw-text-opacity: 1;
+  color: rgb(253 224 71 / var(--tw-text-opacity));
+}
+.bg-pink-200 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(251 207 232 / var(--tw-bg-opacity));
+}
+.text-pink-700 {
+  --tw-text-opacity: 1;
+  color: rgb(190 24 93 / var(--tw-text-opacity));
+}
+.text-pink-300 {
+  --tw-text-opacity: 1;
+  color: rgb(249 168 212 / var(--tw-text-opacity));
+}
+.bg-pink-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(131 24 67 / var(--tw-bg-opacity));
+}
+.bg-pink-800 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(157 23 77 / var(--tw-bg-opacity));
+}
+.bg-pink-700 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(190 24 93 / var(--tw-bg-opacity));
+}
+.text-white {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+.bg-black {
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 0 0 / var(--tw-bg-opacity));
+}
+.transform {
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.transition-all {
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+.-top-8 {
+  top: -2rem;
+}
+.right-0 {
+  right: 0px;
+}
+.rotate-12 {
+  --tw-rotate: 12deg;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.scale-100 {
+  --tw-scale-x: 1;
+  --tw-scale-y: 1;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.text-green-300 {
+  --tw-text-opacity: 1;
+  color: rgb(134 239 172 / var(--tw-text-opacity));
+}
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+.inline {
+  display: inline;
+}
+.text-mistyrose {
+  --tw-text-opacity: 1;
+  color: rgb(255 228 225 / var(--tw-text-opacity));
+}
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+.duration-700 {
+  transition-duration: 700ms;
+}
+.scale-30 {
+  --tw-scale-x: 0.3;
+  --tw-scale-y: 0.3;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.opacity-10 {
+  opacity: 0.1;
+}
+.text-oldlace {
+  --tw-text-opacity: 1;
+  color: rgb(253 245 230 / var(--tw-text-opacity));
+}
+.font-mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+.duration-900 {
+  transition-duration: 900ms;
+}
+.text-khaki {
+  --tw-text-opacity: 1;
+  color: rgb(240 230 140 / var(--tw-text-opacity));
+}
+.relative {
+  position: relative;
+}
+.p-2 {
+  padding: 0.5rem;
+}
+.w-1\/2 {
+  width: 50%;
+}
+.h-1\/2 {
+  height: 50%;
+}
+.-left-1\/2 {
+  left: -50%;
+}
+.-top-1\/2 {
+  top: -50%;
+}
+.justify-end {
+  justify-content: flex-end;
+}
+.items-end {
+  align-items: flex-end;
+}
+.text-5xl {
+  font-size: 3rem;
+  line-height: 1;
+}
+.transition {
+  transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+.bg-blue-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(96 165 250 / var(--tw-bg-opacity));
+}
+.bg-green-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(74 222 128 / var(--tw-bg-opacity));
+}
+.top-full {
+  top: 100%;
+}
+.bg-pink-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(244 114 182 / var(--tw-bg-opacity));
+}
+.bg-yellow-400 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(250 204 21 / var(--tw-bg-opacity));
+}
+.top-0 {
+  top: 0px;
+}
+.text-green-400 {
+  --tw-text-opacity: 1;
+  color: rgb(74 222 128 / var(--tw-text-opacity));
+}
+.opacity-0 {
+  opacity: 0;
+}
+.text-lime-300 {
+  --tw-text-opacity: 1;
+  color: rgb(190 242 100 / var(--tw-text-opacity));
+}
+.bg-stone-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(28 25 23 / var(--tw-bg-opacity));
+}
+.bg-stone-800 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(41 37 36 / var(--tw-bg-opacity));
+}
+.bg-stone-700 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(68 64 60 / var(--tw-bg-opacity));
+}
+.hidden {
+  display: none;
+}
+.-translate-x-full {
+  --tw-translate-x: -100%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.duration-800 {
+  transition-duration: 800ms;
+}
+.blur-0 {
+  --tw-blur: blur(0);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+.duration-500 {
+  transition-duration: 500ms;
+}
+.delay-100 {
+  transition-delay: 100ms;
+}
+.delay-700 {
+  transition-delay: 700ms;
+}
+.animate-shake {
+  animation: shake .3s ease-out;
+}
+@keyframes shake {
+  30%, 60%, 90% {
+    transform: translateX(-5%);
+  }
+  15%, 45%, 75% {
+    transform: translateX(5%);
+  }
+}
+.opacity-90 {
+  opacity: 0.9;
+}
+.opacity-99 {
+  opacity: 0.99;
+}
+.opacity-100 {
+  opacity: 1;
+}
+.delay-200 {
+  transition-delay: 200ms;
+}
+.duration-50 {
+  transition-duration: 50ms;
+}
+.translate-x-full {
+  --tw-translate-x: 100%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.duration-0 {
+  transition-duration: 0ms;
+}
+.translate-x-0 {
+  --tw-translate-x: 0px;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.duration-801 {
+  transition-duration: 801ms;
+}
+.duration-3000 {
+  transition-duration: 3000ms;
+}
+.duration-1500 {
+  transition-duration: 1500ms;
+}
+.ease-in {
+  transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+}
+.translate-x-\[calc\(-100vw_\/_2\)\] {
+  --tw-translate-x: calc(-100vw / 2);
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.translate-y-\[calc\(100vh_\/_2\)\] {
+  --tw-translate-y: calc(100vh / 2);
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.rotate-1080 {
+  --tw-rotate: 1080deg;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.scale-300 {
+  --tw-scale-x: 3;
+  --tw-scale-y: 3;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.duration-150 {
+  transition-duration: 150ms;
+}
+.scale-400 {
+  --tw-scale-x: 4;
+  --tw-scale-y: 4;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.delay-300 {
+  transition-delay: 300ms;
+}
+.duration-200 {
+  transition-duration: 200ms;
+}
+.scale-150 {
+  --tw-scale-x: 1.5;
+  --tw-scale-y: 1.5;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.delay-0 {
+  transition-delay: 0ms;
+}
+.duration-180 {
+  transition-duration: 180ms;
+}
+.scale-700 {
+  --tw-scale-x: 7;
+  --tw-scale-y: 7;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.duration-120 {
+  transition-duration: 120ms;
+}
+.scale-1100 {
+  --tw-scale-x: 11;
+  --tw-scale-y: 11;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.blur-xxs {
+  --tw-blur: blur(1px);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+.duration-100 {
+  transition-duration: 100ms;
+}
+.scale-1500 {
+  --tw-scale-x: 15;
+  --tw-scale-y: 15;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.blur-xs {
+  --tw-blur: blur(2px);
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
+}
+.scale-1900 {
+  --tw-scale-x: 19;
+  --tw-scale-y: 19;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.translate-y-full {
+  --tw-translate-y: 100%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.-translate-y-full {
+  --tw-translate-y: -100%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.-rotate-780 {
+  --tw-rotate: -780deg;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.-translate-x-1\/4 {
+  --tw-translate-x: -25%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+.-translate-y-1\/4 {
+  --tw-translate-y: -25%;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+</style>
+<script>var gv = {
+    gv: [],
+    cls: function(el, ary, add, sar) {
+        for (let cls of ary) {
+            if ('!' == cls.charAt(0)) {
+                if (!add)
+                    continue;
+                cls = cls.substring(1);
+            }
+            if (sar) for (let [s, r] of sar)
+                cls = cls.replace(s, r);
+            add ? el.classList.add(cls) : el.classList.remove(cls)
+        }
+    },
+    ps: function(all, filt) {
+        let out = [], ps = filt || 'sar';
+        for (let one of all) {
+            a = one.split(':');
+            if (a.length > 1 && ps == a[0])
+                out.push('sar' == ps ? a[1].split('=') : a[1])
+        }
+        return out;
+    },
+    test: function(js, name, ary) {
+        let set = js.split(' '), re = new RegExp('^' + name);
+        for (let one of set) {
+            if (one.match(re))
+                return ary ? set : one;
+        }
+        return false;
+    },
+    findAll: function(el, name) {
+        let one, out = [], js = el.getAttribute('js');
+        if (js && (one = gv.test(js, name)))
+            out.push([el, one]);
+        if (set = el.querySelectorAll('[js*=' + name.replace(/([^_a-z\-\d])/g, '\\$1') + ']')) {
+            [...set].forEach(el => {
+                out.push([el, gv.test(el.getAttribute('js'), name)]);
+            });
+        }
+        return out;
+    },
+    find: function(el, name) {
+        let js = el.getAttribute('js'), set;
+        if (js && (set = gv.test(js, name, true)))
+            return [el, set];
+        if (el = el.querySelector('[js*=' + name.replace(/([^_a-z\-\d])/g, '\\$1') + ']'))
+            return gv.find(el, name);
+        return false;
+    },
+    to: function(el, $js, $$, add) {
+        for (let name in $js) {
+            if (!$js[name][$$])
+                continue;
+            let node = gv.find(el, name);
+            node && gv.cls(node[0], $js[name][$$], add, 1 == node[1].length ? false : gv.ps(node[1]));
+        }
+    },
+    start: function(el, $js, $$, listen, prev) {
+        if (listen)
+            gv.listen(el, $$, listen);
+        gv.to(el, $js, $$ + '_', 1);
+        setTimeout(function() {
+            gv.to(el, $js, $$ + '_', 0);
+            gv.to(el, $js, $$, 1);
+            null === prev || gv.to(el, $js, 'twin' === prev ? (1 - $$) : prev, 0);
+        }, 10);
+    },
+    next_id: 1,
+    listen: function(el, $$, listen) {
+        var id = parseInt(el.getAttribute('gv'));
+        if (id) {
+            gv.gv[id].prev = gv.gv[id].state;
+            gv.gv[id].state = $$;
+        } else {
+            el.setAttribute('gv', id = gv.next_id++);
+            gv.gv[id] = {state: $$, prev: 9999, hidden:false};
+            for (let one in listen) {
+                if ('end' === one) {
+                    let all = gv.findAll(el, 'end:');
+                    for (let end of all) {
+                        if ('end:hidden' === end[1]) {
+                            gv.gv[id].hidden = true;
+                            listen[one] = () => {
+                                gv.gv[id].state || el.classList.add('hidden');
+                            };
+                        }
+                        end[0].addEventListener('transitionend', (e) => {
+                            e.stopPropagation();
+                            if (gv.gv[id].prev != gv.gv[id].state)
+                                listen[one](gv.gv[id].prev = gv.gv[id].state, id, end[0])
+                        }, false);
+                    }
+                } else if ('click' === one) {
+                    document.addEventListener('click', listen[one], true);
+                }
+            }
+        }
+        if ($$ && gv.gv[id].hidden)
+            el.classList.remove('hidden');
+    },
+    clone: function(src, cnt) {
+        let str = 'string' == typeof src;
+        let ary = str ? document.querySelectorAll('.star') : src;
+        [...ary].forEach(el => {
+            for (let i = 0; i < cnt; i++)
+                el.insertAdjacentHTML('afterend', el.outerHTML);
+        });
+    },
+    all: {
+        
+    },
+    initFunc: false,
+    init: function() {
+        if (gv.initFunc)
+            gv.initFunc();
+    }
+};
+
+window.addEventListener('DOMContentLoaded', gv.init, true);
+
+gv.cs3 = function(id) {
+    let prev = null, listen = false;
+    let $js = {"cs3-left":[["-translate-x-full","duration-800"]]}
+    let el = document.querySelector(id);
+    let $$ = 0;
+    gv.start(el, $js, $$, listen, prev);
+};
+gv.cs4 = function(id, $$) {
+    let prev = null, listen = {};
+    let $js = {"cs4-blur":[["blur-0","duration-500","delay-100"]]}
+    let el = document.querySelector(id);
+    listen.end = function ($$) {
+      setTimeout(function () {
+        if ('#cs6' == id) {
+          gv.csend(1);
+          setTimeout("gv.csend(2)", 1900);
+        }
+        gv.cs3(id);
+        gv.cs3(id + 2);
+        setTimeout("gv.cshake('"+ id + 2 +"', 0)", 980);
+      }, 1900);
+    };
+    gv.start(el, $js, $$, listen, prev);
+};
+gv.cshake = function(id, $$) {
+    let prev = null, listen = {};
+    let $js = {"cshake-sk1":[["delay-700","animate-shake","opacity-90"]],"cshake-sk2":{"1":["delay-700","animate-shake","opacity-90"]},"cshake-sk3":{"2":["delay-700","animate-shake","opacity-99"],"3":["opacity-100","delay-200","duration-50"]},"cshake-opa":{"4":["duration-500","opacity-0"]}}
+    let el = document.querySelector(id);
+    $$ && (prev = $$ - 1);
+    listen.end = function ($$) {
+        if ($$ < 4)
+           return gv.cshake(id, ++$$);
+        let x = '#cs32' == id ? '#cs4' : ('#cs42' == id ? '#cs5' : '#cs6');
+        gv.cs4(x, 0);
+    };
+    gv.start(el, $js, $$, listen, prev);
+};
+gv.csend = function($$) {
+    let prev = null, listen = false;
+    let $js = {"csend-r":[["translate-x-full","duration-0"]],"csend-l":{"1":["translate-x-0","duration-801"]},"csend-o":{"2":["opacity-100","duration-3000"]}}
+    let el = document.querySelector('#cs3');
+    gv.start(el, $js, $$, listen, prev);
+};
+gv.cs = function(id, $$) {
+    let prev = null, listen = {};
+    let $js = {"cs-move":[["duration-1500","!ease-in","!translate-x-[calc(-100vw_\/_2)]","!translate-y-[calc(100vh_\/_2)]","!rotate-1080","scale-300"],["duration-150","scale-400","delay-300"],["duration-200","scale-150","delay-0"],["duration-180","scale-700"],["duration-120","scale-1100","blur-xxs"],["duration-100","scale-1500","!blur-xs"],["duration-500","scale-1900","opacity-0"]]}
+    let el = document.querySelector(id);
+    listen.end = function ($$) {
+        $$ && (prev = $$);
+        6 == $$ ? gv.cs2(0) : gv.cs(id, ++$$);
+    };
+    gv.start(el, $js, $$, listen, prev);
+};
+gv.cs1 = function(el, $$) {
+    let prev = null, listen = {};
+    let $js = {"cs1-star":{"1":["opacity-10"]},"cs1-size":[["scale-100"],["scale-30"]]}
+    prev = 'twin';
+    listen.end = function ($$, id) {
+        gv.cs1(el, 1 - $$);
+    };
+    gv.start(el, $js, $$, listen, prev);
+};
+gv.cs2 = function($$) {
+    let prev = null, listen = {};
+    let $js = {"cs2-is":[["translate-x-full","translate-y-full","duration-800"]],"cs2-the":{"1":["-translate-x-full","translate-y-full","duration-800"]},"cs2-php":{"2":["translate-x-full","-translate-y-full","duration-800"]},"cs2-fr":{"3":["-translate-x-full","-translate-y-full","duration-800"]},"cs2-hide":{"4":["-rotate-780","scale-30","-translate-x-1\/4","-translate-y-1\/4","duration-800","delay-200"],"5":["duration-500","delay-300","opacity-0"]}}
+    let el = document.querySelector('#cs2');
+    listen.end = function ($$) {
+        if ($$ < 5)
+           return gv.cs2(++$$);
+        gv.cs3('#cs3');
+        gv.cs3('#cs32');
+        setTimeout("gv.cshake('#cs32', 0)", 980);
+        setTimeout("gv.csend(0)", 810);
+    };
+    gv.start(el, $js, $$, listen, prev);
+};
+</script>
+</head>
+<body style="overflow: hidden; user-select: initial;">
+<div class="h-screen overflow-hidden">
+  <div js="cs3-left" id="cs6">
+    <div js="cs4-blur end:" class="h-screen w-screen absolute text-7xl p-3 bg-yellow-200 text-yellow-700 flex text-center items-center blur-md">Grace is the javascript animation engine</div>
+  </div>
+  <div js="cs3-left" id="cs5">
+    <div js="cs4-blur end:" class="h-screen w-screen absolute text-7xl p-3 bg-sky-200 text-sky-700 flex text-center items-center blur-md">Vesper is the PHP implementation of Tailwind CSS</div>
+  </div>
+  <div js="cshake-opa end:" id="cs52">
+    <div js="cs3-left" class="h-screen w-screen absolute left-full text-sky-300">
+      <div js="cshake-sk1 end:" class="h-1/3 p-3 text-7xl font-black bg-sky-900">Vesper</div>
+      <div js="cshake-sk2 end:" class="h-1/3 p-3 text-7xl font-black bg-sky-800">has</div>
+      <div js="cshake-sk3 end:" class="h-1/3 p-3 text-7xl font-black bg-sky-700 text-yellow-300">Grace</div>
+    </div>
+  </div>
+  <div js="cs3-left" id="cs4">
+    <div js="cs4-blur end:" class="h-screen w-screen absolute text-7xl p-3 bg-pink-200 text-pink-700 flex text-center items-center blur-md">Venus is the development plugin for Coresky</div>
+  </div>
+  <div js="cshake-opa end:" id="cs42">
+    <div js="cs3-left" class="h-screen w-screen absolute left-full text-pink-300">
+      <div js="cshake-sk1 end:" class="h-1/3 p-3 text-7xl font-black bg-pink-900">Venus</div>
+      <div js="cshake-sk2 end:" class="h-1/3 p-3 text-7xl font-black bg-pink-800">has</div>
+      <div js="cshake-sk3 end:" class="h-1/3 p-3 text-7xl font-black bg-pink-700 text-sky-300">Vesper</div>
+    </div>
+  </div>
+  <div js="cs3-left csend-r csend-l" id="cs3" class="h-screen w-screen absolute text-white bg-black">
+    <div js="cs-move end:" id="cs" class="transform transition-all absolute -top-8 right-0 rotate-12 scale-100">
+      <div class="text-green-300 font-black text-3xl">Coresky</div>
+    </div>
+    <div js="cs1-size" class="star inline text-mistyrose absolute text-xl duration-700 scale-30">
+      <div js="cs1-star end:" class="inline opacity-10 duration-700">✶</div>
+    </div>
+    <div js="cs1-size" class="star inline text-oldlace absolute text-xl font-mono duration-900 scale-30">
+      <div js="cs1-star end:" class="inline opacity-10 duration-700">✴</div>
+    </div>
+    <div js="cs1-size" class="star inline text-khaki absolute text-xl duration-900 scale-30">
+      <div js="cs1-star end:" class="inline opacity-10 duration-700">✷</div>
+    </div>
+    <div js="cs2-hide end:" id="cs2" class="relative w-screen h-screen">
+      <div js="cs2-is end:" class="flex absolute p-2 w-1/2 h-1/2 -left-1/2 -top-1/2 justify-end items-end font-black text-5xl transition bg-blue-400">IS</div>
+      <div js="cs2-the end:" class="flex absolute p-2 w-1/2 h-1/2 left-full -top-1/2 items-end font-black text-5xl transition bg-green-400">THE</div>
+      <div js="cs2-php end:" class="flex absolute p-2 w-1/2 h-1/2 -left-1/2 top-full justify-end font-black text-5xl transition bg-pink-400">PHP</div>
+      <div js="cs2-fr end:" class="flex absolute p-2 w-1/2 h-1/2 left-full top-full font-black text-5xl transition bg-yellow-400">FRAMEWORK</div>
+    </div>
+    <div js="csend-o" class="h-screen w-screen absolute top-0 text-3xl p-3 text-green-400 opacity-0">
+      1. Coresky is the PHP framework.
+      <br>
+      2. Coresky has Venus.
+      <br>
+      3. Venus is the development ware for Coresky.
+      <br>
+      4. Venus has Vesper.
+      <br>
+      5. Vesper is the PHP implementation of Tailwind CSS.
+      <br>
+      6. Vesper has Grace.
+      <br>
+      7. Grace is the javascript animation engine.
+      <br>
+      8. This animation prepared with help of Grace.
+      <br>
+      9. Welcome to collaboration.
+      <br>
+      10. Thank you for attention. Energy.
+    </div>
+  </div>
+  <div js="cshake-opa end:" id="cs32">
+    <div js="cs3-left" class="h-screen w-screen absolute left-full text-lime-300">
+      <div js="cshake-sk1 end:" class="h-1/3 p-3 text-7xl font-black bg-stone-900">Coresky</div>
+      <div js="cshake-sk2 end:" class="h-1/3 p-3 text-7xl font-black bg-stone-800">has</div>
+      <div js="cshake-sk3 end:" class="h-1/3 p-3 text-7xl font-black bg-stone-700 text-pink-300">Venus</div>
+    </div>
+  </div>
+  <script>
+gv.initFunc = function() {
+    document.querySelector('body').style.overflow = 'hidden';
+    gv.clone('.star', 10)
+    setTimeout(function () {
+        gv.cs('#cs', 0);
+    }, 1700);
+    gv.stars();
+};
+
+gv.stars = function (x) {
+    ary = document.querySelectorAll('.star');
+    [...ary].forEach(el => {
+        el.style.left = (Math.random() * 95) + '%';
+        el.style.top = (Math.random() * 95) + '%';
+        setTimeout(function () {
+            gv.cs1(el, 0)
+        }, Math.round(700 * Math.random()));
+    });
+}
+</script>
+</div>
+</body>
+</html>

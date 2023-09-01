@@ -83,6 +83,10 @@ class venus_c extends Controller
         return $this->t_venus->put($_POST['fn'], $html);
     }
 
+    function j_add() {
+        $this->t_venus->add($_POST['fn'], $_POST['type'], $_POST['src']);
+    }
+
     function j_menu() {
         $menu = m_venus::menu();
         return ['menu' => $menu[$this->_3] ?? $menu['t']];

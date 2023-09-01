@@ -4,6 +4,8 @@ class t_venus extends Model_t
 {
     protected $table = 'preset';
 
+    const empty_data = '<i class="text-7xl">TODO</i>';
+
     public $w;
     public $jet = [];
 
@@ -89,7 +91,7 @@ class t_venus extends Model_t
         $id = substr($fn, 1);
         if ('!' == $pfx) {
             $s = $this->sql('+select !! from $_tw where id=$+', $data ? 'tmemo' : 'name', $id);
-            return $data ? ($s ?? '<i class="text-7xl">TODO</i>') : "Usage: <b>$s</b>";
+            return $data ? ($s ?? self::empty_data) : "Usage: <b>$s</b>";
         } elseif (':' == $pfx) {
             return $data ? $this->cell($id, 'tmemo') : 'Venus: <b>' . ($tw = $this->cell($id, 'name')) . '</b>';
         } elseif ('~' == $pfx) {
@@ -113,5 +115,25 @@ class t_venus extends Model_t
             Plan::view_p(['main', $fn], $data);
         }
         return true;
+    }
+
+    function add($fn, $type, $src) {
+        $fn = preg_replace("/\s+/", ' ', trim($fn));
+        if ('' === $fn) {
+            echo '-';
+        } elseif ($src) { # Venus
+            echo ':' . $this->insert([
+                'name' => $fn,
+                'flag' => $type,
+                'tmemo' => self::empty_data,
+                '!dt' => '$now',
+            ]);
+        } else { # App
+            $fn = "$type-" . preg_replace("/ /", '-', strtolower($fn));
+            $exist = call_user_func(['Plan', (SKY::w('plan') ? 'mem' : 'app') . "_t"], ['main', "venus/$fn.html"]);
+            if (!$exist)
+                call_user_func(['Plan', (SKY::w('plan') ? 'mem' : 'app') . "_p"], ['main', "venus/$fn.html"], self::empty_data);
+            echo "~$fn";
+        }
     }
 }

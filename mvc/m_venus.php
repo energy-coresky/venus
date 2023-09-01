@@ -62,9 +62,9 @@ class m_venus extends Model_m
 
     static function addform() {
         return Form::A([], [
-            'src' => ['Source', 'radio', ['Venus', 'Application']],
+            'src' => ['To collection', 'radio', ['Application', 'Venus']],
             'type' => ['Type', 'select', m_menu::$types],
-            'name' => ['Name', '', 'style="width:100%"'],
+            'fn' => ['Name', '', 'style="width:100%"'],
         ]);
     }
 
