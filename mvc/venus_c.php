@@ -89,7 +89,7 @@ class venus_c extends Controller
 
     function j_menu() {
         $menu = m_venus::menu();
-        return ['menu' => $menu[$this->_3] ?? $menu['t']];
+        return ['menu' => $menu[$this->_3] ?? $menu['h']];
     }
 
     function j_settings() {

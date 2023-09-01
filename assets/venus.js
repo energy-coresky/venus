@@ -45,7 +45,6 @@ var $$ = {
         ajax(['_venus', 'menu&m=' + ($$._mx = x)], {}, $('#v-menu ul'));
         $('#v-menu select:eq(0)').val(x);
     },
-    //$$.fn
     switch: function(W, H, force, x, fn, tools) {
         if (fn) {
             if (force)
@@ -143,7 +142,7 @@ var $$ = {
         $$.$el = $(this);
         $$.info($(this).prop('tagName'), 1);
     },
-    _catch: function() {//alert()
+    _catch: function() {
         $$.$tk = $$.$el;
         var s = $$.$el.prop('tagName') + ' e= catched' //+ $$.$el.attr('e');
         $$.info(s, 2);
@@ -331,13 +330,10 @@ var $$ = {
 
 (function() {
     sky.a.error(function(r) {
-   //     if (!r.soft)
-     //       location.href = '_crash?' + r.err_no;
         $('#tail').html(r.catch_error);
     });
     sky.err = function(s) {
         $('#tail').html(s);
-        //f1[0] ? ab.message(s, 0, 1) : alert(s); // red, no animation
     };
 })();
 
@@ -400,11 +396,6 @@ body{
             );
         };
     });
-    var v = Vls('main');
-    if (v) {
-        eval('$$.switch(' + v + ')');
-    } else {
-        $$.menu('t')
-    }
+    var v = Vls('main') || "250,250,0,'t','!274','syntax'";
+    eval('$$.switch(' + v + ')');
 });
-
