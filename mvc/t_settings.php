@@ -7,7 +7,7 @@ class t_settings extends Model_t
     public $t;//sky sql "insert into memory values(null,'user','',null)" w venus
 
     private $menu = [];
-    private $ary = ['section' => '', 'gen' => []];
+    private $ary = ['section' => '', 'gen' => [], 'auto' => false];
     private $form_data = [];
     private $ttl = [1 => 'User-1', 'Preflight', 'Forms', 'User-2', 'Variables', '<b>Generated CSS</b>', 'User-3'];
 
