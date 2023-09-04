@@ -101,7 +101,11 @@ class t_venus extends Model_t
         }
         $tw = '';
         preg_match('/^https?:/', $fn) or $fn = "https://$fn";
-        return $data ? get($fn, '', false) : "URL: <b>$fn</b>"; //file_get_contents
+        if (!$data)
+            return "URL: <b>$fn</b>";
+        if ('PHP' != substr($_SERVER['SERVER_SOFTWARE'], 0, 3))
+            return get($fn, '', false);
+        return '<span class="text-7xl">Cannot run second query under PHP server</span>';
     }
 
     function put($fn, $data = null) {
