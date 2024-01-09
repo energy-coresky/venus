@@ -3,9 +3,7 @@
 class Venus extends Console
 {
     function __construct($argv = [], $found = []) {
-        Plan::$ware = 'venus';
-        parent::__construct($argv, $found);
-        Plan::$ware = 'main';
+        Plan::set('venus', fn() => parent::__construct($argv, $found));
     }
 
     /** Show Venus tables */

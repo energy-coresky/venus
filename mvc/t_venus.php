@@ -13,8 +13,7 @@ class t_venus extends Model_t
         static $dd;
         if ($dd)
             return $dd;
-        SKY::$databases += Plan::app_r('conf.php')['app']['databases'];
-        $this->w =& m_venus::ghost($dd = SQL::open('w'));
+        $this->w =& m_venus::ghost($dd = SQL::open());
         return $dd;
     }
 

@@ -1,0 +1,11 @@
+core:
+  plans:
+    view: {path: __DIR__/mvc}
+    mem: {path: __DIR__/mvc}
+    app:
+      type: dev
+      require: SQLite3 Parsedown
+      cli: c:/web/hole
+  databases:
+    driver: sqlite3
+    dsn: __DIR__/venus.base
