@@ -217,7 +217,7 @@ class Maat
                         $join[] = $k . '="' . ($g ? "<$g>$v</$g>" : $v) . '"';
                     }
                     if ($style[0] && $style[1]) {
-                        $path = 'http' == substr($style[1], 0, 4) ? $style[1] : LINK . substr($style[1], strlen(PATH));
+                        $path = 'http' == substr($style[1], 0, 4) ? $style[1] : HOME . substr($style[1], strlen(PATH));
                         $txt = get($path, '', false);
                         $txt = $this->buildCSS($txt);
                         $this->code[] = [$txt, substr_count($txt, "\n"), $name = explode('?', basename($style[1]))[0], 0];

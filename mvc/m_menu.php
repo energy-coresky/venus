@@ -62,7 +62,7 @@ class m_menu extends Model_m
 
     function files() {
         $list = [];
-        $list[] = LINK;
+        $list[] = HOME;
         $list[] = 'https://coresky.net/';
         return array_combine($list, array_map(function($v) {
             return "$$.test('$v')";

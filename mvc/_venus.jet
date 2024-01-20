@@ -96,7 +96,7 @@ $(function() {
     @loop(['sm','md','lg','xl','2xl'] as $one)
       <span class="absolute" style="left:{{146 + SKY::w($one)}}px;top:19px;color:#888;z-index:999">▽</span>
     ~loop
-    <a href="{{LINK}}" class="vs-ic mr-3">@svg(home)</a>
+    <a href="{{HOME}}" class="vs-ic mr-3">@svg(home)</a>
     <a @href($(this).find('svg').toggle()) class="vs-ic">@inc(.moonsun)</a>
     <a @href(gv.modal('#modal-popup',1)) class="vs-ic ml-3">@svg(fileplus)</a>
     <a class="menu-btn f2" @href($$.save())>Save - F2</a>
@@ -162,7 +162,7 @@ $(function() {
 @inc(.modal)
 #.tail.pdaxt ------------------------------------------------------------------------------ m$.m_down(this)
 <span class="pdaxt">
-  <a href="{{$page ?: LINK}}">S</a>
+  <a href="{{$page ?: HOME}}">S</a>
   <a @href(dev('_dev'))>D</a>
   <a href="/">?</a>
   <a @href(sky.trace(1))>X</a>

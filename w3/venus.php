@@ -6,12 +6,6 @@ class Venus extends Console
         Plan::set('venus', fn() => parent::__construct($argv, $found));
     }
 
-    /** Show Venus tables */
-    function a_t() {
-        $t = new t_venus('unicode');
-        print_r($t->head_y()->_tables());
-    }
-
     /** Test Maat parser */
     function a_test() {
         $css = Plan::_g("assets/preflight.css");
