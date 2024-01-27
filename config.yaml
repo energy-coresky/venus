@@ -3,8 +3,8 @@ core:
     app:
       type: dev
       require: SQLite3 Parsedown
-    view: {path: __DIR__/mvc}
-    mem: {path: __DIR__/mvc}
+    view: {path: $SELF/mvc}
+    mem: {path: $SELF/mvc}
   databases:
     driver: sqlite3
-    dsn: __DIR__/venus.base
+    dsn: $SELF/venus.base

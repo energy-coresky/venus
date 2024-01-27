@@ -1,6 +1,9 @@
 <?php
 
-class Venus extends Console
+namespace venus;
+use Plan, Maat, Vesper, Maxwell;
+
+class app extends \Console
 {
     function __construct($argv = [], $found = []) {
         Plan::set('venus', fn() => parent::__construct($argv, $found));
@@ -78,7 +81,7 @@ class Venus extends Console
 
     /** Work with database */
     function a_base() {
-        $m = new t_venus('css');
+        $m = new \t_venus('css');
         $t = $m->sqlf('@select id,txt from $_ where css_id=0 limit 1');
         foreach ($t as $id => $txt) {
   #          $m->sqlf('update $_ set txt=%s where id=%d', html($txt), $id);
