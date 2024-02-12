@@ -8,3 +8,6 @@ core:
   databases:
     driver: sqlite3
     dsn: $SELF/venus.base
+
+tw: w3/tailwind.yaml
+html: w3/html.yaml

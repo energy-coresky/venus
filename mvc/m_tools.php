@@ -35,8 +35,8 @@ class m_tools extends Model_m
     function _tcolors() {
         '' === $this->y3[1] or $this->w_v3 = $this->y3[1];
         return [
-            'v3' => Tailwind::$color3,
-            'list' => $list = Tailwind::v2(),//$color2,
+            'v3' => cfg('tw')->color3,
+            'list' => $list = cfg('tw')->color2,
             'c' => [$c = count($list), floor($c / 2)],
             'menus' => m_menu::v_history() . m_menu::other_col(),
             'v2_ary' => m_venus::$v2_ary,
@@ -45,13 +45,13 @@ class m_tools extends Model_m
     }
 
     function _hcolors() {
-        $list = HTML::$colors;
+        $list = cfg('html')->colors;
         $this->y3[0] AND sort($list);
         return ['list' => $list];
     }
 
     function _palette() {
-        return ['v3' => Tailwind::$color3];
+        return ['v3' => cfg('tw')->color3];
     }
 
     function _ruler() {

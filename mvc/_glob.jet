@@ -1,0 +1,9 @@
+#.def
+#use(__glob.m_glob as m_glob)
+11
+#.def
+
+#.use
+#use(__glob.m_glob as m_glob)
+22
+#.use

@@ -324,13 +324,13 @@ class Vesper /* Tailwind++ generator */
         $point = '.' == $ary[0][0] ? array_shift($ary) : false;
         if ($var = array_shift($ary))
             $var = array_shift($ary);
-        $pal = $base + ['none' => 'none'] + HTML::$color_hex;
+        $pal = $base + ['none' => 'none'] + cfg('html')->color_hex;
         if ('' !== $num) {
             if (!preg_match("~^(\d+)/?(\d*|\[[^\]]+\])$~", $num, $match))
                 return false;
             [, $num, $opacity] = $match;
             if (0 == (int)$num % 50) {
-                $pal = Tailwind::$color3;
+                $pal = cfg('tw')->color3;
                 $tw_i = 950 == $num ? 10 : floor($num / 100);
             } elseif (0 == (int)$num % 15) {
                 // 2do hsl() rotate HTML colors

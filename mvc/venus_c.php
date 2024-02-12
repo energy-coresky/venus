@@ -16,16 +16,14 @@ class venus_c extends Controller
         return MVC::$layout && !$this->fly ? parent::tail_y() : null;
     }
 
+    #function yml_c() {
+    #    Boot::directive('hash', fn($v) => "#$v");
+    #}
+
     function jet_c() {
-        Jet::directive('ob', function($arg) {
-            return "<?php ob_start() ?>";
-        });
-        Jet::directive('quot', function($arg) {
-            return "<?php echo str_replace('\"', '&quot;', ob_get_clean()) ?>";
-        });
-        Jet::directive('_inc', function($arg) {
-            return $this->t_venus->_inc(substr($arg, 1));
-        });
+        Jet::directive('ob', fn() => "<?php ob_start() ?>");
+        Jet::directive('quot', fn() => "<?php echo str_replace('\"', '&quot;', ob_get_clean()) ?>");
+        Jet::directive('_inc', fn($v) => $this->t_venus->_inc(substr($v, 1)));
     }
 
     function a_page() {
