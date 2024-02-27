@@ -79,7 +79,7 @@ class t_venus extends Model_t
         if ('#.jet' != substr($s, 0, 5))
             return $s;
         $this->jet = [$fn => 'jet'];
-        return Jet::inline($s);
+        return Jet::text($s);
     }
 
     function get($fn, $data, &$tw) {
