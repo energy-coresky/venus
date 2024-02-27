@@ -10,4 +10,3 @@ Status: _under development_
 Venus has its own implementation of TailwindCSS framework in PHP, called "Vesper".
 Venus do not use Tailwind's code, except Tailwind-CDN javascript code for comparing utility generation for test purpose.
 TailwindCSS is the software of Tailwind Labs, Inc. See license in the file: "assets/tailwind/LICENSE"
-
