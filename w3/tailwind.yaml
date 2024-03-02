@@ -1,4 +1,5 @@
-color3: @v3
+# ==================================================
+color3: @eval("#$v") @each @csv( )
   slate:   f8fafc f1f5f9 e2e8f0 cbd5e1 94a3b8 64748b 475569 334155 1e293b 0f172a 020617
   gray:    f9fafb f3f4f6 e5e7eb d1d5db 9ca3af 6b7280 4b5563 374151 1f2937 111827 030712 # v2
   zinc:    91d2f3 f4f4f5 e4e4e7 d4d4d8 a1a1aa 71717a 52525b 3f3f46 27272a 18181b 09090b
@@ -22,10 +23,19 @@ color3: @v3
   pink:    fdf2f8 fce7f3 fbcfe8 f9a8d4 f472b6 ec4899 db2777 be185d 9d174d 831843 500724 # v2
   rose:    fff1f2 ffe4e6 fecdd3 fda4af fb7185 f43f5e e11d48 be123c 9f1239 881337 4c0519
 
-color2: @v2
+rename: @bang(= )
+  gray=gray red=red yellow=amber green=emerald blue=blue indigo=indigo purple=violet pink=pink
+
+color2: @eval $TAIL
 
 img: @base64 |
   R0lGODdhDQAIAIAAAAAAANnZ2SwAAAAADQAIAAACF4SDGQ
   ar3xxbJ9p0qa7R0YxwzaFME1IAADs=
 
 #also-work: @inc $SELF/html.yaml
+~
+
+$out = [];
+foreach (array_values($a['rename']) as $name)
+  $out[$name] = $a['color3'][$name];
+return $out;

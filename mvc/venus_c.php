@@ -17,7 +17,7 @@ class venus_c extends Controller
     }
 
     #function yml_c() {
-    #    Boot::directive('hash', fn($v) => "#$v");
+    #    Yaml::directive('hash', fn($v) => "#$v");
     #}
 
     function jet_c() {
