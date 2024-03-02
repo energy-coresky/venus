@@ -1,5 +1,7 @@
+# ==================================================
 colors: @space $TAIL
-color_hex: @eval($v = preg_replace("/\s+/", "\n", $v); return array_map(fn($v) => '#' . $v, bang($v, '.'))) |
+
+color_hex: @left(#) @each @bang(. ) @sar(| +| ) >
   aliceblue.f0f8ff     antiquewhite.faebd7   aqua.00ffff             aquamarine.7fffd4        azure.f0ffff
   beige.f5f5dc         bisque.ffe4c4         black.000000            blanchedalmond.ffebcd    blue.0000ff
   blueviolet.8a2be2    brown.a52a2a          burlywood.deb887        cadetblue.5f9ea0         chartreuse.7fff00
@@ -30,10 +32,12 @@ color_hex: @eval($v = preg_replace("/\s+/", "\n", $v); return array_map(fn($v) =
   springgreen.00ff7f   steelblue.4682b4      tan.d2b48c              teal.008080              thistle.d8bfd8
   tomato.ff6347        turquoise.40e0d0      violet.ee82ee           wheat.f5deb3             white.ffffff
   whitesmoke.f5f5f5    yellow.ffff00         yellowgreen.9acd32
+
 tags:
   html: [body, head]
   metadata: [base, link, meta, style, title]
   see_arch:
+
 ~
 maroon saddlebrown mediumseagreen indigo darkorchid darkred sienna darkseagreen darkslateblue darkviolet
 brown chocolate darkolivegreen slateblue blueviolet firebrick darkorange olive mediumslateblue mediumpurple
