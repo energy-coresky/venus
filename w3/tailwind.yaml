@@ -34,7 +34,6 @@ img: @base64 |
 
 #also-work: @inc $SELF/html.yaml
 ~
-
 $out = [];
 foreach (array_values($a['rename']) as $name)
   $out[$name] = $a['color3'][$name];
