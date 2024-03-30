@@ -35,9 +35,11 @@ class app extends \Console
     }
 
     /** Parse css */
-    function a_parse() {
-        $s = Plan::_g("assets/venus.css");
-        echo Maat::css($s);
+    function a_parse($fn = false) {
+        $s = Plan::_g($fn ?: "assets/venus.css");
+        $maat = new Maat;
+        print_r($maat->parse_css($s));
+        //echo Maat::css($s);
     }
 
     /** Debug Vesper index */

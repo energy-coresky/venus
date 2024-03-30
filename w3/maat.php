@@ -117,7 +117,7 @@ class Maat
         $n = substr_count($v_css, "\n");
        if ($this->code && 'Preflight' == $this->code[0][2]) {
            $tw_css =& $this->code[1];
-           $diff = Diff::parse($v_css, $tw_css[0]);
+           $diff = Display::diff($v_css, $tw_css[0]);
            $this->diff($diff, $v_css, $n);
            $this->diff($diff, $tw_css[0], $tw_css[1]);
        }
@@ -154,6 +154,54 @@ class Maat
             $s = Plan::view_g(['main', $fn]);
             $this->code[] = [Display::jet($s, '', true, true), substr_count($s, "\n"), $fn, $fn];
         }
+    }
+
+    function drawHTML($html) {
+        $xml = new XML($html);
+        $xml->parse();
+        $xml->pad = '  ';
+        $xml->draw = function ($tag, &$close) {
+            if (is_string($tag))
+                return '#comment' != $close ? html($tag) : tag(html($tag), 'style="color:#885"', 'span');
+            $node = $tag->name;
+            $open = "&lt;" . ($name = "<span class=\"vs-tag\">$node</span>");
+            $close = "&lt;/$name&gt;";
+            if (!$tag->attr)
+                return $open . '&gt;';
+            $style = [false, false];
+            foreach ($tag->attr as $k => $v) {
+                $open .= ' ' . (0 === $v ? $k : "$k=\"$v\"");
+                switch ($k) {
+                    case 'rel':
+                        $style[0] = 'stylesheet' == $v;
+                        break;
+                    case 'id':
+                        if ('trace-t' == $v && is_array($data)) {
+                            $this->jets($txt = $this->buildHTML($data));
+                            $this->code[] = [$txt, substr_count($txt, "\n"), 'Trace-T', 0];
+                            $data = tag('Trace-T', 'class="red_label"', 'span');
+                        }
+                        break;
+                    case 'js':
+                        $this->add_js($v);
+                        break;
+                    case 'class':
+                        if ('dev-data' == $v)
+                            $data = ''; // crop inner
+                        $this->add_class($v);
+                        break;
+                    case 'src': case 'href': case 'action':
+                        $cnt = $this->links["$node-$k"][$v] ?? 0;
+                        $this->links["$node-$k"][$v] = ++$cnt;
+                        $style[1] = 'link-href' == "$node-$k" ? $v : false;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            return $open . '&gt;';
+        };
+        return (string)$xml;
     }
 
     function &buildHTML(&$ary, $indent = '') {
