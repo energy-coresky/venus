@@ -175,7 +175,7 @@ class Maat
                     case 'rel':
                         $style[0] = 'stylesheet' == $v;
                         break;
-                    case 'id': 
+                    case 'id':
                         if ('trace-t' == $v && is_array($data)) {
                             $this->jets($txt = $this->buildHTML($data));
                             $this->code[] = [$txt, substr_count($txt, "\n"), 'Trace-T', 0];
