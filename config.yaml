@@ -2,7 +2,7 @@ core:
   plans:
     app:
       type: dev
-      require: SQLite3 Parsedown
+      require: SQLite3 Parsedown CURLFile
     view: {path: $SELF/mvc}
     mem: {path: $SELF/mvc}
   databases:

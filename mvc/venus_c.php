@@ -33,8 +33,8 @@ class venus_c extends Controller
     function empty_a($page = '') {
         $this->_title = 'VENUS.SKY';
         $js = ['~/m/venus.js', '~/w/venus/ishtar.js', '~/w/venus/maxwell.js', '~/w/venus/grace.js'];
-        Plan::tail('', $js, ['~/w/venus/vesper.css', '~/m/venus.css']);
-        Plan::$head = [];
+        Plan::head('', $js, ['~/w/venus/vesper.css', '~/m/venus.css']);
+        Plan::$tail = [];
 
         $this->d_last_page = '_venus';
         return [

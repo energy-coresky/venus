@@ -82,6 +82,16 @@ class t_venus extends Model_t
         return Jet::text($s);
     }
 
+    function _get($url) {
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_HEADER, 0);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl,CURLOPT_CONNECTTIMEOUT, 1);
+        $response = curl_exec($curl);
+        curl_close($curl);
+        return $response;
+    }
+
     function get($fn, $data, &$tw) {
         $tw = !SKY::w('vesper');
         if ($data && 'nh' !== $data)
@@ -103,7 +113,7 @@ class t_venus extends Model_t
         if (!$data)
             return "URL: <b>$fn</b>";
         if ('PHP' != substr($_SERVER['SERVER_SOFTWARE'], 0, 3))
-            return get($fn, '', false);
+            return $this->_get($fn);
         return '<span class="text-7xl">Cannot run second query under PHP server</span>';
     }
 

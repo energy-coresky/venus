@@ -88,9 +88,5 @@ class app extends \Console
         foreach ($t as $id => $txt) {
   #          $m->sqlf('update $_ set txt=%s where id=%d', html($txt), $id);
         }
-
-
-
-
     }
 }
