@@ -151,7 +151,7 @@ class Maat
             '' === $boby[1] or $list[$fun('_' . $boby)] = 1;
         }
         foreach ($list as $fn => $_) {
-            $s = Plan::view_g(['main', $fn]);
+            $s = Plan::view_('g', ['main', $fn]);
             $this->code[] = [Display::jet($s, '', true, true), substr_count($s, "\n"), $fn, $fn];
         }
     }
