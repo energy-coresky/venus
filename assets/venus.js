@@ -23,6 +23,9 @@ var $$ = {
     F: {W:640, H:480},    // frame size current
     prev: {W:640, H:480}, // frame size previouse
     S: {},                // screen (window)
+    addr: function(url) {
+        history.pushState({}, '', url);
+    },
     doc: function(selector, fr) {
         if (!fr)
             fr = $$.$f;
@@ -227,8 +230,10 @@ var $$ = {
     r: {},
     test: function(fn) {
         $$.r.tw = $$.r.jet = '';
-        if (fn)
+        if (fn) {
             $$.fn = fn;
+            $$.addr('?page=' + encodeURIComponent(fn));
+        }
         ajax('src&0=' + $$.fn, function(r) {
             $$.r = r;
             $$.parsed = $$.tree(r.html);
@@ -241,6 +246,13 @@ var $$ = {
         var tw = '';
         if (true !== vesp) { // real onload
             $$.doc().click($$.m_clk).mouseup($$.m_up).mousemove($$.m_move).find('body *').mouseenter($$.m_enter);
+            
+            $$.doc('a').click(function() {
+                //$$.test('http://des.loc' + $(this).attr('href'));
+                $$.test($(this).attr('href'));
+                return false;
+            });
+            
             if ($$.r.tw) {
                 let frameHTML = $$.doc('html:first').html().replaceAll('\r\n', '\n').replaceAll('\r', '\n');
                 frameHTML = frameHTML.substr(frameHTML.indexOf('<style>/* ! tailwindcss'));

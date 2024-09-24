@@ -89,7 +89,7 @@ class m_menu extends Model_m
             return $ary;
         };
         $out = [
-            ['Add new component', '', 'Alt + N'],
+            ['Add new component', "gv.modal('#modal-popup',1)", 'Alt + N'],
             ['Delete current', '', 'Alt + D'],
             ['Links', $this->files(), self::$rar],
             ['History', $this->t_venus->history(), self::$rar],
