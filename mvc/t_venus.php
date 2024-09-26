@@ -17,7 +17,23 @@ class t_venus extends Model_t
         return $dd;
     }
 
-    function maat(&$in) {
+    function src($maat, $fn) {
+        if ($maat)
+            return $this->maat(unjson(file_get_contents('php://input')));
+        # step 0
+        $html = $this->get($fn, true, $tw);
+        if ('#.jet' == substr($html, 0, 5)) {
+            $this->jet = [$fn => 'jet'];
+            $html = Jet::text($html);
+        }
+        return [
+            'html' => $html,
+            'tw' => !$tw ? $tw : $this->tailwind(),
+            'jet' => $this->jet ?: false, # for step 1
+        ];
+    }
+
+    function maat($in) { # step 1
         $maat = new Maat(['highlight' => true]);
         if ($in->tw_native)
             $maat->tw_native($in->tw_native, $this);
@@ -72,14 +88,6 @@ class t_venus extends Model_t
         $s = $this->get($fn, 'nh', $tw);
         $this->jet += [$fn => '#.jet' == substr($s, 0, 5) ? 'jet' : 'html'];
         return $s;
-    }
-
-    function jet($fn, &$tw) {
-        $s = $this->get($fn, true, $tw);
-        if ('#.jet' != substr($s, 0, 5))
-            return $s;
-        $this->jet = [$fn => 'jet'];
-        return Jet::text($s);
     }
 
     function _get($url) {

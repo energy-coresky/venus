@@ -80,14 +80,14 @@ class Maat
         }
     }
 
-    function tw_native($css, $m) {
+    function tw_native($css, $model) {
         $preflight = '::backdrop';
         $ary =& $this->parse_css($css, $preflight);
        $this->add_space = true;
         $this->code[] = [$css = $this->buildCSS($preflight), substr_count($css, "\n"), 'Preflight', 0];
         $this->code[] = [$this->buildCSS($ary, true), -1, 'TailwindCSS', 0];
        $this->add_space = false;
-        #if (trim(strip_tags($css)) != $m->t_settings->preflight())
+        #if (trim(strip_tags($css)) != $model->t_settings->preflight())
          #   trace('preflight differ!', true);
     }
 

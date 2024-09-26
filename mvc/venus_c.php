@@ -46,16 +46,7 @@ class venus_c extends Controller
     }
 
     function j_src() {
-        if ($this->_2) { # step 1
-            $json = unjson(file_get_contents('php://input'));
-            json($this->t_venus->maat($json));
-        } else { # step 0
-            json([
-                'html' => $this->t_venus->jet($this->_3, $tw),
-                'tw' => !$tw ? $tw : $this->t_venus->tailwind(),
-                'jet' => $this->t_venus->jet ?: false,
-            ]);
-        }
+        json($this->t_venus->src($this->_2, $this->_3));
     }
 
     function j_set() {
