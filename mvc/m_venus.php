@@ -9,7 +9,7 @@ class m_venus extends Model_m
 
     static function &ghost($dd, $name = 'all', $char = '') {
         $char = 'all' == $name ? 'w' : 't';
-        list($id, $txt, $cfg) = $dd->sqlf('-select id, txt, cfg from $_memory where name=%s', $name);
+        [$id, $txt, $cfg] = $dd->sqlf('-select id, txt, cfg from $_memory where name=%s', $name);
         SKY::ghost($char, $cfg, 'update $_memory set cfg=%s where id=' . $id, 0, $dd);
         $ary = [&SKY::$mem[$char][3], $txt, $id];
         return $ary;

@@ -21,6 +21,7 @@ class t_venus extends Model_t
         if ($maat)
             return $this->maat(unjson(file_get_contents('php://input')));
         # step 0
+        $this->history($fn);
         $html = $this->get($fn, true, $tw);
         if ('#.jet' == substr($html, 0, 5)) {
             $this->jet = [$fn => 'jet'];
@@ -53,9 +54,9 @@ class t_venus extends Model_t
             return [];
         $out = [];
         foreach ($ary as $fn => $type) {
-            $s = $this->get($fn, 'nh', $tw);
-            $html = 'jet' == $type ? Display::jet($s, '', true, true) : html($s);
-            $out[] = [$html, substr_count($s, "\n"), $type . $fn, $fn];
+            $str = $this->get($fn);
+            $html = 'jet' == $type ? Display::jet($str, '', true, true) : html($str);
+            $out[] = [$html, substr_count($str, "\n"), $type . $fn, $fn];
         }
         return $out;
     }
@@ -73,67 +74,62 @@ class t_venus extends Model_t
 
     function history($fn = null) {
         $ary = unserialize(SKY::w('hy_src'));
-        if (null === $fn) {
+        if (null === $fn) { # return history list
             $out = [];
             foreach ($ary as $k => $v)
                 $out[$v] = '$$.test(\'' . "$k')";
             return $out;
-        } else {
-            $ary = [$fn => $this->get($fn, false, $tw)] + $ary;
+        } else { # add to history
+            $ary = [$fn => $this->get($fn, false)] + $ary;
             SKY::w('hy_src', serialize(array_slice($ary, 0, 19, true)));
         }
     }
 
     function _inc($fn) {
-        $s = $this->get($fn, 'nh', $tw);
-        $this->jet += [$fn => '#.jet' == substr($s, 0, 5) ? 'jet' : 'html'];
-        return $s;
+        $str = $this->get($fn);
+        $this->jet += [$fn => '#.jet' == substr($str, 0, 5) ? 'jet' : 'html'];
+        return $str;
     }
 
-    function _get($url) {
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_HEADER, 0);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($curl,CURLOPT_CONNECTTIMEOUT, 1);
-        $response = curl_exec($curl);
-        curl_close($curl);
-        return $response;
-    }
-
-    function get($fn, $data, &$tw) {
+    function get($fn, $is_html = true, &$tw = null) {
         $tw = !SKY::w('vesper');
-        if ($data && 'nh' !== $data)
-            $this->history($fn);
-        $pfx = $fn[0];
         $id = substr($fn, 1);
-        if ('!' == $pfx) {
-            $s = $this->sql('+select !! from $_tw where id=$+', $data ? 'tmemo' : 'name', $id);
-            return $data ? ($s ?? self::empty_data) : "Usage: <b>$s</b>";
-        } elseif (':' == $pfx) {
-            return $data ? $this->cell($id, 'tmemo') : 'Venus: <b>' . ($tw = $this->cell($id, 'name')) . '</b>';
-        } elseif ('~' == $pfx) {
-            if ($data)
-                return call_user_func(['Plan', (SKY::w('plan') ? 'mem' : 'app') . "_g"], ['main', "venus/$id.html"]);
-            return "Application: <b>" . ucfirst($tw = substr($id, 2)) . '</b>';
+        switch ($fn[0]) {
+            case '!': # usage sample
+                $str = $this->sql('+select !! from $_tw where id=$+', $is_html ? 'tmemo' : 'name', $id);
+                return $is_html ? ($str ?? self::empty_data) : "Usage: <b>$str</b>";
+            case ':': # Venus component
+                return $is_html ? $this->cell($id, 'tmemo') : 'Venus: <b>' . ($tw = $this->cell($id, 'name')) . '</b>';
+            case '~': # App component
+                if ($is_html)
+                    return call_user_func(['Plan', (SKY::w('plan') ? 'mem' : 'app') . "_g"], ['main', "venus/$id.html"]);
+                return "Application: <b>" . ucfirst($tw = substr($id, 2)) . '</b>';
         }
+        # else HTTP
         $tw = '';
         preg_match('/^https?:/', $fn) or $fn = "https://$fn";
-        if (!$data)
+        if (!$is_html)
             return "URL: <b>$fn</b>";
-        if ('PHP' != substr($_SERVER['SERVER_SOFTWARE'], 0, 3))
-            return $this->_get($fn);
-        return '<span class="text-7xl">Cannot run second query under PHP server</span>';
+        if ('PHP' == substr($_SERVER['SERVER_SOFTWARE'], 0, 3))
+            return '<span class="text-7xl">Cannot run second query under PHP server</span>';
+        $curl = curl_init($fn);
+        curl_setopt($curl, CURLOPT_HEADER, 0);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_CONNECTTIMEOUT, 1);
+        $html = curl_exec($curl);
+        curl_close($curl);
+        return $html;
     }
 
-    function put($fn, $data = null) {
+    function put($fn, $html = null) {
         if ('!' == $fn[0]) {
-            $this->sqlf('update $_tw set tmemo=%s where id=%d', trim($data), substr($fn, 1));
+            $this->sqlf('update $_tw set tmemo=%s where id=%d', trim($html), substr($fn, 1));
         } elseif (':' == $fn[0]) {
-            $this->update(['tmemo' => trim($data)], substr($fn, 1));
+            $this->update(['tmemo' => trim($html)], substr($fn, 1));
         } elseif ('~' == $fn[0]) {
-            call_user_func(['Plan', (SKY::w('plan') ? 'mem' : 'app') . "_p"], ['main', "venus/" . substr($fn, 1) . '.html'], trim($data));
+            call_user_func(['Plan', (SKY::w('plan') ? 'mem' : 'app') . "_p"], ['main', "venus/" . substr($fn, 1) . '.html'], trim($html));
         } elseif ('.jet' == substr($fn, -4)) {
-            Plan::view_p(['main', $fn], $data);
+            Plan::view_p(['main', $fn], $html);
         }
         return true;
     }

@@ -388,7 +388,7 @@ class Maat
         foreach (token_get_all($str) as $k => $token) {
             $id = $str = $token;
             if (is_array($token)) {
-                list($id, $str) = $token;
+                [$id, $str] = $token;
                 switch ($id) {
                     case T_WHITESPACE:
                         continue 2;
@@ -421,7 +421,7 @@ class Maat
         foreach (token_get_all($in) as $k => $token) {
             $id = $str = $token;
             if (is_array($token)) {
-                list($id, $str) = $token;
+                [$id, $str] = $token;
                 if (!$k || T_DOC_COMMENT == $id || $space) {
                     $space = false;
                     continue;

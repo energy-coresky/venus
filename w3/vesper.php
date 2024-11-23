@@ -180,7 +180,8 @@ class Vesper /* Tailwind++ generator */
     function arbitrary($v, &$sc = null) {
         $pos = strpos($v = str_replace('_', ' ', substr($v, 1, -1)), 'calc(');
         if (false !== $pos) {
-            $len = strlen($br = Rare::bracket(substr($v, 4 + $pos)));
+           $tmp = substr($v, 4 + $pos);//2do revision   Rare::bracket($v, '(', 4 + $pos)
+            $len = strlen($br = Rare::bracket($tmp));
             $br = preg_replace("/([^\s\(])(\+|\-)(\S)/", "$1 $2 $3", $br); // 2do: more smart
             $v = substr($v, 0, 4 + $pos) . $br . substr($v, 4 + $pos + $len);
         }
