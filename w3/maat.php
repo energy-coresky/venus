@@ -87,8 +87,8 @@ class Maat
         $this->code[] = [$css = $this->buildCSS($preflight), substr_count($css, "\n"), 'Preflight', 0];
         $this->code[] = [$this->buildCSS($ary, true), -1, 'TailwindCSS', 0];
        $this->add_space = false;
-        #if (trim(strip_tags($css)) != $model->t_settings->preflight())
-         #   trace('preflight differ!', true);
+        if (trim(strip_tags($css)) != $model->t_settings->preflight())
+            ;//trace('preflight differ!', true);
     }
 
    function diff($diff, &$txt, &$size) {
@@ -117,7 +117,7 @@ class Maat
         $n = substr_count($v_css, "\n");
        if ($this->code && 'Preflight' == $this->code[0][2]) {
            $tw_css =& $this->code[1];
-           $diff = Display::diff($v_css, $tw_css[0]);
+           $diff = Show::diff($v_css, $tw_css[0]);
            $this->diff($diff, $v_css, $n);
            $this->diff($diff, $tw_css[0], $tw_css[1]);
        }
@@ -152,7 +152,7 @@ class Maat
         }
         foreach ($list as $fn => $_) {
             $s = Plan::view_('g', ['main', $fn]);
-            $this->code[] = [Display::jet($s, '', true, true), substr_count($s, "\n"), $fn, $fn];
+            $this->code[] = [Show::jet($s, '', true, true), substr_count($s, "\n"), $fn, $fn];
         }
     }
 

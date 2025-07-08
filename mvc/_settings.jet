@@ -89,7 +89,7 @@ Empty for now
 #.form_only
       </div>
       <div style="width:calc((100% - {{$left_w}}px) / 2)" class="p-2 overflow-auto pad">
-        {!Display::md($txt)!}
+        {!Show::doc($txt)!}
       </div>
     </div>
     <div id="s-tail" class="overflow-auto p-1">@block(`tail` as tail)</div>

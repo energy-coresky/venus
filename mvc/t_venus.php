@@ -55,7 +55,7 @@ class t_venus extends Model_t
         $out = [];
         foreach ($ary as $fn => $type) {
             $str = $this->get($fn);
-            $html = 'jet' == $type ? Display::jet($str, '', true, true) : html($str);
+            $html = 'jet' == $type ? Show::jet($str, '', true, true) : html($str);
             $out[] = [$html, substr_count($str, "\n"), $type . $fn, $fn];
         }
         return $out;
@@ -69,7 +69,8 @@ class t_venus extends Model_t
                 $ary[] = 'aspect' == $plug ? 'aspect-ratio' : ('ln_clamp' == $plug ? 'line-clamp' : $plug);
         }
         $q = $ary ? '?plugins=' . implode(',', $ary) : '';
-        return js(["https://cdn.tailwindcss.com$q"]) . js($t['tw_config']) . tag($t['tw_css'], 'type="text/tailwindcss"', 'style');
+        //Available versions: `3.0.0`, `3.0.0-alpha.1`, `3.0.0-alpha.2`, `3.0.1`, `3.0.10`, `3.0.11`, `3.0.12`, `3.0.13`, `3.0.14`, `3.0.15`, `3.0.16`, `3.0.17`, `3.0.18`, `3.0.19`, `3.0.2`, `3.0.20`, `3.0.21`, `3.0.22`, `3.0.23`, `3.0.24`, `3.0.3`, `3.0.4`, `3.0.5`, `3.0.6`, `3.0.7`, `3.0.8`, `3.0.9`, `3.1.0`, `3.1.1`, `3.1.2`, `3.1.3`, `3.1.4`, `3.1.5`, `3.1.6`, `3.1.7`, `3.1.8`, `3.2.0`, `3.2.1`, `3.2.2`, `3.2.3`, `3.2.4`, `3.2.6`, `3.2.7`, `3.3.0`, `3.3.1`, `3.3.2`, `3.3.3`, `3.3.4`, `3.3.5`, `3.3.6`, `3.3.7`, `3.4.0`, `3.4.1`, `3.4.10`, `3.4.11`, `3.4.12`, `3.4.13`, `3.4.14`, `3.4.15`, `3.4.2`, `3.4.3`, `3.4.4`, `3.4.5`, `3.4.6`, `3.4.7`, `3.4.8`, `3.4.9`, `3.4.16`
+        return js(["https://cdn.tailwindcss.com/3.1.1$q"]) . js($t['tw_config']) . tag($t['tw_css'], 'type="text/tailwindcss"', 'style');
     }
 
     function history($fn = null) {
